@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SummerDaze留学工作室 - 你的专属工科申请合伙人</title>
+    <title >SummerDaze留学工作室 - 你的专属工科申请合伙人</title>
     
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,7 +15,7 @@
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         /* Custom styles */
         body {
@@ -51,7 +51,8 @@
             </a>
             <nav class="hidden md:flex items-center space-x-8 text-slate-600 font-medium">
                 <a href="#team" class="hover:text-teal-500 transition">导师团队</a>
-                <a href="#pricing" class="hover:text-teal-500 transition">服务套餐</a>
+                <a href="#highschool" class="hover:text-teal-500 transition text-sky-600 font-bold">高中/衔接服务</a>
+                <a href="#pricing" class="hover:text-teal-500 transition text-teal-600 font-bold">本科/研究生申请服务</a>
                 <a href="#servicedetails" class="hover:text-teal-500 transition">服务详情</a>
                 <a href="#disclaimer" class="hover:text-teal-500 transition">重要须知</a>
             </nav>
@@ -62,28 +63,107 @@
     </header>
 
     <main id="home" class="pt-24 md:pt-32">
-        <section class="container mx-auto px-6 text-center">
-            <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight">
-                你的专属<span class="gradient-text">工科申请合伙人</span>
+        <section class="container mx-auto px-6 text-center pt-20 relative overflow-hidden">
+    
+            <div id="threejs-container" class="absolute inset-0 z-0 opacity-20">
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight relative z-10">
+                你的专属<span class="gradient-text">学校申请合伙人</span>
             </h1>
-            <p class="mt-6 text-lg md:text-xl max-w-3xl mx-auto text-slate-600">
-                 团队汇集哥伦比亚大学、芝加哥大学、南加大、港大、港科大等背景，我们只用实战经验，带你冲进北美/香港名校。
+            
+            <p class="mt-6 text-lg md:text-xl max-w-3xl mx-auto text-slate-600 relative z-10">
+            </p>
+            <div class="mt-8 flex justify-center gap-4 relative z-10">
+            </div>
+        </section>
+        
+        <section class="container mx-auto px-6 text-center pt-10">
+
+            <p class="mt-6 text-lg md:text-lg max-w-3xl mx-auto text-slate-600">
+                    团队汇集加州理工学院、哥伦比亚大学、芝加哥大学、南加大、港大、港科大等背景，我们只用实战经验，带你冲进北美/香港名校。
             </p>
             <div class="mt-8 flex justify-center gap-4">
                 <a href="#contact" class="bg-teal-500 text-white font-bold text-lg px-8 py-4 rounded-lg cta-button">
                     立即免费咨询
                 </a>
             </div>
-            <div class="mt-12">
-                <p class="text-sm text-slate-500 font-medium">团队成员背景或录取院校包括</p>
-                <div class="mt-4 flex justify-center items-center flex-wrap gap-x-6 md:gap-x-8 gap-y-4 opacity-70">
-                    <img src="https://placehold.co/120x40/ffffff/9ca3af?text=UChicago" alt="芝加哥大学 Logo" class="h-7 md:h-8">
-                    <img src="https://placehold.co/120x40/ffffff/9ca3af?text=Waterloo" alt="滑铁卢大学 Logo" class="h-7 md:h-8">
-                    <img src="https://placehold.co/120x40/ffffff/9ca3af?text=USC" alt="南加州大学 Logo" class="h-7 md:h-8">
-                    <img src="https://placehold.co/120x40/ffffff/9ca3af?text=HKU" alt="香港大学 Logo" class="h-7 md:h-8">
-                    <img src="https://placehold.co/120x40/ffffff/9ca3af?text=Columbia" alt="哥伦比亚大学 Logo" class="h-7 md:h-8">
-                    <img src="https://placehold.co/120x40/ffffff/9ca3af?text=HKUST" alt="香港科技大学 Logo" class="h-7 md:h-8">
-                    <img src="https://placehold.co/120x40/ffffff/9ca3af?text=Purdue" alt="普渡大学 Logo" class="h-7 md:h-8">
+            
+            <!-- <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight relative z-10">
+                你的专属<span class="gradient-text">学校申请合伙人</span>
+            </h1> -->
+            
+        </div>
+        <div class="my-20"> <p class="text-sm text-slate-500 font-medium">团队成员背景或录取院校包括</p>
+            <div class="mt-8 flex justify-center items-center flex-wrap gap-x-6 md:gap-x-8 gap-y-4 opacity-70 py-8"> 
+                <img src="./school icon/caltech.png" alt="加州理工学院 Logo" class="h-11 md:h-11">
+                <img src="./school icon/uchicago.png" alt="芝加哥大学 Logo" class="h-9 md:h-15">
+                <img src="./school icon/cu.png" alt="哥伦比亚大学 Logo" class="h-9 md:h-15">
+                <img src="./school icon/usc.png" alt="南加州大学 Logo" class="h-9 md:h-15">
+                <img src="./school icon/purdue.png" alt="普渡大学 Logo" class="h-9 md:h-15">
+                <img src="./school icon/waterloo.png" alt="滑铁卢大学 Logo" class="h-9 md:h-15">
+                <img src="./school icon/kcl.png" alt="伦敦大学国王学院 Logo" class="h-9 md:h-15">
+                <img src="./school icon/hku.png" alt="香港大学 Logo" class="h-9 md:h-15">
+                <img src="./school icon/hkust.png" alt="香港科技大学 Logo" class="h-9 md:h-15">
+                
+            </div>
+        </div>
+        <div class="mt-16 py-8 bg-teal-50/50 rounded-2xl border-2 border-teal-200 shadow-xl max-w-4xl mx-auto backdrop-blur-sm">
+        <div class="text-center px-4">
+            <p class="text-xl md:text-2xl font-extrabold text-slate-800 flex items-center justify-center gap-3">
+                <i data-lucide="sparkles" class="w-7 h-7 text-amber-500 fill-amber-500"></i>
+                一站式留学安顿方案 <span class="text-teal-600">|</span> 签证、住宿、接送机<span class="text-teal-600">|</span>学生活动
+            </p>
+            
+            <p class="mt-3 text-lg text-slate-600 max-w-2xl mx-auto font-medium">
+               <span class="font-bold text-slate-700">2026 奖学金申请通道</span> 现已开放，<span class="font-bold text-slate-700">10000元</span>奖学金等你来拿。加入微信群来认识新的小伙伴吧
+            </p>
+
+            <div class="mt-6 flex justify-center items-center gap-x-10 md:gap-x-15">
+                <a href="#highschool" class="bg-sky-500 text-white font-bold text-base px-6 py-3 rounded-xl cta-button inline-flex items-center gap-2 hover:bg-teal-700">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                    高中/本科衔接服务
+                </a>
+                <a href="#features" class="bg-teal-600 text-white font-bold text-base px-6 py-3 rounded-xl cta-button inline-flex items-center gap-2 hover:bg-teal-700">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                    本科/研究生申请服务
+                </a>
+            </div>
+        </div>
+        </section>
+        <section id="highschool" class="py-20 md:py-28 bg-sky-50 mt-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">🚀 高中/本科衔接 一站式留学安顿服务</h2>
+                    <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">
+                        我们为**尚未毕业的高中生**、或计划通过**语言班/社区大学**过渡的学生，提供从申请到落地生活的全方位支持，让您和您的家人**安心无忧**。
+                    </p>
+                    <a href="#contact" class="mt-6 inline-block bg-sky-500 text-white font-bold text-lg px-8 py-3 rounded-lg cta-button">
+                        免费定制您的“衔接+安顿”计划
+                    </a>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-sky-200">
+                        <i data-lucide="file-check-2" class="w-10 h-10 text-sky-600"></i>
+                        <h3 class="mt-4 text-xl font-bold text-slate-800">定制化申请与奖学金</h3>
+                        <p class="mt-2 text-slate-600">目标锁定语言学校、预科、社区大学。现正火热招募**2026奖学金**申请者，冲刺学费减免。</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-sky-200">
+                        <i data-lucide="plane" class="w-10 h-10 text-sky-600"></i>
+                        <h3 class="mt-4 text-xl font-bold text-slate-800">全程签证与行前指导</h3>
+                        <p class="mt-2 text-slate-600">专业的签证材料梳理、面试辅导，并提供全面的行前准备清单与指导。</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-sky-200">
+                        <i data-lucide="home" class="w-10 h-10 text-sky-600"></i>
+                        <h3 class="mt-4 text-xl font-bold text-slate-800">住宿安排与接送机</h3>
+                        <p class="mt-2 text-slate-600">协助安排安全可靠的住宿（寄宿家庭/校内/公寓），并提供点对点接送机服务。</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-sky-200">
+                        <i data-lucide="map-pin" class="w-10 h-10 text-sky-600"></i>
+                        <h3 class="mt-4 text-xl font-bold text-slate-800">生活落地与安顿</h3>
+                        <p class="mt-2 text-slate-600">协助办理当地手机卡、银行开户、基础生活区域导览等，快速融入当地生活。</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -91,7 +171,7 @@
         <section id="features" class="py-20 md:py-28 bg-white mt-20">
             <div class="container mx-auto px-6">
                 <div class="text-center">
-                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">留学申请，你是否也“压力山大”？</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">本科/研究生留学申请，你是否也“压力山大”？</h2>
                     <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">别怕，这些坑我们都踩过，让我们一起绕开。</p>
                 </div>
                 <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -106,13 +186,16 @@
         <section id="team" class="py-20 md:py-28">
             <div class="container mx-auto px-6">
                 <div class="text-center">
-                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">认识一下你的“打游戏还不错”的学长学姐</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">认识一下核心团队成员</h2>
                     <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">我们不讲理论，只讲我们是怎么赢的。我们的成功经验，就是你最好的攻略。</p>
                 </div>
-                <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                     <div class="bg-white rounded-xl shadow-lg overflow-hidden text-center transition hover:scale-105 hover:shadow-2xl duration-300"><img src="./Ivy.jpg" alt="Ivy学姐" class="w-full h-56 object-cover"><div class="p-6"><h3 class="text-xl font-bold text-slate-800">Ivy 学姐</h3><p class="mt-1 text-teal-600 font-semibold">核心导师</p><p class="mt-1 text-slate-500">USC毕业</p><p class="mt-4 text-sm text-slate-600">“深挖每段经历，让文书成为你的王牌。同在崴，沟通无障碍！”</p></div></div>
-                     <div class="bg-white rounded-xl shadow-lg overflow-hidden text-center transition hover:scale-105 hover:shadow-2xl duration-300"><img src="./woody.jpeg" alt="Woody学长" class="w-full h-56 object-cover"><div class="p-6"><h3 class="text-xl font-bold text-slate-800">Woody 学长</h3><p class="mt-1 text-sky-600 font-semibold">核心导师</p><p class="mt-1 text-slate-500">USC&WATERLOO&港科大</p><p class="mt-4 text-sm text-slate-600">“从找到您的独特定位开始，我们将一同制定缜密计划，让前往北美深造的每一步都清晰而踏实。”</p></div></div>
-                     <div class="bg-white rounded-xl shadow-lg overflow-hidden text-center transition hover:scale-105 hover:shadow-2xl duration-300"><img src="./Image_fx.jpg" alt="导师" class="w-full h-56 object-cover"><div class="p-6"><h3 class="text-xl font-bold text-slate-800">咨询导师团</h3><p class="mt-1 text-indigo-600 font-semibold">核心导师群</p><p class="mt-1 text-slate-500">主要集中在北美与香港</p><p class="mt-4 text-sm text-slate-600">“汇集Stanford，UCLA，多伦多大学等超亲密朋友圈，为学生咨询提供多元化视角和支持。”</p></div></div>
+                <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                     <div class="bg-white rounded-xl shadow-lg overflow-hidden text-center transition hover:scale-105 hover:shadow-2xl duration-300"><img src="./Ivy.jpg" alt="Ivy学姐" class="w-full h-56 object-cover"><div class="p-6"><h3 class="text-xl font-bold text-slate-800">Ivy</h3><p class="mt-1 text-teal-600 font-semibold">核心老师</p><p class="mt-1 text-slate-500">University of Southern California</p><p class="mt-4 text-sm text-slate-600">“深挖每段经历，让文书成为你的王牌。同在崴，沟通无障碍！”</p></div></div>
+                     <div class="bg-white rounded-xl shadow-lg overflow-hidden text-center transition hover:scale-105 hover:shadow-2xl duration-300"><img src="./woody.jpeg" alt="Woody学长" class="w-full h-56 object-cover"><div class="p-6"><h3 class="text-xl font-bold text-slate-800">Woody</h3><p class="mt-1 text-sky-600 font-semibold">核心老师</p><p class="mt-1 text-slate-500">USC&Waterloo&港科大</p><p class="mt-4 text-sm text-slate-600">“从找到您的独特定位开始，我们将一同制定缜密计划，让前往北美深造的每一步都清晰而踏实。”</p></div></div>
+                     <div class="bg-white rounded-xl shadow-lg overflow-hidden text-center transition hover:scale-105 hover:shadow-2xl duration-300"><img src="./fly.jfif" alt="Fly学姐" class="w-full h-56 object-cover"><div class="p-6"><h3 class="text-xl font-bold text-slate-800">Fly</h3><p class="mt-1 text-teal-600 font-semibold">核心老师</p><p class="mt-1 text-slate-500">King's College London</p><p class="mt-4 text-sm text-slate-600">“深挖每段经历，让文书成为你的王牌。同在崴，沟通无障碍！”</p></div></div>
+                     <div class="bg-white rounded-xl shadow-lg overflow-hidden text-center transition hover:scale-105 hover:shadow-2xl duration-300"><img src="./jason.jfif" alt="Jason学长" class="w-full h-56 object-cover"><div class="p-6"><h3 class="text-xl font-bold text-slate-800">Jason</h3><p class="mt-1 text-sky-600 font-semibold">核心老师</p><p class="mt-1 text-slate-500">King's College London</p><p class="mt-4 text-sm text-slate-600">“深挖每段经历，让文书成为你的王牌。同在崴，沟通无障碍！”</p></div></div>
+   
+                    <!-- <div class="bg-white rounded-xl shadow-lg overflow-hidden text-center transition hover:scale-105 hover:shadow-2xl duration-300"><img src="./Image_fx.jpg" alt="导师" class="w-full h-56 object-cover"><div class="p-6"><h3 class="text-xl font-bold text-slate-800">咨询导师团</h3><p class="mt-1 text-indigo-600 font-semibold">核心导师群</p><p class="mt-1 text-slate-500">主要集中在北美与香港</p><p class="mt-4 text-sm text-slate-600">“汇集Stanford，UCLA，多伦多大学等超亲密朋友圈，为学生咨询提供多元化视角和支持。”</p></div></div> -->
                 </div>
             </div>
         </section>
@@ -130,7 +213,7 @@
                         <p class="mt-2 text-slate-500">适合目标明确，需要全面支持的你</p>
                         <p class="mt-6 text-5xl font-extrabold text-slate-900">¥16,800</p>
                         <ul class="mt-8 space-y-4 text-slate-600 flex-grow">
-                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>申请地区: 北美/香港</li>
+                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>申请地区: 北美/英国/香港</li>
                             <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>申请院校: 8所</li>
                             <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>全套文书(PS/SOP)精修</li>
                             <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>学姐及local学长全程规划指导</li>
@@ -147,7 +230,7 @@
                         <p class="mt-2 text-slate-500">为前几位客户准备的超值之选</p>
                         <p class="mt-6 text-5xl font-extrabold text-slate-900">¥9,999</p>
                         <ul class="mt-8 space-y-4 text-slate-600 flex-grow">
-                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>申请地区: 北美/香港</li>
+                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>申请地区: 北美/英国/香港</li>
                             <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i><span class="font-bold">申请院校:7所（可加）</span></li>
                             <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>核心文书(PS/SOP)精修</li>
                             <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>CV/推荐信精修</li>
@@ -292,11 +375,63 @@
     </footer>
 
     <script>
+        /* Three.js Script */
+        function initThreeJS() {
+            const container = document.getElementById('threejs-container');
+            if (!container) return;
+
+            // 1. Scene setup
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.5, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); // alpha: true enables transparent background
+            
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+
+            // 2. Geometry (Icosahedron for polygon look)
+            const geometry = new THREE.IcosahedronGeometry(9, 1); 
+
+            // 3. Material (Wireframe for a "cool tech" look)
+            const material = new THREE.MeshBasicMaterial({
+                color: 0x14b8a6, // Teal color (matching your gradient)
+                wireframe: true
+            });
+            
+            const sphere = new THREE.Mesh(geometry, material);
+            scene.add(sphere);
+
+            // 4. Position camera and sphere
+            camera.position.z = 15;
+
+            // 5. Animation loop
+            const animate = () => {
+                requestAnimationFrame(animate);
+
+                // Simple rotation for movement
+                sphere.rotation.x += 0.0005;
+                sphere.rotation.y += 0.001;
+
+                renderer.render(scene, camera);
+            };
+            
+            // 6. Handle resizing
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+
+            animate();
+        }
+
+        // Ensure the function runs after the DOM is loaded
+        initThreeJS();
+
         lucide.createIcons();
     </script>
 
 </body>
-</html>
 
+</html>
 
 
