@@ -62,7 +62,8 @@ button{font-family:inherit}
 .back-link{font-size:14px; font-weight:800; color:var(--blue); text-decoration:none; text-transform:uppercase; letter-spacing:.5px}
 
 .hero{max-width:720px; margin:0 auto; padding:36px 20px 8px; text-align:center}
-.hero .owl{font-size:60px; display:block; animation:bob 2.6s ease-in-out infinite}
+.hero .owl{width:110px; height:114px; margin:0 auto; animation:bob 2.6s ease-in-out infinite}
+.hero .owl svg{width:100%; height:100%}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .hero h1{font-size:28px; font-weight:900; margin-top:10px}
 .hero p{color:var(--text-light); margin-top:8px; font-size:15px; line-height:1.6}
@@ -263,6 +264,47 @@ button{font-family:inherit}
 .modal .note{font-size:12px; color:var(--gray-dark); margin-top:8px; line-height:1.5}
 .modal .actions{display:flex; gap:10px; margin-top:22px; justify-content:flex-end}
 
+/* ============ SVG faces & character stage ============ */
+.face{display:block}
+.face .eye-n{transform-box:fill-box; transform-origin:center; animation:eyeblink 4.4s infinite}
+@keyframes eyeblink{0%,90.5%,94.5%,100%{transform:scaleY(1)}92.5%{transform:scaleY(.08)}}
+.face .eye-h,.face .m-open,.face .m-grin,.face .m-sad{opacity:0}
+.face .m-open,.face .beak{transform-box:fill-box; transform-origin:center}
+.face.talk .m-smile{opacity:0}
+.face.talk .m-open{opacity:1; animation:talkAnim .28s infinite alternate}
+.face.talk .beak{animation:talkAnim .28s infinite alternate}
+@keyframes talkAnim{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
+.face.happy .m-smile,.face.happy .m-sad,.face.happy .m-open{opacity:0}
+.face.happy .m-grin{opacity:1}
+.face.happy .eye-n{opacity:0}
+.face.happy .eye-h{opacity:1}
+svg.face.happy{animation:facebounce .55s ease 2}
+@keyframes facebounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-9px)}}
+.face.sad .m-smile{opacity:0}
+.face.sad .m-sad{opacity:1}
+.face .brow{transform-box:fill-box; transform-origin:center; transition:transform .25s}
+.face.sad .brow-l{transform:rotate(14deg) translateY(2px)}
+.face.sad .brow-r{transform:rotate(-14deg) translateY(2px)}
+
+.stage{
+  display:flex; align-items:center; justify-content:center; gap:16px;
+  padding:10px 16px 4px; background:linear-gradient(#f2fbff,#fff);
+  border-bottom:2px solid var(--gray);
+}
+.stage-face{width:100px; height:104px; flex-shrink:0}
+.stage-face svg{width:100%; height:100%}
+.stage-label{font-weight:900; font-size:15.5px; line-height:1.35}
+.stage-label .zh{display:block; font-size:12.5px; color:var(--text-light); font-weight:700}
+.avatar{overflow:hidden}
+.avatar svg{width:100%; height:100%}
+.card .face-wrap{width:86px; height:90px; margin:0 auto}
+.card .face-wrap svg{width:100%; height:100%}
+#done-face{width:150px; height:156px; margin:0 auto; animation:bob 2s ease-in-out infinite}
+#done-face svg{width:100%; height:100%}
+@media (max-height:640px){
+  .stage-face{width:76px; height:80px}
+}
+
 @media (max-width:520px){
   .bubble{max-width:85%}
   .stats{gap:10px}
@@ -283,7 +325,7 @@ button{font-family:inherit}
   </header>
 
   <section class="hero">
-    <span class="owl">🦉</span>
+    <div class="owl" id="hero-owl"></div>
     <h1>留学英语情景对话练习</h1>
     <p>选择一个场景，和 AI 伙伴用英语聊天。自己先试着回答 —— 卡住了？<br>点 <b>💡 提示</b>，屏幕会告诉你下一句可以怎么说！</p>
     <div class="ai-badge" id="mode-badge">📖 内置剧本模式（免费，无需联网 API）</div>
@@ -301,6 +343,11 @@ button{font-family:inherit}
     <div class="hearts" id="hearts">❤️ 3</div>
   </div>
   <div class="scenario-banner" id="scenario-banner"></div>
+
+  <div class="stage">
+    <div class="stage-face" id="stage-face"></div>
+    <div class="stage-label"><span id="stage-name"></span><span class="zh" id="stage-zh"></span></div>
+  </div>
 
   <div class="chat-scroll" id="chat-scroll">
     <div class="chat-inner" id="chat-inner"></div>
@@ -323,8 +370,8 @@ button{font-family:inherit}
 
 <!-- ==================== DONE ==================== -->
 <div id="view-done" class="hidden">
-  <div class="big">🎉</div>
-  <h2>对话完成！</h2>
+  <div id="done-face"></div>
+  <h2>🎉 对话完成！</h2>
   <div class="sub" id="done-sub"></div>
   <div class="stats">
     <div class="stat xp"><div class="label">总经验 XP</div><div class="value" id="done-xp">0</div></div>
@@ -368,7 +415,7 @@ button{font-family:inherit}
 ===================================================== */
 const SCENARIOS = [
 {
-  id:'coffee', emoji:'☕', title:'Ordering Coffee', zh:'咖啡店点单', level:1, roleEmoji:'🧑‍🍳',
+  id:'coffee', emoji:'☕', title:'Ordering Coffee', zh:'咖啡店点单', level:1, char:'barista',
   role:'Barista · 咖啡师', intro:'你走进一家咖啡店，店员正微笑着向你打招呼。',
   steps:[
     { ai:"Hi there! Welcome to SummerDaze Café. What can I get for you today?",
@@ -412,7 +459,7 @@ const SCENARIOS = [
   ]
 },
 {
-  id:'airport', emoji:'✈️', title:'Airport Check-in', zh:'机场值机', level:1, roleEmoji:'👩‍✈️',
+  id:'airport', emoji:'✈️', title:'Airport Check-in', zh:'机场值机', level:1, char:'agent',
   role:'Check-in Agent · 值机员', intro:'你到达机场，正在航空公司柜台办理值机手续。',
   steps:[
     { ai:"Good morning! May I see your passport and ticket, please?",
@@ -454,7 +501,7 @@ const SCENARIOS = [
   ]
 },
 {
-  id:'immigration', emoji:'🛂', title:'Immigration Interview', zh:'入境边检问答', level:2, roleEmoji:'👮',
+  id:'immigration', emoji:'🛂', title:'Immigration Interview', zh:'入境边检问答', level:2, char:'officer',
   role:'Immigration Officer · 边检官', intro:'你刚下飞机，正在排队过边检。轮到你了 —— 沉着回答边检官的问题。',
   steps:[
     { ai:"Next, please. Good afternoon. What's the purpose of your visit?",
@@ -488,7 +535,7 @@ const SCENARIOS = [
   ]
 },
 {
-  id:'campus', emoji:'🏫', title:'Making Friends on Campus', zh:'校园交新朋友', level:1, roleEmoji:'👩‍🎓',
+  id:'campus', emoji:'🏫', title:'Making Friends on Campus', zh:'校园交新朋友', level:1, char:'emma',
   role:'Classmate Emma · 同学', intro:'开学第一周，教室里一位同学在你旁边坐下，主动跟你搭话。',
   steps:[
     { ai:"Hey! Is this seat taken? I'm Emma, by the way.",
@@ -526,7 +573,7 @@ const SCENARIOS = [
   ]
 },
 {
-  id:'apartment', emoji:'🏠', title:'Renting an Apartment', zh:'租房看房', level:2, roleEmoji:'🧔',
+  id:'apartment', emoji:'🏠', title:'Renting an Apartment', zh:'租房看房', level:2, char:'landlord',
   role:'Landlord · 房东', intro:'你约好去看一间校外公寓，房东来给你开门。',
   steps:[
     { ai:"Hello! You must be here about the apartment. Come on in!",
@@ -561,7 +608,7 @@ const SCENARIOS = [
   ]
 },
 {
-  id:'office', emoji:'📚', title:"Professor's Office Hours", zh:'教授答疑时间', level:2, roleEmoji:'👨‍🏫',
+  id:'office', emoji:'📚', title:"Professor's Office Hours", zh:'教授答疑时间', level:2, char:'professor',
   role:'Professor Miller · 教授', intro:'你对作业有疑问，于是来到 Miller 教授的办公室答疑时间。',
   steps:[
     { ai:"Come in! You must be from my Monday lecture. What can I help you with?",
@@ -594,6 +641,118 @@ const SCENARIOS = [
   ]
 }
 ];
+
+/* =====================================================
+   Cute SVG characters
+===================================================== */
+const CHARACTERS = {
+  barista:  {skin:'#ffd9b8', hair:'#7a4a21', style:'short',    hat:'cap',    hatColor:'#58cc02', hatDark:'#4aa002', shirt:'#3f9d47'},
+  agent:    {skin:'#ffe0c2', hair:'#3b2b20', style:'under',    hat:'pilot',  hatColor:'#2c4a7c', hatDark:'#1f3559', shirt:'#2c4a7c', blush:true},
+  officer:  {skin:'#e8b98c', hair:'#2b2b2b', style:'under',    hat:'police', hatColor:'#33415e', hatDark:'#242e43', shirt:'#33415e', mustache:true},
+  emma:     {skin:'#ffdcc0', hair:'#e07b39', style:'long',     shirt:'#b06ae8', blush:true},
+  landlord: {skin:'#f2c091', hair:'#9b9b9b', style:'baldside', beard:true,   shirt:'#8d6e63'},
+  professor:{skin:'#ffd9b8', hair:'#cfcfcf', style:'side',     glasses:true, beard:true, shirt:'#546a8c'},
+  me:       {skin:'#ffe2c9', hair:'#4a3050', style:'buns',     shirt:'#1cb0f6', blush:true}
+};
+
+function faceSVG(key, cls){
+  const c = CHARACTERS[key] || CHARACTERS.me;
+  const brow = (c.style === 'baldside' || c.glasses) ? '#8a8a8a' : c.hair;
+  let hairBack = '', hairFront = '', hat = '', extras = '';
+
+  if (c.style === 'long'){
+    hairBack = `<path d="M60,10 Q12,14 16,62 Q10,104 28,108 Q38,110 36,92 L36,60 L84,60 L84,92 Q82,110 92,108 Q110,104 104,62 Q108,14 60,10 Z" fill="${c.hair}"/>`;
+    hairFront = `<path d="M20,62 Q18,16 60,16 Q102,16 100,62 Q96,34 68,36 Q38,40 20,62 Z" fill="${c.hair}"/>`;
+  } else if (c.style === 'short'){
+    hairFront = `<path d="M19,62 Q17,14 60,14 Q103,14 101,62 Q99,36 60,36 Q21,36 19,62 Z" fill="${c.hair}"/>`;
+  } else if (c.style === 'side'){
+    hairFront = `<path d="M19,62 Q17,16 60,16 Q103,16 101,62 Q97,32 72,34 Q40,38 19,62 Z" fill="${c.hair}"/>`;
+  } else if (c.style === 'under'){
+    hairFront = `<path d="M19,60 Q19,30 60,30 Q101,30 101,60 Q99,44 60,44 Q21,44 19,60 Z" fill="${c.hair}"/>`;
+  } else if (c.style === 'baldside'){
+    hairFront = `<path d="M19,62 Q17,42 30,34 Q27,52 29,62 Z" fill="${c.hair}"/>
+                 <path d="M101,62 Q103,42 90,34 Q93,52 91,62 Z" fill="${c.hair}"/>`;
+  } else if (c.style === 'buns'){
+    hairFront = `<path d="M19,62 Q17,14 60,14 Q103,14 101,62 Q99,36 60,36 Q21,36 19,62 Z" fill="${c.hair}"/>
+                 <circle cx="22" cy="30" r="10" fill="${c.hair}"/>
+                 <circle cx="98" cy="30" r="10" fill="${c.hair}"/>`;
+  }
+
+  if (c.hat === 'cap'){
+    hat = `<path d="M26,45 Q26,15 60,15 Q94,15 94,45 Z" fill="${c.hatColor}"/>
+           <ellipse cx="60" cy="45" rx="41" ry="7.5" fill="${c.hatDark}"/>`;
+  } else if (c.hat === 'pilot' || c.hat === 'police'){
+    hat = `<path d="M24,43 Q24,15 60,15 Q96,15 96,43 Z" fill="${c.hatColor}"/>
+           <rect x="22" y="39" width="76" height="9" rx="4.5" fill="${c.hatDark}"/>
+           <ellipse cx="60" cy="51" rx="29" ry="5" fill="#20242e"/>
+           ${c.hat === 'police'
+             ? '<circle cx="60" cy="28" r="5.5" fill="#ffc800"/>'
+             : '<rect x="49" y="25" width="22" height="5" rx="2.5" fill="#ffc800"/>'}`;
+  }
+
+  if (c.glasses){
+    extras += `<g><circle cx="44" cy="60" r="11.5" fill="rgba(255,255,255,.2)" stroke="#4b4b4b" stroke-width="3"/>
+               <circle cx="76" cy="60" r="11.5" fill="rgba(255,255,255,.2)" stroke="#4b4b4b" stroke-width="3"/>
+               <path d="M55.5,60 L64.5,60" stroke="#4b4b4b" stroke-width="3"/></g>`;
+  }
+  if (c.mustache){
+    extras += `<path d="M45,74.5 Q60,69.5 75,74.5 Q60,79 45,74.5 Z" fill="${c.hair}"/>`;
+  }
+  const beard = c.beard
+    ? `<path d="M23,66 Q25,106 60,106 Q95,106 97,66 Q90,92 60,92 Q30,92 23,66 Z" fill="${c.hair}"/>` : '';
+  const blush = c.blush
+    ? `<ellipse cx="35" cy="72" rx="6" ry="3.6" fill="#ffb3c1" opacity=".65"/>
+       <ellipse cx="85" cy="72" rx="6" ry="3.6" fill="#ffb3c1" opacity=".65"/>` : '';
+
+  return `<svg class="face ${cls||''}" viewBox="0 0 120 124" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    ${hairBack}
+    <path d="M22,128 Q22,98 60,98 Q98,98 98,128 Z" fill="${c.shirt}"/>
+    <circle cx="60" cy="62" r="40" fill="${c.skin}" stroke="rgba(0,0,0,.1)" stroke-width="3"/>
+    ${blush}
+    ${hairFront}${hat}
+    <path class="brow brow-l" d="M35,47 Q44,42.5 53,47" stroke="${brow}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path class="brow brow-r" d="M67,47 Q76,42.5 85,47" stroke="${brow}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <g class="eye-n"><ellipse cx="44" cy="60" rx="7.5" ry="8.5" fill="#fff"/><circle cx="45" cy="61" r="4" fill="#33261d"/><circle cx="46.6" cy="58.8" r="1.5" fill="#fff"/></g>
+    <g class="eye-n"><ellipse cx="76" cy="60" rx="7.5" ry="8.5" fill="#fff"/><circle cx="77" cy="61" r="4" fill="#33261d"/><circle cx="78.6" cy="58.8" r="1.5" fill="#fff"/></g>
+    <path class="eye-h" d="M36,60 Q44,51.5 52,60" stroke="#33261d" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path class="eye-h" d="M68,60 Q76,51.5 84,60" stroke="#33261d" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="60" cy="68.5" rx="3.2" ry="2.2" fill="rgba(150,85,40,.35)"/>
+    ${beard}
+    <g class="mouth">
+      <path class="m-smile" d="M48,78 Q60,88 72,78" stroke="#9c4a1d" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <g class="m-open"><ellipse cx="60" cy="82" rx="8" ry="6.5" fill="#8c2f39"/><ellipse cx="60" cy="85.5" rx="4.5" ry="2.4" fill="#ff8fa3"/></g>
+      <path class="m-grin" d="M46,77 Q60,95 74,77 Z" fill="#8c2f39"/>
+      <path class="m-sad" d="M50,85 Q60,76.5 70,85" stroke="#9c4a1d" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    </g>
+    ${extras}
+  </svg>`;
+}
+
+function owlSVG(cls){
+  return `<svg class="face ${cls||''}" viewBox="0 0 120 124" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M30,18 L40,4 L46,20 Z" fill="#58cc02"/>
+    <path d="M90,18 L80,4 L74,20 Z" fill="#58cc02"/>
+    <path d="M60,8 Q18,10 17,56 Q15,104 60,110 Q105,104 103,56 Q102,10 60,8 Z" fill="#58cc02" stroke="#46a302" stroke-width="3"/>
+    <ellipse cx="60" cy="84" rx="27" ry="20" fill="#89e219"/>
+    <g class="eye-n"><circle cx="42" cy="50" r="16" fill="#fff" stroke="#e8e8e8" stroke-width="2"/><circle cx="45" cy="52" r="6.5" fill="#4b4b4b"/><circle cx="47.5" cy="49" r="2.2" fill="#fff"/></g>
+    <g class="eye-n"><circle cx="78" cy="50" r="16" fill="#fff" stroke="#e8e8e8" stroke-width="2"/><circle cx="81" cy="52" r="6.5" fill="#4b4b4b"/><circle cx="83.5" cy="49" r="2.2" fill="#fff"/></g>
+    <path class="eye-h" d="M32,50 Q42,40 52,50" stroke="#4b4b4b" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path class="eye-h" d="M68,50 Q78,40 88,50" stroke="#4b4b4b" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path class="beak" d="M52,62 L68,62 L60,74 Z" fill="#ffc200" stroke="#e0a800" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M46,110 q2,8 8,8 M66,110 q2,8 8,8" stroke="#ffc200" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+
+/* Character mood on the big stage face: 'talk' | 'happy' | 'sad' | 'neutral' */
+let moodTimer = null;
+function setMood(mood, ms){
+  const f = document.querySelector('#stage-face svg');
+  if (!f) return;
+  f.classList.remove('talk','happy','sad');
+  if (mood && mood !== 'neutral') f.classList.add(mood);
+  clearTimeout(moodTimer);
+  if (ms) moodTimer = setTimeout(() => f.classList.remove('talk','happy','sad'), ms);
+}
 
 /* =====================================================
    State & persistence
@@ -638,7 +797,7 @@ function renderHome(){
     const card = document.createElement('div');
     card.className = 'card';
     card.innerHTML = `
-      <div class="emoji">${sc.emoji}</div>
+      <div class="face-wrap">${faceSVG(sc.char)}</div>
       <h3>${sc.title}</h3>
       <div class="zh">${sc.zh}</div>
       <div class="meta">
@@ -666,8 +825,8 @@ function addBubble(who, text, zh, cls){
   const row = document.createElement('div');
   row.className = 'row ' + who;
   const avatar = who === 'ai'
-    ? `<div class="avatar">${state.scenario.roleEmoji}</div>`
-    : `<div class="avatar">🙋</div>`;
+    ? `<div class="avatar">${faceSVG(state.scenario.char)}</div>`
+    : `<div class="avatar">${faceSVG('me')}</div>`;
   let zhHtml = '', toggleHtml = '';
   if (zh){
     zhHtml = `<span class="zh-line hidden">${zh}</span>`;
@@ -688,7 +847,7 @@ function addBubble(who, text, zh, cls){
 function addSystemBubble(text, cls){
   const row = document.createElement('div');
   row.className = 'row ai';
-  row.innerHTML = `<div class="avatar">🦉</div><div class="bubble ${cls}">${escapeHtml(text)}</div>`;
+  row.innerHTML = `<div class="avatar">${owlSVG()}</div><div class="bubble ${cls}">${escapeHtml(text)}</div>`;
   $('chat-inner').appendChild(row);
   scrollBottom();
   return row;
@@ -697,12 +856,13 @@ function showTyping(){
   const row = document.createElement('div');
   row.className = 'row ai';
   row.id = 'typing-row';
-  row.innerHTML = `<div class="avatar">${state.scenario.roleEmoji}</div>
+  row.innerHTML = `<div class="avatar">${faceSVG(state.scenario.char)}</div>
     <div class="bubble"><div class="typing"><i></i><i></i><i></i></div></div>`;
   $('chat-inner').appendChild(row);
   scrollBottom();
+  setMood('talk');
 }
-function hideTyping(){ const t = $('typing-row'); if (t) t.remove(); }
+function hideTyping(){ const t = $('typing-row'); if (t) t.remove(); setMood('talk', 1300); }
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
@@ -733,7 +893,11 @@ function startScenario(sc){
   clearChat();
   hideHints();
   $('user-input').value = '';
-  $('scenario-banner').textContent = `${sc.emoji} ${sc.title} · ${sc.zh} — 对话对象：${sc.role}`;
+  $('scenario-banner').textContent = `${sc.emoji} ${sc.title} · ${sc.zh}`;
+  $('stage-face').innerHTML = faceSVG(sc.char);
+  const roleParts = sc.role.split(' · ');
+  $('stage-name').textContent = roleParts[0];
+  $('stage-zh').textContent = roleParts[1] || '';
   $('btn-finish-ai').classList.toggle('hidden', !(state.aiMode && state.apiKey));
   show('chat');
   updateHud();
@@ -771,11 +935,12 @@ function normalize(s){
     .trim() + ' ';
 }
 function matchOption(input, option){
-  if (normalize(input).trim() === normalize(option.text).trim()) return true;
-  const text = normalize(input);
+  const text = normalize(input);            // padded with spaces on both ends
+  if (text.trim() === normalize(option.text).trim()) return true;
   let hits = 0;
   for (const group of option.keys){
-    if (group.split('|').some(k => text.includes(normalize(k).trim()))) hits++;
+    // whole-word/phrase match only — ' no ' must not match inside 'nonsense'
+    if (group.split('|').some(k => text.includes(' ' + normalize(k).trim() + ' '))) hits++;
   }
   return hits >= Math.max(1, Math.ceil(option.keys.length * 0.5));
 }
@@ -805,10 +970,13 @@ function handleSend(){
     state.wrongOnStep = 0;
     state.hintUsedOnStep = false;
     updateHud();
-    aiSpeakStep();
+    setMood('happy', 1400);
+    state.busy = true;             // lock input until the AI speaks the next line
+    setTimeout(aiSpeakStep, 850);
   } else {
     state.wrongOnStep++;
     if (state.hearts > 0){ state.hearts--; updateHud(); }
+    setMood('sad', 1600);
     input.classList.remove('shake'); void input.offsetWidth; input.classList.add('shake');
     const tips = [
       '🤔 意思好像不太对哦，再试试换个说法？',
@@ -866,6 +1034,7 @@ function finishPractice(){
   $('done-acc').textContent = acc + '%';
   $('done-hearts').textContent = '❤️' + state.hearts;
   $('done-sub').textContent = `${state.scenario.emoji} ${state.scenario.title} · ${state.scenario.zh}`;
+  $('done-face').innerHTML = faceSVG(state.scenario.char, 'happy');
 
   const bestKey = LS.best(state.scenario.id);
   const best = parseInt(localStorage.getItem(bestKey) || '0', 10);
@@ -1053,6 +1222,7 @@ $('settings-mask').addEventListener('click', e => {
   if (e.target === $('settings-mask')) $('settings-mask').classList.add('hidden');
 });
 
+$('hero-owl').innerHTML = owlSVG();
 renderHome();
 show('home');
 </script>
