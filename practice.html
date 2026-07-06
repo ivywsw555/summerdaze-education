@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英语对话练习 | SummerDaze 留学工作室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#58cc02; --green-dark:#58a700; --green-light:#d7ffb8;
+  --blue:#1cb0f6; --blue-dark:#1899d6;
+  --red:#ff4b4b; --yellow:#ffc800;
+  --gray:#e5e5e5; --gray-dark:#afafaf; --text:#3c3c3c; --text-light:#777;
+  --bg:#ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:'Nunito','Helvetica Neue',Arial,sans-serif;
+  background:var(--bg); color:var(--text);
+  min-height:100vh;
+}
+button{font-family:inherit}
+.hidden{display:none !important}
+
+/* ============ Duolingo-style buttons ============ */
+.btn{
+  display:inline-block; border:none; cursor:pointer;
+  border-radius:16px; padding:13px 26px;
+  font-weight:800; font-size:15px; letter-spacing:.8px; text-transform:uppercase;
+  background:var(--green); color:#fff;
+  box-shadow:0 4px 0 var(--green-dark);
+  transition:filter .15s;
+  user-select:none;
+}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:translateY(4px); box-shadow:0 0 0 var(--green-dark)}
+.btn:disabled{background:var(--gray); color:var(--gray-dark); box-shadow:0 4px 0 #d0d0d0; cursor:not-allowed}
+.btn-blue{background:var(--blue); box-shadow:0 4px 0 var(--blue-dark)}
+.btn-blue:active{box-shadow:0 0 0 var(--blue-dark)}
+.btn-white{
+  background:#fff; color:var(--blue);
+  border:2px solid var(--gray); box-shadow:0 4px 0 var(--gray);
+}
+.btn-white:active{box-shadow:0 0 0 var(--gray)}
+
+/* ============ Home / scenario picker ============ */
+.home-header{
+  border-bottom:2px solid var(--gray);
+  padding:14px 20px; display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; background:#fff; z-index:10;
+}
+.home-header .logo{font-weight:900; font-size:22px; color:var(--green); text-decoration:none}
+.home-header .logo span{color:var(--text)}
+.home-header .right{display:flex; gap:10px; align-items:center}
+.icon-btn{
+  background:none; border:none; font-size:22px; cursor:pointer;
+  padding:6px 8px; border-radius:12px;
+}
+.icon-btn:hover{background:#f2f2f2}
+.back-link{font-size:14px; font-weight:800; color:var(--blue); text-decoration:none; text-transform:uppercase; letter-spacing:.5px}
+
+.hero{max-width:720px; margin:0 auto; padding:36px 20px 8px; text-align:center}
+.hero .owl{font-size:60px; display:block; animation:bob 2.6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.hero h1{font-size:28px; font-weight:900; margin-top:10px}
+.hero p{color:var(--text-light); margin-top:8px; font-size:15px; line-height:1.6}
+.ai-badge{
+  display:inline-flex; align-items:center; gap:6px; margin-top:12px;
+  font-size:12.5px; font-weight:800; color:var(--blue-dark);
+  background:#e6f6ff; border:2px solid #bfe9ff; border-radius:999px; padding:5px 14px;
+}
+
+.scenarios{
+  max-width:720px; margin:20px auto 60px; padding:0 20px;
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:16px;
+}
+.card{
+  border:2px solid var(--gray); border-radius:18px; background:#fff;
+  padding:20px 16px; cursor:pointer; text-align:center;
+  box-shadow:0 4px 0 var(--gray);
+  transition:transform .12s, box-shadow .12s, border-color .12s;
+}
+.card:hover{transform:translateY(-2px); border-color:var(--green); box-shadow:0 6px 0 var(--green-light)}
+.card:active{transform:translateY(3px); box-shadow:0 0 0 var(--gray)}
+.card .emoji{font-size:44px}
+.card h3{margin-top:10px; font-size:16.5px; font-weight:900}
+.card .zh{color:var(--text-light); font-size:13.5px; margin-top:2px}
+.card .meta{
+  margin-top:10px; display:flex; justify-content:center; gap:6px; flex-wrap:wrap;
+}
+.tag{font-size:11px; font-weight:800; padding:3px 9px; border-radius:999px; letter-spacing:.4px}
+.tag.lv1{background:#e9ffd9; color:var(--green-dark)}
+.tag.lv2{background:#fff4d6; color:#b8860b}
+.tag.gray{background:#f2f2f2; color:var(--text-light)}
+.card .best{margin-top:8px; font-size:12px; font-weight:800; color:var(--yellow)}
+
+/* ============ Chat view ============ */
+#view-chat{display:flex; flex-direction:column; height:100vh; height:100dvh}
+.chat-top{
+  display:flex; align-items:center; gap:14px;
+  padding:14px 18px; border-bottom:2px solid var(--gray); background:#fff;
+}
+.chat-top .quit{font-size:22px; color:var(--gray-dark); background:none; border:none; cursor:pointer; font-weight:900}
+.chat-top .quit:hover{color:var(--text)}
+.progress{flex:1; height:16px; background:var(--gray); border-radius:999px; overflow:hidden}
+.progress .fill{
+  height:100%; width:0%; background:var(--green); border-radius:999px;
+  transition:width .4s ease; position:relative;
+}
+.progress .fill::after{
+  content:''; position:absolute; top:3px; left:8px; right:8px; height:4px;
+  background:rgba(255,255,255,.35); border-radius:999px;
+}
+.hearts{font-weight:900; font-size:16px; color:var(--red); display:flex; align-items:center; gap:4px; min-width:56px; justify-content:flex-end}
+.xp-pill{font-weight:900; font-size:14px; color:var(--yellow)}
+
+.scenario-banner{
+  text-align:center; padding:10px 16px; background:#f7f7f7; border-bottom:2px solid var(--gray);
+  font-size:13.5px; color:var(--text-light); font-weight:700;
+}
+.chat-scroll{flex:1; overflow-y:auto; padding:20px 16px 10px; scroll-behavior:smooth}
+.chat-inner{max-width:640px; margin:0 auto; display:flex; flex-direction:column; gap:14px}
+
+.row{display:flex; gap:10px; align-items:flex-end}
+.row.user{flex-direction:row-reverse}
+.avatar{
+  width:44px; height:44px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:24px; background:#fff; border:2px solid var(--gray);
+}
+.bubble{
+  max-width:78%; padding:12px 16px; border-radius:18px;
+  border:2px solid var(--gray); background:#fff;
+  font-size:15.5px; line-height:1.55; font-weight:700; position:relative;
+  animation:pop .18s ease-out;
+}
+@keyframes pop{from{transform:scale(.92); opacity:0}to{transform:scale(1); opacity:1}}
+.row.ai .bubble{border-bottom-left-radius:6px}
+.row.user .bubble{
+  background:var(--blue); border-color:var(--blue-dark); color:#fff;
+  border-bottom-right-radius:6px;
+}
+.bubble .zh-line{
+  display:block; margin-top:6px; padding-top:6px; border-top:1.5px dashed #e0e0e0;
+  font-size:13px; color:var(--text-light); font-weight:600;
+}
+.zh-toggle{
+  position:absolute; right:-8px; top:-10px;
+  width:24px; height:24px; border-radius:50%; border:2px solid var(--gray);
+  background:#fff; color:var(--text-light); font-size:11px; font-weight:900; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+.zh-toggle:hover{color:var(--blue); border-color:var(--blue)}
+.bubble.feedback{border-color:#ffd6d6; background:#fff5f5; color:#c44; font-size:14px}
+.bubble.praise{border-color:var(--green-light); background:#f3ffe8; color:var(--green-dark); font-size:14px}
+
+.typing{display:flex; gap:5px; padding:6px 4px}
+.typing i{
+  width:8px; height:8px; border-radius:50%; background:var(--gray-dark);
+  animation:blink 1.2s infinite;
+}
+.typing i:nth-child(2){animation-delay:.2s}
+.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25; transform:translateY(0)}40%{opacity:1; transform:translateY(-4px)}}
+
+/* hint chips */
+.hint-panel{
+  max-width:640px; margin:0 auto; width:100%;
+  display:flex; flex-direction:column; gap:8px; padding:4px 0 8px;
+}
+.hint-title{font-size:12.5px; font-weight:900; color:var(--text-light); text-transform:uppercase; letter-spacing:.6px}
+.chip{
+  text-align:left; background:#fff; border:2px solid var(--gray); border-radius:14px;
+  box-shadow:0 3px 0 var(--gray);
+  padding:11px 15px; font-size:14.5px; font-weight:700; cursor:pointer; color:var(--text);
+  transition:border-color .12s;
+}
+.chip:hover{border-color:var(--blue); color:var(--blue-dark)}
+.chip:active{transform:translateY(3px); box-shadow:0 0 0 var(--gray)}
+.chip .zh{display:block; font-size:12px; color:var(--text-light); font-weight:600; margin-top:2px}
+
+/* input bar */
+.input-bar{border-top:2px solid var(--gray); background:#fff; padding:12px 16px 16px}
+.input-inner{max-width:640px; margin:0 auto; display:flex; flex-direction:column; gap:10px}
+.input-row{display:flex; gap:10px}
+.input-row input{
+  flex:1; border:2px solid var(--gray); border-radius:14px;
+  padding:13px 16px; font-size:15.5px; font-weight:700; font-family:inherit;
+  background:#f7f7f7; outline:none; color:var(--text);
+}
+.input-row input:focus{border-color:var(--blue); background:#fff}
+.input-row input.shake{animation:shake .4s; border-color:var(--red)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.helper-row{display:flex; justify-content:space-between; align-items:center}
+.hint-btn{
+  background:none; border:none; cursor:pointer;
+  font-size:13.5px; font-weight:900; color:var(--blue); letter-spacing:.4px;
+  padding:4px 6px; border-radius:8px; text-transform:uppercase;
+}
+.hint-btn:hover{background:#e6f6ff}
+.skip-btn{
+  background:none; border:none; cursor:pointer;
+  font-size:13px; font-weight:800; color:var(--gray-dark); padding:4px 6px;
+}
+.skip-btn:hover{color:var(--text-light)}
+
+/* ============ completion ============ */
+#view-done{
+  min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:30px 20px; position:relative; overflow:hidden;
+}
+#view-done .big{font-size:72px; animation:bob 2s ease-in-out infinite}
+#view-done h2{font-size:28px; font-weight:900; margin-top:12px; color:var(--green)}
+#view-done .sub{color:var(--text-light); margin-top:8px; font-weight:700}
+.stats{display:flex; gap:14px; margin-top:26px; flex-wrap:wrap; justify-content:center}
+.stat{
+  border:2px solid var(--gray); border-radius:16px; padding:14px 22px; min-width:120px;
+}
+.stat .label{font-size:11px; font-weight:900; letter-spacing:.8px; text-transform:uppercase}
+.stat .value{font-size:24px; font-weight:900; margin-top:4px}
+.stat.xp{border-color:var(--yellow)} .stat.xp .label,.stat.xp .value{color:var(--yellow)}
+.stat.acc{border-color:var(--green)} .stat.acc .label,.stat.acc .value{color:var(--green)}
+.stat.hp{border-color:var(--red)} .stat.hp .label,.stat.hp .value{color:var(--red)}
+.done-actions{margin-top:32px; display:flex; gap:14px; flex-wrap:wrap; justify-content:center}
+.confetti{position:absolute; top:-12px; font-size:20px; animation:fall linear forwards; pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg); opacity:.6}}
+
+/* ============ settings modal ============ */
+.modal-mask{
+  position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:50;
+  display:flex; align-items:center; justify-content:center; padding:20px;
+}
+.modal{
+  background:#fff; border-radius:20px; max-width:440px; width:100%;
+  padding:26px 24px; max-height:88vh; overflow-y:auto;
+}
+.modal h3{font-size:20px; font-weight:900}
+.modal p{font-size:13.5px; color:var(--text-light); line-height:1.6; margin-top:8px}
+.switch-row{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-top:18px; padding:14px; border:2px solid var(--gray); border-radius:14px;
+}
+.switch-row .lbl{font-weight:800; font-size:15px}
+.switch{position:relative; width:52px; height:30px; flex-shrink:0}
+.switch input{opacity:0; width:0; height:0}
+.slider{
+  position:absolute; inset:0; background:var(--gray); border-radius:999px; cursor:pointer;
+  transition:background .2s;
+}
+.slider::before{
+  content:''; position:absolute; width:24px; height:24px; border-radius:50%;
+  background:#fff; top:3px; left:3px; transition:transform .2s; box-shadow:0 1px 3px rgba(0,0,0,.25);
+}
+.switch input:checked + .slider{background:var(--green)}
+.switch input:checked + .slider::before{transform:translateX(22px)}
+.modal input[type=password], .modal input[type=text]{
+  width:100%; margin-top:10px; border:2px solid var(--gray); border-radius:12px;
+  padding:11px 14px; font-size:14px; font-family:inherit; font-weight:700; outline:none;
+}
+.modal input:focus{border-color:var(--blue)}
+.modal .note{font-size:12px; color:var(--gray-dark); margin-top:8px; line-height:1.5}
+.modal .actions{display:flex; gap:10px; margin-top:22px; justify-content:flex-end}
+
+@media (max-width:520px){
+  .bubble{max-width:85%}
+  .stats{gap:10px}
+  .hero h1{font-size:23px}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== HOME ==================== -->
+<div id="view-home">
+  <header class="home-header">
+    <a class="logo" href="./index.html">SummerDaze<span>·练</span></a>
+    <div class="right">
+      <a class="back-link" href="./index.html">← 返回主页</a>
+      <button class="icon-btn" id="btn-settings" title="设置 / AI 模式">⚙️</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <span class="owl">🦉</span>
+    <h1>留学英语情景对话练习</h1>
+    <p>选择一个场景，和 AI 伙伴用英语聊天。自己先试着回答 —— 卡住了？<br>点 <b>💡 提示</b>，屏幕会告诉你下一句可以怎么说！</p>
+    <div class="ai-badge" id="mode-badge">📖 内置剧本模式（免费，无需联网 API）</div>
+  </section>
+
+  <div class="scenarios" id="scenario-list"></div>
+</div>
+
+<!-- ==================== CHAT ==================== -->
+<div id="view-chat" class="hidden">
+  <div class="chat-top">
+    <button class="quit" id="btn-quit" title="退出练习">✕</button>
+    <div class="progress"><div class="fill" id="progress-fill"></div></div>
+    <div class="xp-pill" id="xp-pill">⚡0</div>
+    <div class="hearts" id="hearts">❤️ 3</div>
+  </div>
+  <div class="scenario-banner" id="scenario-banner"></div>
+
+  <div class="chat-scroll" id="chat-scroll">
+    <div class="chat-inner" id="chat-inner"></div>
+  </div>
+
+  <div class="input-bar">
+    <div class="input-inner">
+      <div id="hint-panel" class="hint-panel hidden"></div>
+      <div class="helper-row">
+        <button class="hint-btn" id="btn-hint">💡 卡住了？看看可以怎么说</button>
+        <button class="skip-btn hidden" id="btn-finish-ai">结束对话 ➜</button>
+      </div>
+      <div class="input-row">
+        <input type="text" id="user-input" placeholder="用英语输入你的回答…" autocomplete="off">
+        <button class="btn" id="btn-send">发送</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DONE ==================== -->
+<div id="view-done" class="hidden">
+  <div class="big">🎉</div>
+  <h2>对话完成！</h2>
+  <div class="sub" id="done-sub"></div>
+  <div class="stats">
+    <div class="stat xp"><div class="label">总经验 XP</div><div class="value" id="done-xp">0</div></div>
+    <div class="stat acc"><div class="label">独立作答</div><div class="value" id="done-acc">0%</div></div>
+    <div class="stat hp"><div class="label">剩余体力</div><div class="value" id="done-hearts">❤️3</div></div>
+  </div>
+  <div class="done-actions">
+    <button class="btn btn-white" id="btn-again">再练一次</button>
+    <button class="btn" id="btn-home">继续 · 选新场景</button>
+  </div>
+</div>
+
+<!-- ==================== SETTINGS MODAL ==================== -->
+<div class="modal-mask hidden" id="settings-mask">
+  <div class="modal">
+    <h3>⚙️ 练习设置</h3>
+    <p>默认使用<b>内置剧本模式</b>：完全免费、离线可用，按精心设计的对话剧本练习。开启 <b>AI 智能模式</b>后，将由 Claude 大模型实时扮演对话角色，可以自由发挥聊天。</p>
+    <div class="switch-row">
+      <span class="lbl">🤖 AI 智能对话模式</span>
+      <label class="switch">
+        <input type="checkbox" id="ai-toggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div id="api-key-box" class="hidden">
+      <input type="password" id="api-key-input" placeholder="粘贴你的 Anthropic API Key (sk-ant-…)">
+      <div class="note">🔒 Key 只保存在你自己浏览器的 localStorage 中，直接调用 Anthropic 官方接口，不会发送到任何其他服务器。可在 platform.claude.com 获取。</div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-white" id="btn-settings-close">取消</button>
+      <button class="btn" id="btn-settings-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================
+   Scenario data — scripted dialogue trees
+   Each step: { ai, zh, options:[{text, zh, keys:[ "word|synonym", ... ]}] }
+   The last step may omit options → conversation ends.
+===================================================== */
+const SCENARIOS = [
+{
+  id:'coffee', emoji:'☕', title:'Ordering Coffee', zh:'咖啡店点单', level:1, roleEmoji:'🧑‍🍳',
+  role:'Barista · 咖啡师', intro:'你走进一家咖啡店，店员正微笑着向你打招呼。',
+  steps:[
+    { ai:"Hi there! Welcome to SummerDaze Café. What can I get for you today?",
+      zh:'你好！欢迎来到 SummerDaze 咖啡馆。今天想喝点什么？',
+      options:[
+        {text:"Hi! Can I get a latte, please?", zh:'你好！请给我一杯拿铁。', keys:['latte|coffee|cappuccino|americano|mocha']},
+        {text:"Could I have a cup of green tea?", zh:'可以给我一杯绿茶吗？', keys:['tea']},
+        {text:"What do you recommend?", zh:'你有什么推荐吗？', keys:['recommend|popular|suggest|best']}
+      ]},
+    { ai:"Sure thing! What size would you like — small, medium, or large?",
+      zh:'没问题！要什么杯型 —— 小杯、中杯还是大杯？',
+      options:[
+        {text:"Medium, please.", zh:'中杯，谢谢。', keys:['small|medium|large|grande|big']},
+        {text:"A large one, please.", zh:'要大杯的，谢谢。', keys:['small|medium|large|grande|big']}
+      ]},
+    { ai:"Got it. Would you like it hot or iced?",
+      zh:'好的。要热的还是冰的？',
+      options:[
+        {text:"Iced, please. It's so hot today!", zh:'冰的，今天太热了！', keys:['iced|ice|cold']},
+        {text:"Hot, please.", zh:'热的，谢谢。', keys:['hot|warm']}
+      ]},
+    { ai:"Nice choice! Anything else? Our blueberry muffins are fresh out of the oven.",
+      zh:'好选择！还要别的吗？我们的蓝莓玛芬刚出炉。',
+      options:[
+        {text:"No, thanks. That's all.", zh:'不用了，谢谢。就这些。', keys:["no|that's all|thats all|nothing|just"]},
+        {text:"Sure, I'll take one muffin too.", zh:'好啊，那也来一个玛芬。', keys:['muffin|yes|sure|okay|ok|one']}
+      ]},
+    { ai:"Great! That'll be $6.50. For here or to go?",
+      zh:'好的！一共 6.5 美元。在这里喝还是带走？',
+      options:[
+        {text:"To go, please.", zh:'带走，谢谢。', keys:['to go|takeaway|take away|take out|takeout']},
+        {text:"For here, please.", zh:'在这里喝。', keys:['here|stay|for here']}
+      ]},
+    { ai:"Perfect. Can I get a name for the order?",
+      zh:'好的。请问点单写什么名字？',
+      options:[
+        {text:"It's Ivy. I-V-Y.", zh:'我叫 Ivy。I-V-Y。', keys:["it's|its|name|i'm|i am|call me|my"]}
+      ]},
+    { ai:"Thanks! Your order will be ready in a few minutes. Have a great day! ☕",
+      zh:'谢谢！几分钟后就好。祝你今天愉快！' }
+  ]
+},
+{
+  id:'airport', emoji:'✈️', title:'Airport Check-in', zh:'机场值机', level:1, roleEmoji:'👩‍✈️',
+  role:'Check-in Agent · 值机员', intro:'你到达机场，正在航空公司柜台办理值机手续。',
+  steps:[
+    { ai:"Good morning! May I see your passport and ticket, please?",
+      zh:'早上好！请出示您的护照和机票。',
+      options:[
+        {text:"Sure, here you are.", zh:'好的，给您。', keys:['here|sure|of course|yes']}
+      ]},
+    { ai:"Thank you. And where are you flying today?",
+      zh:'谢谢。您今天飞往哪里？',
+      options:[
+        {text:"I'm flying to Los Angeles.", zh:'我飞往洛杉矶。', keys:["to|flying|going|los angeles|new york|london|toronto"]}
+      ]},
+    { ai:"Great. How many bags are you checking in?",
+      zh:'好的。您要托运几件行李？',
+      options:[
+        {text:"Just one suitcase.", zh:'就一个行李箱。', keys:['one|two|1|2|bag|suitcase|just|luggage']},
+        {text:"Two bags, please.", zh:'两件行李。', keys:['one|two|1|2|bag|suitcase|luggage']}
+      ]},
+    { ai:"Please put it on the scale... Hmm, it's slightly overweight. You'll need to remove something, or pay an extra fee.",
+      zh:'请把行李放到秤上……嗯，稍微超重了。您需要拿出一些东西，或者支付超重费。',
+      options:[
+        {text:"How much is the fee?", zh:'超重费是多少？', keys:['how much|fee|pay|cost|charge']},
+        {text:"OK, I'll take something out.", zh:'好吧，我拿出一些东西。', keys:['take|remove|out|repack|something']}
+      ]},
+    { ai:"The fee is $50, or you can move about two kilograms into your carry-on bag.",
+      zh:'超重费是 50 美元，或者您可以把大约两公斤的东西放进随身行李。',
+      options:[
+        {text:"I'll move some things to my carry-on, then.", zh:'那我把一些东西放到随身行李里吧。', keys:['carry|move|then|ok|okay|put']},
+        {text:"That's fine, I'll pay the fee.", zh:'没关系，我付超重费。', keys:['pay|fee|fine|card']}
+      ]},
+    { ai:"Perfect, that works. Now, would you like a window seat or an aisle seat?",
+      zh:'好的，可以了。您想要靠窗还是靠过道的座位？',
+      options:[
+        {text:"A window seat, please.", zh:'靠窗的座位，谢谢。', keys:['window|aisle|middle']},
+        {text:"An aisle seat would be great.", zh:'靠过道的就很好。', keys:['window|aisle|middle']}
+      ]},
+    { ai:"All set! Here's your boarding pass. Boarding starts at 9:30 at Gate 12. Have a nice flight! ✈️",
+      zh:'都办好了！这是您的登机牌。9:30 在 12 号登机口开始登机。祝您旅途愉快！' }
+  ]
+},
+{
+  id:'immigration', emoji:'🛂', title:'Immigration Interview', zh:'入境边检问答', level:2, roleEmoji:'👮',
+  role:'Immigration Officer · 边检官', intro:'你刚下飞机，正在排队过边检。轮到你了 —— 沉着回答边检官的问题。',
+  steps:[
+    { ai:"Next, please. Good afternoon. What's the purpose of your visit?",
+      zh:'下一位。下午好。您此行的目的是什么？',
+      options:[
+        {text:"I'm here to study. I'm an international student.", zh:'我是来读书的，我是国际学生。', keys:['study|student|school|university|studying']}
+      ]},
+    { ai:"I see. Which school will you be attending?",
+      zh:'明白了。您将就读哪所学校？',
+      options:[
+        {text:"I'll be studying at the University of Southern California.", zh:'我将就读南加州大学。', keys:['university|college|usc|school|attending|studying at']}
+      ]},
+    { ai:"And how long do you plan to stay in the United States?",
+      zh:'您计划在美国停留多久？',
+      options:[
+        {text:"About four years, for my bachelor's degree.", zh:'大约四年，读完本科学位。', keys:["year|years|month|months|semester|degree|program|four|two"]},
+        {text:"Two years. I'm doing a master's program.", zh:'两年，我读硕士项目。', keys:["year|years|month|months|master|program|two"]}
+      ]},
+    { ai:"Where will you be staying?",
+      zh:'您将住在哪里？',
+      options:[
+        {text:"I'll be living in the on-campus dormitory.", zh:'我会住在校内宿舍。', keys:['dorm|dormitory|campus|apartment|homestay|live|living|stay|staying']}
+      ]},
+    { ai:"Do you have your I-20 form and admission letter with you?",
+      zh:'您带了 I-20 表格和录取通知书吗？',
+      options:[
+        {text:"Yes, here they are.", zh:'带了，给您。', keys:['yes|here|sure|of course|i do']}
+      ]},
+    { ai:"Everything looks good. Welcome to the United States, and good luck with your studies! 🇺🇸",
+      zh:'一切没有问题。欢迎来到美国，祝你学业顺利！' }
+  ]
+},
+{
+  id:'campus', emoji:'🏫', title:'Making Friends on Campus', zh:'校园交新朋友', level:1, roleEmoji:'👩‍🎓',
+  role:'Classmate Emma · 同学', intro:'开学第一周，教室里一位同学在你旁边坐下，主动跟你搭话。',
+  steps:[
+    { ai:"Hey! Is this seat taken? I'm Emma, by the way.",
+      zh:'嗨！这个座位有人吗？对了，我叫 Emma。',
+      options:[
+        {text:"No, go ahead! I'm Ivy. Nice to meet you.", zh:'没有，请坐！我叫 Ivy，很高兴认识你。', keys:['no|go ahead|sure|free|not taken', "i'm|i am|name|nice to meet"]}
+      ]},
+    { ai:"Nice to meet you too! Are you new here? I haven't seen you around before.",
+      zh:'我也很高兴认识你！你是新来的吗？我以前没见过你。',
+      options:[
+        {text:"Yes, this is my first semester. I just moved here.", zh:'是的，这是我的第一个学期，我刚搬来。', keys:['yes|yeah|first|new|just moved|semester']}
+      ]},
+    { ai:"That's exciting! So what are you majoring in?",
+      zh:'太棒了！那你学什么专业？',
+      options:[
+        {text:"I'm majoring in computer science. How about you?", zh:'我学计算机科学专业，你呢？', keys:['major|majoring|computer|business|engineering|economics|study|studying|science']}
+      ]},
+    { ai:"Cool! I'm in the business school. So, how are you finding the campus so far?",
+      zh:'酷！我在商学院。那你觉得校园怎么样？',
+      options:[
+        {text:"It's really big! I actually got lost this morning.", zh:'真的好大！我今天早上还迷路了。', keys:['big|huge|beautiful|nice|great|lost|amazing|love']}
+      ]},
+    { ai:"Haha, everyone gets lost in the first week, don't worry. Hey, do you want to grab lunch together after class?",
+      zh:'哈哈，第一周大家都会迷路，别担心。对了，下课后要不要一起吃午饭？',
+      options:[
+        {text:"Sure, I'd love to! Where do you usually eat?", zh:'当然，我很乐意！你平时都在哪儿吃？', keys:["sure|love|sounds|yes|yeah|great|i'd"]}
+      ]},
+    { ai:"There's a great taco place near the library. Let's meet at the main entrance at noon!",
+      zh:'图书馆附近有一家很棒的墨西哥卷饼店。我们中午在正门见吧！',
+      options:[
+        {text:"Perfect, see you then!", zh:'太好了，到时候见！', keys:['perfect|see you|ok|okay|great|sounds|noon|deal']}
+      ]},
+    { ai:"Awesome, see you at noon! 🌮",
+      zh:'太好了，中午见！' }
+  ]
+},
+{
+  id:'apartment', emoji:'🏠', title:'Renting an Apartment', zh:'租房看房', level:2, roleEmoji:'🧔',
+  role:'Landlord · 房东', intro:'你约好去看一间校外公寓，房东来给你开门。',
+  steps:[
+    { ai:"Hello! You must be here about the apartment. Come on in!",
+      zh:'你好！你就是来看公寓的吧，快请进！',
+      options:[
+        {text:"Yes, thanks for showing me around.", zh:'是的，谢谢您带我看房。', keys:['yes|thanks|thank|hi|hello|nice to meet']}
+      ]},
+    { ai:"This is the one-bedroom unit. It comes furnished with a bed, a desk, and a sofa. What do you think?",
+      zh:'这是一居室，带家具：床、书桌和沙发。你觉得怎么样？',
+      options:[
+        {text:"It looks nice. How much is the rent per month?", zh:'看起来不错。每个月租金多少？', keys:['rent|how much|price|month|cost']},
+        {text:"I like it! Is the rent expensive?", zh:'我喜欢！租金贵吗？', keys:['rent|expensive|price|how much']}
+      ]},
+    { ai:"It's $1,200 a month, and that includes water and internet. Electricity is separate.",
+      zh:'每月 1200 美元，包含水费和网络费。电费另算。',
+      options:[
+        {text:"Is there a deposit?", zh:'需要押金吗？', keys:['deposit']},
+        {text:"How long is the lease?", zh:'租期是多久？', keys:['lease|contract|how long|term']}
+      ]},
+    { ai:"The deposit is one month's rent, and the minimum lease is six months.",
+      zh:'押金是一个月的房租，最短租期是六个月。',
+      options:[
+        {text:"That sounds reasonable. Is the neighborhood quiet and safe?", zh:'听起来挺合理。这附近安静、安全吗？', keys:['safe|quiet|neighborhood|area|reasonable|security']}
+      ]},
+    { ai:"Very safe — campus security patrols nearby, and the bus stop is just a two-minute walk away.",
+      zh:'很安全 —— 校园保安就在附近巡逻，公交站步行两分钟就到。',
+      options:[
+        {text:"Great. When can I move in?", zh:'太好了。我什么时候可以入住？', keys:['move in|when|available|take it|move']}
+      ]},
+    { ai:"It's available from the first of next month. Just bring your ID and we can sign the lease! 🔑",
+      zh:'下个月一号起就可以入住。带上你的证件，我们就可以签租约了！' }
+  ]
+},
+{
+  id:'office', emoji:'📚', title:"Professor's Office Hours", zh:'教授答疑时间', level:2, roleEmoji:'👨‍🏫',
+  role:'Professor Miller · 教授', intro:'你对作业有疑问，于是来到 Miller 教授的办公室答疑时间。',
+  steps:[
+    { ai:"Come in! You must be from my Monday lecture. What can I help you with?",
+      zh:'请进！你是我周一大课上的学生吧。有什么可以帮你的？',
+      options:[
+        {text:"Hi Professor Miller. I have a question about the assignment.", zh:'Miller 教授您好，我有一个关于作业的问题。', keys:['question|assignment|homework|help|essay|paper']}
+      ]},
+    { ai:"Of course. Which part is giving you trouble?",
+      zh:'当然可以。哪一部分让你觉得困难？',
+      options:[
+        {text:"I'm not sure I understand the requirements for part two.", zh:'我不太确定第二部分的要求是什么。', keys:["part|understand|requirement|not sure|confused|second|two"]}
+      ]},
+    { ai:"Ah, part two. You need to compare the two case studies, and explain which approach works better — and why.",
+      zh:'哦，第二部分。你需要比较两个案例，并说明哪种方法更好 —— 以及为什么。',
+      options:[
+        {text:"I see. How long should the analysis be?", zh:'明白了。分析大概要写多长？', keys:['how long|word|words|page|pages|length|should']}
+      ]},
+    { ai:"Around 1,000 words is fine. Quality matters more than length, though.",
+      zh:'1000 词左右就可以。不过质量比长度更重要。',
+      options:[
+        {text:"Got it. Could I send you a draft before the deadline?", zh:'知道了。我可以在截止日期前先发一份草稿给您吗？', keys:['draft|send|email|deadline|review|feedback|before']}
+      ]},
+    { ai:"Sure, send it to me by Friday and I'll give you some feedback.",
+      zh:'当然可以，周五之前发给我，我会给你一些反馈。',
+      options:[
+        {text:"Thank you so much, Professor. That really helps!", zh:'太感谢您了，教授。这真的很有帮助！', keys:['thank|thanks|appreciate|helps|helpful']}
+      ]},
+    { ai:"You're welcome! Good luck with the assignment. 📝",
+      zh:'不客气！祝你作业顺利。' }
+  ]
+}
+];
+
+/* =====================================================
+   State & persistence
+===================================================== */
+const LS = {
+  best: id => 'sd_best_' + id,
+  key: 'sd_api_key',
+  aiMode: 'sd_ai_mode'
+};
+const state = {
+  scenario: null,
+  stepIndex: 0,
+  hearts: 3,
+  xp: 0,
+  selfAnswered: 0,   // answered without hints
+  totalAnswered: 0,
+  wrongOnStep: 0,
+  hintUsedOnStep: false,
+  busy: false,
+  // AI mode
+  aiMode: localStorage.getItem(LS.aiMode) === '1',
+  apiKey: localStorage.getItem(LS.key) || '',
+  aiMessages: [],
+  aiTurns: 0
+};
+
+const $ = id => document.getElementById(id);
+const views = { home:$('view-home'), chat:$('view-chat'), done:$('view-done') };
+function show(name){
+  Object.entries(views).forEach(([k,el]) => el.classList.toggle('hidden', k!==name));
+  window.scrollTo(0,0);
+}
+
+/* =====================================================
+   Home screen
+===================================================== */
+function renderHome(){
+  const list = $('scenario-list');
+  list.innerHTML = '';
+  SCENARIOS.forEach(sc => {
+    const best = localStorage.getItem(LS.best(sc.id));
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="emoji">${sc.emoji}</div>
+      <h3>${sc.title}</h3>
+      <div class="zh">${sc.zh}</div>
+      <div class="meta">
+        <span class="tag ${sc.level===1?'lv1':'lv2'}">${sc.level===1?'初级 A2':'中级 B1'}</span>
+        <span class="tag gray">${sc.steps.length} 轮对话</span>
+      </div>
+      ${best ? `<div class="best">🏆 最佳 ${best} XP</div>` : ''}`;
+    card.onclick = () => startScenario(sc);
+    list.appendChild(card);
+  });
+  $('mode-badge').textContent = state.aiMode && state.apiKey
+    ? '🤖 AI 智能模式已开启（由 Claude 实时对话）'
+    : '📖 内置剧本模式（免费，无需 API）';
+}
+
+/* =====================================================
+   Chat helpers
+===================================================== */
+function clearChat(){ $('chat-inner').innerHTML=''; }
+function scrollBottom(){
+  const sc = $('chat-scroll');
+  requestAnimationFrame(() => { sc.scrollTop = sc.scrollHeight; });
+}
+function addBubble(who, text, zh, cls){
+  const row = document.createElement('div');
+  row.className = 'row ' + who;
+  const avatar = who === 'ai'
+    ? `<div class="avatar">${state.scenario.roleEmoji}</div>`
+    : `<div class="avatar">🙋</div>`;
+  let zhHtml = '', toggleHtml = '';
+  if (zh){
+    zhHtml = `<span class="zh-line hidden">${zh}</span>`;
+    toggleHtml = `<button class="zh-toggle" title="显示/隐藏中文">译</button>`;
+  }
+  row.innerHTML = `${avatar}<div class="bubble ${cls||''}">${escapeHtml(text)}${zhHtml}${toggleHtml}</div>`;
+  if (zh){
+    row.querySelector('.zh-toggle').onclick = e => {
+      e.stopPropagation();
+      row.querySelector('.zh-line').classList.toggle('hidden');
+      scrollBottom();
+    };
+  }
+  $('chat-inner').appendChild(row);
+  scrollBottom();
+  return row;
+}
+function addSystemBubble(text, cls){
+  const row = document.createElement('div');
+  row.className = 'row ai';
+  row.innerHTML = `<div class="avatar">🦉</div><div class="bubble ${cls}">${escapeHtml(text)}</div>`;
+  $('chat-inner').appendChild(row);
+  scrollBottom();
+  return row;
+}
+function showTyping(){
+  const row = document.createElement('div');
+  row.className = 'row ai';
+  row.id = 'typing-row';
+  row.innerHTML = `<div class="avatar">${state.scenario.roleEmoji}</div>
+    <div class="bubble"><div class="typing"><i></i><i></i><i></i></div></div>`;
+  $('chat-inner').appendChild(row);
+  scrollBottom();
+}
+function hideTyping(){ const t = $('typing-row'); if (t) t.remove(); }
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function updateHud(){
+  $('xp-pill').textContent = '⚡' + state.xp;
+  $('hearts').textContent = '❤️ ' + state.hearts;
+  const total = state.aiMode ? 8 : state.scenario.steps.length;
+  const cur = state.aiMode ? state.aiTurns : state.stepIndex;
+  $('progress-fill').style.width = Math.min(100, Math.round(cur/total*100)) + '%';
+}
+
+/* =====================================================
+   Scripted engine
+===================================================== */
+function startScenario(sc){
+  state.scenario = sc;
+  state.stepIndex = 0;
+  state.hearts = 3;
+  state.xp = 0;
+  state.selfAnswered = 0;
+  state.totalAnswered = 0;
+  state.wrongOnStep = 0;
+  state.hintUsedOnStep = false;
+  state.busy = false;
+  state.aiMessages = [];
+  state.aiTurns = 0;
+
+  clearChat();
+  hideHints();
+  $('user-input').value = '';
+  $('scenario-banner').textContent = `${sc.emoji} ${sc.title} · ${sc.zh} — 对话对象：${sc.role}`;
+  $('btn-finish-ai').classList.toggle('hidden', !(state.aiMode && state.apiKey));
+  show('chat');
+  updateHud();
+
+  addSystemBubble('📍 ' + sc.intro, 'praise');
+
+  if (state.aiMode && state.apiKey){
+    startAiConversation();
+  } else {
+    aiSpeakStep();
+  }
+}
+
+function aiSpeakStep(){
+  const step = state.scenario.steps[state.stepIndex];
+  state.busy = true;
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    addBubble('ai', step.ai, step.zh);
+    state.busy = false;
+    if (!step.options){       // final line — conversation over
+      setTimeout(finishPractice, 1200);
+    } else {
+      $('user-input').focus();
+    }
+  }, 700 + Math.random()*500);
+}
+
+function normalize(s){
+  return ' ' + String(s).toLowerCase()
+    .replace(/[’‘]/g,"'")
+    .replace(/[^a-z0-9' ]+/g,' ')
+    .replace(/\s+/g,' ')
+    .trim() + ' ';
+}
+function matchOption(input, option){
+  if (normalize(input).trim() === normalize(option.text).trim()) return true;
+  const text = normalize(input);
+  let hits = 0;
+  for (const group of option.keys){
+    if (group.split('|').some(k => text.includes(normalize(k).trim()))) hits++;
+  }
+  return hits >= Math.max(1, Math.ceil(option.keys.length * 0.5));
+}
+
+function handleSend(){
+  const input = $('user-input');
+  const text = input.value.trim();
+  if (!text || state.busy) return;
+
+  if (state.aiMode && state.apiKey){
+    sendToAi(text);
+    return;
+  }
+
+  const step = state.scenario.steps[state.stepIndex];
+  if (!step || !step.options) return;
+
+  const matched = step.options.some(op => matchOption(text, op));
+  if (matched){
+    addBubble('user', text);
+    input.value = '';
+    hideHints();
+    state.totalAnswered++;
+    if (state.hintUsedOnStep){ state.xp += 5; }
+    else { state.xp += 10; state.selfAnswered++; }
+    state.stepIndex++;
+    state.wrongOnStep = 0;
+    state.hintUsedOnStep = false;
+    updateHud();
+    aiSpeakStep();
+  } else {
+    state.wrongOnStep++;
+    if (state.hearts > 0){ state.hearts--; updateHud(); }
+    input.classList.remove('shake'); void input.offsetWidth; input.classList.add('shake');
+    const tips = [
+      '🤔 意思好像不太对哦，再试试换个说法？',
+      '💪 很接近了！参考一下 💡 提示里的句型？',
+      '🦉 别灰心！点下面的 💡 看看可以怎么说。'
+    ];
+    addSystemBubble(tips[Math.min(state.wrongOnStep-1, tips.length-1)], 'feedback');
+    if (state.wrongOnStep >= 2 || state.hearts === 0) showHints();
+  }
+}
+
+/* =====================================================
+   Hints
+===================================================== */
+function showHints(){
+  const panel = $('hint-panel');
+  panel.innerHTML = '<div class="hint-title">💡 你可以这样说（点一下填入输入框）</div>';
+
+  if (state.aiMode && state.apiKey){
+    panel.classList.remove('hidden');
+    fetchAiHints(panel);
+    scrollBottom();
+    return;
+  }
+
+  const step = state.scenario.steps[state.stepIndex];
+  if (!step || !step.options) return;
+  state.hintUsedOnStep = true;
+  step.options.forEach(op => {
+    const chip = document.createElement('button');
+    chip.className = 'chip';
+    chip.innerHTML = `${escapeHtml(op.text)}<span class="zh">${escapeHtml(op.zh)}</span>`;
+    chip.onclick = () => {
+      $('user-input').value = op.text;
+      $('user-input').focus();
+    };
+    panel.appendChild(chip);
+  });
+  panel.classList.remove('hidden');
+  scrollBottom();
+}
+function hideHints(){
+  $('hint-panel').classList.add('hidden');
+  $('hint-panel').innerHTML = '';
+}
+
+/* =====================================================
+   Completion
+===================================================== */
+function finishPractice(){
+  const total = state.totalAnswered || 1;
+  const acc = Math.round(state.selfAnswered / total * 100);
+  state.xp += state.hearts * 2;   // bonus for remaining hearts
+  $('done-xp').textContent = state.xp;
+  $('done-acc').textContent = acc + '%';
+  $('done-hearts').textContent = '❤️' + state.hearts;
+  $('done-sub').textContent = `${state.scenario.emoji} ${state.scenario.title} · ${state.scenario.zh}`;
+
+  const bestKey = LS.best(state.scenario.id);
+  const best = parseInt(localStorage.getItem(bestKey) || '0', 10);
+  if (state.xp > best) localStorage.setItem(bestKey, String(state.xp));
+
+  show('done');
+  throwConfetti();
+}
+function throwConfetti(){
+  const host = $('view-done');
+  const glyphs = ['🎉','⭐','🎊','💚','✨','🏅'];
+  for (let i=0; i<26; i++){
+    const c = document.createElement('span');
+    c.className = 'confetti';
+    c.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
+    c.style.left = Math.random()*100 + '%';
+    c.style.animationDuration = (2.2 + Math.random()*2.2) + 's';
+    c.style.animationDelay = (Math.random()*0.8) + 's';
+    host.appendChild(c);
+    setTimeout(() => c.remove(), 6000);
+  }
+}
+
+/* =====================================================
+   AI mode — talk to Claude directly from the browser
+===================================================== */
+function buildSystemPrompt(sc){
+  return `You are role-playing to help a Chinese student practice everyday English conversation.
+Scenario: "${sc.title}" (${sc.zh}). You play: ${sc.role}. Setting: ${sc.intro}
+Rules:
+- Stay in character at all times. Never mention you are an AI.
+- Keep every reply to 1-2 short, natural sentences, CEFR A2-B1 level English.
+- Be warm and encouraging. If the student makes a serious grammar mistake, briefly show the corrected phrase in parentheses, then continue the conversation.
+- Ask one question at a time to keep the dialogue going.
+- After about 8 exchanges, wrap up the conversation naturally and end your final message with the token [END].`;
+}
+
+async function callClaude(messages, system, maxTokens){
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': state.apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-opus-4-8',
+      max_tokens: maxTokens || 300,
+      system: system,
+      messages: messages
+    })
+  });
+  if (!res.ok){
+    const err = await res.text().catch(() => '');
+    throw new Error('API ' + res.status + ' ' + err.slice(0,200));
+  }
+  const data = await res.json();
+  return (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('').trim();
+}
+
+async function startAiConversation(){
+  state.busy = true;
+  showTyping();
+  try {
+    const sys = buildSystemPrompt(state.scenario);
+    state.aiMessages = [{ role:'user', content:'(The student walks in. Greet them and start the scenario.)' }];
+    const reply = await callClaude(state.aiMessages, sys);
+    state.aiMessages.push({ role:'assistant', content: reply });
+    hideTyping();
+    addBubble('ai', reply.replace('[END]','').trim());
+  } catch(e){
+    hideTyping();
+    addSystemBubble('⚠️ AI 连接失败：' + e.message + '。已自动切换为内置剧本模式。', 'feedback');
+    state.aiMode = false;
+    aiSpeakStep();
+  } finally {
+    state.busy = false;
+  }
+}
+
+async function sendToAi(text){
+  const input = $('user-input');
+  addBubble('user', text);
+  input.value = '';
+  hideHints();
+  state.aiTurns++;
+  state.totalAnswered++;
+  if (state.hintUsedOnStep){ state.xp += 5; } else { state.xp += 10; state.selfAnswered++; }
+  state.hintUsedOnStep = false;
+  updateHud();
+
+  state.busy = true;
+  showTyping();
+  try {
+    state.aiMessages.push({ role:'user', content: text });
+    const reply = await callClaude(state.aiMessages, buildSystemPrompt(state.scenario));
+    state.aiMessages.push({ role:'assistant', content: reply });
+    hideTyping();
+    const ended = reply.includes('[END]');
+    addBubble('ai', reply.replace('[END]','').trim());
+    if (ended || state.aiTurns >= 10){
+      setTimeout(finishPractice, 1400);
+    }
+  } catch(e){
+    hideTyping();
+    addSystemBubble('⚠️ 请求失败：' + e.message, 'feedback');
+  } finally {
+    state.busy = false;
+  }
+}
+
+async function fetchAiHints(panel){
+  state.hintUsedOnStep = true;
+  const loading = document.createElement('div');
+  loading.className = 'hint-title';
+  loading.textContent = '正在为你想句子…';
+  panel.appendChild(loading);
+  try {
+    const msgs = state.aiMessages.concat([{
+      role: 'user',
+      content: 'Based on this conversation, suggest 3 short natural English sentences the student could say next. Reply with ONLY a JSON array of 3 strings, nothing else.'
+    }]);
+    const raw = await callClaude(msgs, buildSystemPrompt(state.scenario), 250);
+    let suggestions = [];
+    try {
+      const m = raw.match(/\[[\s\S]*\]/);
+      suggestions = JSON.parse(m ? m[0] : raw);
+    } catch(_){ suggestions = [raw]; }
+    loading.remove();
+    suggestions.slice(0,3).forEach(s => {
+      const chip = document.createElement('button');
+      chip.className = 'chip';
+      chip.textContent = s;
+      chip.onclick = () => { $('user-input').value = s; $('user-input').focus(); };
+      panel.appendChild(chip);
+    });
+    scrollBottom();
+  } catch(e){
+    loading.textContent = '⚠️ 获取提示失败：' + e.message;
+  }
+}
+
+/* =====================================================
+   Settings modal
+===================================================== */
+function openSettings(){
+  $('ai-toggle').checked = state.aiMode;
+  $('api-key-input').value = state.apiKey;
+  $('api-key-box').classList.toggle('hidden', !state.aiMode);
+  $('settings-mask').classList.remove('hidden');
+}
+function saveSettings(){
+  state.aiMode = $('ai-toggle').checked;
+  state.apiKey = $('api-key-input').value.trim();
+  localStorage.setItem(LS.aiMode, state.aiMode ? '1' : '0');
+  localStorage.setItem(LS.key, state.apiKey);
+  if (state.aiMode && !state.apiKey){
+    alert('AI 智能模式需要填写 Anthropic API Key，否则将继续使用内置剧本模式。');
+    state.aiMode = false;
+    localStorage.setItem(LS.aiMode, '0');
+  }
+  $('settings-mask').classList.add('hidden');
+  renderHome();
+}
+
+/* =====================================================
+   Wire up events
+===================================================== */
+$('btn-send').onclick = handleSend;
+$('user-input').addEventListener('keydown', e => { if (e.key === 'Enter') handleSend(); });
+$('user-input').addEventListener('input', e => e.target.classList.remove('shake'));
+$('btn-hint').onclick = showHints;
+$('btn-quit').onclick = () => {
+  if (confirm('确定要退出本次练习吗？进度将不会保存。')){ renderHome(); show('home'); }
+};
+$('btn-finish-ai').onclick = () => finishPractice();
+$('btn-again').onclick = () => startScenario(state.scenario);
+$('btn-home').onclick = () => { renderHome(); show('home'); };
+$('btn-settings').onclick = openSettings;
+$('btn-settings-close').onclick = () => $('settings-mask').classList.add('hidden');
+$('btn-settings-save').onclick = saveSettings;
+$('ai-toggle').onchange = e => $('api-key-box').classList.toggle('hidden', !e.target.checked);
+$('settings-mask').addEventListener('click', e => {
+  if (e.target === $('settings-mask')) $('settings-mask').classList.add('hidden');
+});
+
+renderHome();
+show('home');
+</script>
+</body>
+</html>
