@@ -85,7 +85,6 @@ button{font-family:inherit}
 }
 .card:hover{transform:translateY(-2px); border-color:var(--green); box-shadow:0 6px 0 var(--green-light)}
 .card:active{transform:translateY(3px); box-shadow:0 0 0 var(--gray)}
-.card .emoji{font-size:44px}
 .card h3{margin-top:10px; font-size:16.5px; font-weight:900}
 .card .zh{color:var(--text-light); font-size:13.5px; margin-top:2px}
 .card .meta{
@@ -96,8 +95,10 @@ button{font-family:inherit}
 .tag.lv2{background:#fff4d6; color:#b8860b}
 .tag.gray{background:#f2f2f2; color:var(--text-light)}
 .card .best{margin-top:8px; font-size:12px; font-weight:800; color:var(--yellow)}
+.card .face-wrap{width:86px; height:90px; margin:0 auto}
+.card .face-wrap svg{width:100%; height:100%}
 
-/* ============ Chat view ============ */
+/* ============ Practice view — face-to-face scene ============ */
 #view-chat{display:flex; flex-direction:column; height:100vh; height:100dvh}
 .chat-top{
   display:flex; align-items:center; gap:14px;
@@ -118,59 +119,65 @@ button{font-family:inherit}
 .xp-pill{font-weight:900; font-size:14px; color:var(--yellow)}
 
 .scenario-banner{
-  text-align:center; padding:10px 16px; background:#f7f7f7; border-bottom:2px solid var(--gray);
-  font-size:13.5px; color:var(--text-light); font-weight:700;
+  text-align:center; padding:8px 16px; background:#f7f7f7; border-bottom:2px solid var(--gray);
+  font-size:13px; color:var(--text-light); font-weight:700;
 }
-.chat-scroll{flex:1; overflow-y:auto; padding:20px 16px 10px; scroll-behavior:smooth}
-.chat-inner{max-width:640px; margin:0 auto; display:flex; flex-direction:column; gap:14px}
 
-.row{display:flex; gap:10px; align-items:flex-end}
-.row.user{flex-direction:row-reverse}
-.avatar{
-  width:44px; height:44px; border-radius:50%; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  font-size:24px; background:#fff; border:2px solid var(--gray);
+.scene{
+  flex:1; overflow-y:auto;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:12px; padding:18px 20px;
+  background:linear-gradient(#f2fbff 0%, #ffffff 70%);
 }
-.bubble{
-  max-width:78%; padding:12px 16px; border-radius:18px;
-  border:2px solid var(--gray); background:#fff;
-  font-size:15.5px; line-height:1.55; font-weight:700; position:relative;
+.scene-name{font-weight:900; font-size:17px; text-align:center}
+.scene-name .zh{display:block; font-size:12.5px; color:var(--text-light); font-weight:700}
+.scene-face{width:clamp(150px, 30vh, 230px); height:clamp(156px, 31vh, 238px)}
+.scene-face svg{width:100%; height:100%}
+
+.speak-row{display:flex; align-items:center; gap:14px; min-height:40px}
+.listen-btn{
+  background:#fff; border:2px solid var(--gray); border-radius:999px;
+  box-shadow:0 3px 0 var(--gray);
+  padding:9px 18px; font-size:14px; font-weight:900; color:var(--blue); cursor:pointer;
+}
+.listen-btn:hover{border-color:var(--blue)}
+.listen-btn:active{transform:translateY(3px); box-shadow:0 0 0 var(--gray)}
+.sound-wave{display:flex; align-items:center; gap:4px; height:26px}
+.sound-wave i{
+  width:5px; border-radius:99px; background:var(--blue);
+  animation:wave .8s ease-in-out infinite;
+}
+.sound-wave i:nth-child(1){height:10px}
+.sound-wave i:nth-child(2){height:20px; animation-delay:.15s}
+.sound-wave i:nth-child(3){height:26px; animation-delay:.3s}
+.sound-wave i:nth-child(4){height:16px; animation-delay:.45s}
+@keyframes wave{0%,100%{transform:scaleY(.45)}50%{transform:scaleY(1)}}
+
+.scene-caption{
+  max-width:520px; text-align:center;
+  border:2px solid var(--green-light); background:#f3ffe8; color:var(--green-dark);
+  border-radius:16px; padding:11px 18px;
+  font-size:14.5px; font-weight:700; line-height:1.6;
   animation:pop .18s ease-out;
 }
+.scene-caption.err{border-color:#ffd6d6; background:#fff5f5; color:#c44}
+.scene-caption.plain{border-color:var(--gray); background:#fff; color:var(--text)}
+.scene-caption .en{font-size:16px; font-weight:800; display:block}
+.scene-caption .zh{display:block; margin-top:4px; font-size:13px; color:var(--text-light); font-weight:600}
 @keyframes pop{from{transform:scale(.92); opacity:0}to{transform:scale(1); opacity:1}}
-.row.ai .bubble{border-bottom-left-radius:6px}
-.row.user .bubble{
-  background:var(--blue); border-color:var(--blue-dark); color:#fff;
-  border-bottom-right-radius:6px;
-}
-.bubble .zh-line{
-  display:block; margin-top:6px; padding-top:6px; border-top:1.5px dashed #e0e0e0;
-  font-size:13px; color:var(--text-light); font-weight:600;
-}
-.zh-toggle{
-  position:absolute; right:-8px; top:-10px;
-  width:24px; height:24px; border-radius:50%; border:2px solid var(--gray);
-  background:#fff; color:var(--text-light); font-size:11px; font-weight:900; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-}
-.zh-toggle:hover{color:var(--blue); border-color:var(--blue)}
-.bubble.feedback{border-color:#ffd6d6; background:#fff5f5; color:#c44; font-size:14px}
-.bubble.praise{border-color:var(--green-light); background:#f3ffe8; color:var(--green-dark); font-size:14px}
 
-.typing{display:flex; gap:5px; padding:6px 4px}
-.typing i{
-  width:8px; height:8px; border-radius:50%; background:var(--gray-dark);
-  animation:blink 1.2s infinite;
-}
-.typing i:nth-child(2){animation-delay:.2s}
-.typing i:nth-child(3){animation-delay:.4s}
-@keyframes blink{0%,80%,100%{opacity:.25; transform:translateY(0)}40%{opacity:1; transform:translateY(-4px)}}
-
-/* hint chips */
+/* hint / reference panel */
 .hint-panel{
   max-width:640px; margin:0 auto; width:100%;
   display:flex; flex-direction:column; gap:8px; padding:4px 0 8px;
+  max-height:42vh; overflow-y:auto;
 }
+.said-box{
+  border:2px solid #bfe9ff; background:#eef9ff; border-radius:14px;
+  padding:11px 15px; font-size:14.5px; font-weight:700; line-height:1.55;
+}
+.said-box .who{font-size:11.5px; font-weight:900; color:var(--blue-dark); letter-spacing:.5px; text-transform:uppercase; display:block; margin-bottom:3px}
+.said-box .zh{display:block; margin-top:4px; font-size:12.5px; color:var(--text-light); font-weight:600}
 .hint-title{font-size:12.5px; font-weight:900; color:var(--text-light); text-transform:uppercase; letter-spacing:.6px}
 .chip{
   text-align:left; background:#fff; border:2px solid var(--gray); border-radius:14px;
@@ -212,7 +219,8 @@ button{font-family:inherit}
   min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
   text-align:center; padding:30px 20px; position:relative; overflow:hidden;
 }
-#view-done .big{font-size:72px; animation:bob 2s ease-in-out infinite}
+#done-face{width:150px; height:156px; margin:0 auto; animation:bob 2s ease-in-out infinite}
+#done-face svg{width:100%; height:100%}
 #view-done h2{font-size:28px; font-weight:900; margin-top:12px; color:var(--green)}
 #view-done .sub{color:var(--text-light); margin-top:8px; font-weight:700}
 .stats{display:flex; gap:14px; margin-top:26px; flex-wrap:wrap; justify-content:center}
@@ -264,7 +272,7 @@ button{font-family:inherit}
 .modal .note{font-size:12px; color:var(--gray-dark); margin-top:8px; line-height:1.5}
 .modal .actions{display:flex; gap:10px; margin-top:22px; justify-content:flex-end}
 
-/* ============ SVG faces & character stage ============ */
+/* ============ SVG faces ============ */
 .face{display:block}
 .face .eye-n{transform-box:fill-box; transform-origin:center; animation:eyeblink 4.4s infinite}
 @keyframes eyeblink{0%,90.5%,94.5%,100%{transform:scaleY(1)}92.5%{transform:scaleY(.08)}}
@@ -286,29 +294,13 @@ svg.face.happy{animation:facebounce .55s ease 2}
 .face.sad .brow-l{transform:rotate(14deg) translateY(2px)}
 .face.sad .brow-r{transform:rotate(-14deg) translateY(2px)}
 
-.stage{
-  display:flex; align-items:center; justify-content:center; gap:16px;
-  padding:10px 16px 4px; background:linear-gradient(#f2fbff,#fff);
-  border-bottom:2px solid var(--gray);
-}
-.stage-face{width:100px; height:104px; flex-shrink:0}
-.stage-face svg{width:100%; height:100%}
-.stage-label{font-weight:900; font-size:15.5px; line-height:1.35}
-.stage-label .zh{display:block; font-size:12.5px; color:var(--text-light); font-weight:700}
-.avatar{overflow:hidden}
-.avatar svg{width:100%; height:100%}
-.card .face-wrap{width:86px; height:90px; margin:0 auto}
-.card .face-wrap svg{width:100%; height:100%}
-#done-face{width:150px; height:156px; margin:0 auto; animation:bob 2s ease-in-out infinite}
-#done-face svg{width:100%; height:100%}
-@media (max-height:640px){
-  .stage-face{width:76px; height:80px}
-}
-
 @media (max-width:520px){
-  .bubble{max-width:85%}
   .stats{gap:10px}
   .hero h1{font-size:23px}
+}
+@media (max-height:640px){
+  .scene-face{width:120px; height:124px}
+  .scene{gap:8px; padding:10px 16px}
 }
 </style>
 </head>
@@ -327,14 +319,15 @@ svg.face.happy{animation:facebounce .55s ease 2}
   <section class="hero">
     <div class="owl" id="hero-owl"></div>
     <h1>留学英语情景对话练习</h1>
-    <p>选择一个场景，和 AI 伙伴用英语聊天。自己先试着回答 —— 卡住了？<br>点 <b>💡 提示</b>，屏幕会告诉你下一句可以怎么说！</p>
+    <p>像面对面聊天一样：角色会<b>开口对你说英语</b>，先认真听、自己回答。<br>
+    听不清可以 <b>🔊 重听</b>；实在不会回答，再点 <b>💡</b> 查看原文和参考回答。</p>
     <div class="ai-badge" id="mode-badge">📖 内置剧本模式（免费，无需联网 API）</div>
   </section>
 
   <div class="scenarios" id="scenario-list"></div>
 </div>
 
-<!-- ==================== CHAT ==================== -->
+<!-- ==================== PRACTICE SCENE ==================== -->
 <div id="view-chat" class="hidden">
   <div class="chat-top">
     <button class="quit" id="btn-quit" title="退出练习">✕</button>
@@ -344,24 +337,25 @@ svg.face.happy{animation:facebounce .55s ease 2}
   </div>
   <div class="scenario-banner" id="scenario-banner"></div>
 
-  <div class="stage">
-    <div class="stage-face" id="stage-face"></div>
-    <div class="stage-label"><span id="stage-name"></span><span class="zh" id="stage-zh"></span></div>
-  </div>
-
-  <div class="chat-scroll" id="chat-scroll">
-    <div class="chat-inner" id="chat-inner"></div>
+  <div class="scene">
+    <div class="scene-name"><span id="stage-name"></span><span class="zh" id="stage-zh"></span></div>
+    <div class="scene-face" id="stage-face"></div>
+    <div class="speak-row">
+      <button class="listen-btn" id="btn-replay">🔊 再听一遍</button>
+      <div class="sound-wave hidden" id="sound-wave"><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="scene-caption hidden" id="scene-caption"></div>
   </div>
 
   <div class="input-bar">
     <div class="input-inner">
       <div id="hint-panel" class="hint-panel hidden"></div>
       <div class="helper-row">
-        <button class="hint-btn" id="btn-hint">💡 卡住了？看看可以怎么说</button>
+        <button class="hint-btn" id="btn-hint">💡 不会回答？看原文和参考回答</button>
         <button class="skip-btn hidden" id="btn-finish-ai">结束对话 ➜</button>
       </div>
       <div class="input-row">
-        <input type="text" id="user-input" placeholder="用英语输入你的回答…" autocomplete="off">
+        <input type="text" id="user-input" placeholder="听完后，用英语输入你的回答…" autocomplete="off">
         <button class="btn" id="btn-send">发送</button>
       </div>
     </div>
@@ -454,7 +448,7 @@ const SCENARIOS = [
       options:[
         {text:"It's Ivy. I-V-Y.", zh:'我叫 Ivy。I-V-Y。', keys:["it's|its|name|i'm|i am|call me|my"]}
       ]},
-    { ai:"Thanks! Your order will be ready in a few minutes. Have a great day! ☕",
+    { ai:"Thanks! Your order will be ready in a few minutes. Have a great day!",
       zh:'谢谢！几分钟后就好。祝你今天愉快！' }
   ]
 },
@@ -496,7 +490,7 @@ const SCENARIOS = [
         {text:"A window seat, please.", zh:'靠窗的座位，谢谢。', keys:['window|aisle|middle']},
         {text:"An aisle seat would be great.", zh:'靠过道的就很好。', keys:['window|aisle|middle']}
       ]},
-    { ai:"All set! Here's your boarding pass. Boarding starts at 9:30 at Gate 12. Have a nice flight! ✈️",
+    { ai:"All set! Here's your boarding pass. Boarding starts at 9:30 at Gate 12. Have a nice flight!",
       zh:'都办好了！这是您的登机牌。9:30 在 12 号登机口开始登机。祝您旅途愉快！' }
   ]
 },
@@ -530,7 +524,7 @@ const SCENARIOS = [
       options:[
         {text:"Yes, here they are.", zh:'带了，给您。', keys:['yes|here|sure|of course|i do']}
       ]},
-    { ai:"Everything looks good. Welcome to the United States, and good luck with your studies! 🇺🇸",
+    { ai:"Everything looks good. Welcome to the United States, and good luck with your studies!",
       zh:'一切没有问题。欢迎来到美国，祝你学业顺利！' }
   ]
 },
@@ -568,7 +562,7 @@ const SCENARIOS = [
       options:[
         {text:"Perfect, see you then!", zh:'太好了，到时候见！', keys:['perfect|see you|ok|okay|great|sounds|noon|deal']}
       ]},
-    { ai:"Awesome, see you at noon! 🌮",
+    { ai:"Awesome, see you at noon!",
       zh:'太好了，中午见！' }
   ]
 },
@@ -603,7 +597,7 @@ const SCENARIOS = [
       options:[
         {text:"Great. When can I move in?", zh:'太好了。我什么时候可以入住？', keys:['move in|when|available|take it|move']}
       ]},
-    { ai:"It's available from the first of next month. Just bring your ID and we can sign the lease! 🔑",
+    { ai:"It's available from the first of next month. Just bring your ID and we can sign the lease!",
       zh:'下个月一号起就可以入住。带上你的证件，我们就可以签租约了！' }
   ]
 },
@@ -636,7 +630,7 @@ const SCENARIOS = [
       options:[
         {text:"Thank you so much, Professor. That really helps!", zh:'太感谢您了，教授。这真的很有帮助！', keys:['thank|thanks|appreciate|helps|helpful']}
       ]},
-    { ai:"You're welcome! Good luck with the assignment. 📝",
+    { ai:"You're welcome! Good luck with the assignment.",
       zh:'不客气！祝你作业顺利。' }
   ]
 }
@@ -743,7 +737,7 @@ function owlSVG(cls){
   </svg>`;
 }
 
-/* Character mood on the big stage face: 'talk' | 'happy' | 'sad' | 'neutral' */
+/* Character mood on the big face: 'talk' | 'happy' | 'sad' | 'neutral' */
 let moodTimer = null;
 function setMood(mood, ms){
   const f = document.querySelector('#stage-face svg');
@@ -772,6 +766,7 @@ const state = {
   wrongOnStep: 0,
   hintUsedOnStep: false,
   busy: false,
+  lastLine: null,    // { text, zh } — what the character just said
   // AI mode
   aiMode: localStorage.getItem(LS.aiMode) === '1',
   apiKey: localStorage.getItem(LS.key) || '',
@@ -785,11 +780,100 @@ function show(name){
   Object.entries(views).forEach(([k,el]) => el.classList.toggle('hidden', k!==name));
   window.scrollTo(0,0);
 }
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* =====================================================
+   Speech — the character talks out loud (Web Speech API)
+===================================================== */
+let voices = [];
+function loadVoices(){
+  try { voices = speechSynthesis.getVoices() || []; } catch(_){ voices = []; }
+}
+if ('speechSynthesis' in window){
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+function pickVoice(){
+  const en = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+  return en.find(v => /google us english|samantha|zira|aria|jenny/i.test(v.name))
+      || en.find(v => v.lang === 'en-US')
+      || en[0] || null;
+}
+function stopSpeaking(){
+  try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch(_){}
+  showWave(false);
+}
+function showWave(on){
+  $('sound-wave').classList.toggle('hidden', !on);
+}
+/* Speak a line. If TTS is unavailable (or blocked), fall back to
+   showing the line as an on-screen subtitle so practice still works. */
+function speakLine(text, onDone){
+  let finished = false, started = false;
+  const simulatedMs = Math.min(6000, 900 + text.length * 45);
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    showWave(false);
+    setMood('neutral');
+    if (onDone) onDone();
+  };
+  const fallbackToSubtitle = () => {
+    revealLineAsSubtitle();
+    showWave(false);
+    setMood('talk', simulatedMs);
+    setTimeout(finish, simulatedMs);
+  };
+
+  showWave(true);
+  setMood('talk');
+
+  if (!('speechSynthesis' in window)){ fallbackToSubtitle(); return; }
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = 0.92; u.pitch = 1.06;
+    const v = pickVoice(); if (v) u.voice = v;
+    u.onstart = () => { started = true; };
+    u.onend = finish;
+    u.onerror = () => { if (!started){ fallbackToSubtitle(); } else { finish(); } };
+    speechSynthesis.speak(u);
+    // Some environments have speechSynthesis but never actually speak
+    setTimeout(() => {
+      if (!started && !finished){
+        try { speechSynthesis.cancel(); } catch(_){}
+        fallbackToSubtitle();
+      }
+    }, 1500);
+  } catch(e){ fallbackToSubtitle(); }
+}
+function revealLineAsSubtitle(){
+  if (!state.lastLine) return;
+  setCaption(
+    `<span class="en">💬 ${escapeHtml(state.lastLine.text)}</span>` +
+    (state.lastLine.zh ? `<span class="zh">${escapeHtml(state.lastLine.zh)}</span>` : ''),
+    'plain'
+  );
+}
+
+/* =====================================================
+   Scene caption (context / feedback under the character)
+===================================================== */
+function setCaption(html, cls){
+  const c = $('scene-caption');
+  if (!html){ c.classList.add('hidden'); c.innerHTML = ''; return; }
+  c.innerHTML = html;
+  c.className = 'scene-caption' + (cls ? ' ' + cls : '');
+  c.classList.remove('hidden');
+}
 
 /* =====================================================
    Home screen
 ===================================================== */
 function renderHome(){
+  stopSpeaking();
   const list = $('scenario-list');
   list.innerHTML = '';
   SCENARIOS.forEach(sc => {
@@ -814,68 +898,18 @@ function renderHome(){
 }
 
 /* =====================================================
-   Chat helpers
+   HUD
 ===================================================== */
-function clearChat(){ $('chat-inner').innerHTML=''; }
-function scrollBottom(){
-  const sc = $('chat-scroll');
-  requestAnimationFrame(() => { sc.scrollTop = sc.scrollHeight; });
-}
-function addBubble(who, text, zh, cls){
-  const row = document.createElement('div');
-  row.className = 'row ' + who;
-  const avatar = who === 'ai'
-    ? `<div class="avatar">${faceSVG(state.scenario.char)}</div>`
-    : `<div class="avatar">${faceSVG('me')}</div>`;
-  let zhHtml = '', toggleHtml = '';
-  if (zh){
-    zhHtml = `<span class="zh-line hidden">${zh}</span>`;
-    toggleHtml = `<button class="zh-toggle" title="显示/隐藏中文">译</button>`;
-  }
-  row.innerHTML = `${avatar}<div class="bubble ${cls||''}">${escapeHtml(text)}${zhHtml}${toggleHtml}</div>`;
-  if (zh){
-    row.querySelector('.zh-toggle').onclick = e => {
-      e.stopPropagation();
-      row.querySelector('.zh-line').classList.toggle('hidden');
-      scrollBottom();
-    };
-  }
-  $('chat-inner').appendChild(row);
-  scrollBottom();
-  return row;
-}
-function addSystemBubble(text, cls){
-  const row = document.createElement('div');
-  row.className = 'row ai';
-  row.innerHTML = `<div class="avatar">${owlSVG()}</div><div class="bubble ${cls}">${escapeHtml(text)}</div>`;
-  $('chat-inner').appendChild(row);
-  scrollBottom();
-  return row;
-}
-function showTyping(){
-  const row = document.createElement('div');
-  row.className = 'row ai';
-  row.id = 'typing-row';
-  row.innerHTML = `<div class="avatar">${faceSVG(state.scenario.char)}</div>
-    <div class="bubble"><div class="typing"><i></i><i></i><i></i></div></div>`;
-  $('chat-inner').appendChild(row);
-  scrollBottom();
-  setMood('talk');
-}
-function hideTyping(){ const t = $('typing-row'); if (t) t.remove(); setMood('talk', 1300); }
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
 function updateHud(){
   $('xp-pill').textContent = '⚡' + state.xp;
   $('hearts').textContent = '❤️ ' + state.hearts;
-  const total = state.aiMode ? 8 : state.scenario.steps.length;
-  const cur = state.aiMode ? state.aiTurns : state.stepIndex;
+  const total = state.aiMode && state.apiKey ? 8 : state.scenario.steps.length;
+  const cur = state.aiMode && state.apiKey ? state.aiTurns : state.stepIndex;
   $('progress-fill').style.width = Math.min(100, Math.round(cur/total*100)) + '%';
 }
 
 /* =====================================================
-   Scripted engine
+   Practice flow (scripted)
 ===================================================== */
 function startScenario(sc){
   state.scenario = sc;
@@ -887,10 +921,10 @@ function startScenario(sc){
   state.wrongOnStep = 0;
   state.hintUsedOnStep = false;
   state.busy = false;
+  state.lastLine = null;
   state.aiMessages = [];
   state.aiTurns = 0;
 
-  clearChat();
   hideHints();
   $('user-input').value = '';
   $('scenario-banner').textContent = `${sc.emoji} ${sc.title} · ${sc.zh}`;
@@ -899,32 +933,35 @@ function startScenario(sc){
   $('stage-name').textContent = roleParts[0];
   $('stage-zh').textContent = roleParts[1] || '';
   $('btn-finish-ai').classList.toggle('hidden', !(state.aiMode && state.apiKey));
+  setCaption('📍 ' + escapeHtml(sc.intro) + '<br>👂 仔细听 Ta 说什么，然后用英语回答。');
   show('chat');
   updateHud();
-
-  addSystemBubble('📍 ' + sc.intro, 'praise');
 
   if (state.aiMode && state.apiKey){
     startAiConversation();
   } else {
-    aiSpeakStep();
+    setTimeout(presentStep, 900);
   }
 }
 
-function aiSpeakStep(){
+function presentStep(){
   const step = state.scenario.steps[state.stepIndex];
+  if (!step) { finishPractice(); return; }
+  state.lastLine = { text: step.ai, zh: step.zh };
+  const isFinal = !step.options;
   state.busy = true;
-  showTyping();
-  setTimeout(() => {
-    hideTyping();
-    addBubble('ai', step.ai, step.zh);
+  speakLine(step.ai, () => {
     state.busy = false;
-    if (!step.options){       // final line — conversation over
-      setTimeout(finishPractice, 1200);
+    if (isFinal){
+      setTimeout(finishPractice, 700);
     } else {
       $('user-input').focus();
     }
-  }, 700 + Math.random()*500);
+  });
+  if (!isFinal){
+    // allow answering as soon as speech starts
+    setTimeout(() => { state.busy = false; }, 600);
+  }
 }
 
 function normalize(s){
@@ -958,52 +995,68 @@ function handleSend(){
   const step = state.scenario.steps[state.stepIndex];
   if (!step || !step.options) return;
 
+  stopSpeaking();
   const matched = step.options.some(op => matchOption(text, op));
   if (matched){
-    addBubble('user', text);
     input.value = '';
     hideHints();
     state.totalAnswered++;
-    if (state.hintUsedOnStep){ state.xp += 5; }
-    else { state.xp += 10; state.selfAnswered++; }
+    let gain;
+    if (state.hintUsedOnStep){ gain = 5; } else { gain = 10; state.selfAnswered++; }
+    state.xp += gain;
     state.stepIndex++;
     state.wrongOnStep = 0;
     state.hintUsedOnStep = false;
     updateHud();
     setMood('happy', 1400);
-    state.busy = true;             // lock input until the AI speaks the next line
-    setTimeout(aiSpeakStep, 850);
+    setCaption(`✅ 回答得很好！ +${gain} XP`);
+    state.busy = true;
+    setTimeout(() => { state.busy = false; presentStep(); }, 1100);
   } else {
     state.wrongOnStep++;
     if (state.hearts > 0){ state.hearts--; updateHud(); }
-    setMood('sad', 1600);
     input.classList.remove('shake'); void input.offsetWidth; input.classList.add('shake');
+    setMood('sad', 1800);
     const tips = [
-      '🤔 意思好像不太对哦，再试试换个说法？',
-      '💪 很接近了！参考一下 💡 提示里的句型？',
-      '🦉 别灰心！点下面的 💡 看看可以怎么说。'
+      '🤔 意思好像不太对哦…点 🔊 再听一遍，再试试？',
+      '💪 很接近了！点 💡 看看 Ta 说了什么、可以怎么回答。'
     ];
-    addSystemBubble(tips[Math.min(state.wrongOnStep-1, tips.length-1)], 'feedback');
+    setCaption(tips[Math.min(state.wrongOnStep-1, tips.length-1)], 'err');
     if (state.wrongOnStep >= 2 || state.hearts === 0) showHints();
   }
 }
 
 /* =====================================================
-   Hints
+   Hints — reveal the dialog + reference responses
 ===================================================== */
 function showHints(){
   const panel = $('hint-panel');
-  panel.innerHTML = '<div class="hint-title">💡 你可以这样说（点一下填入输入框）</div>';
+  panel.innerHTML = '';
+
+  // 1. what the character just said
+  if (state.lastLine){
+    const said = document.createElement('div');
+    said.className = 'said-box';
+    said.innerHTML = `<span class="who">📢 Ta 刚才说</span>${escapeHtml(state.lastLine.text)}` +
+      (state.lastLine.zh ? `<span class="zh">${escapeHtml(state.lastLine.zh)}</span>` : '');
+    panel.appendChild(said);
+  }
+
+  // 2. reference responses
+  const title = document.createElement('div');
+  title.className = 'hint-title';
+  title.textContent = '💬 你可以这样回答（点一下填入输入框）';
+  panel.appendChild(title);
 
   if (state.aiMode && state.apiKey){
+    state.hintUsedOnStep = true;
     panel.classList.remove('hidden');
     fetchAiHints(panel);
-    scrollBottom();
     return;
   }
 
   const step = state.scenario.steps[state.stepIndex];
-  if (!step || !step.options) return;
+  if (!step || !step.options){ panel.classList.remove('hidden'); return; }
   state.hintUsedOnStep = true;
   step.options.forEach(op => {
     const chip = document.createElement('button');
@@ -1016,7 +1069,6 @@ function showHints(){
     panel.appendChild(chip);
   });
   panel.classList.remove('hidden');
-  scrollBottom();
 }
 function hideHints(){
   $('hint-panel').classList.add('hidden');
@@ -1027,6 +1079,7 @@ function hideHints(){
    Completion
 ===================================================== */
 function finishPractice(){
+  stopSpeaking();
   const total = state.totalAnswered || 1;
   const acc = Math.round(state.selfAnswered / total * 100);
   state.xp += state.hearts * 2;   // bonus for remaining hearts
@@ -1098,57 +1151,62 @@ async function callClaude(messages, system, maxTokens){
 
 async function startAiConversation(){
   state.busy = true;
-  showTyping();
+  showWave(true);
+  setMood('talk');
   try {
     const sys = buildSystemPrompt(state.scenario);
     state.aiMessages = [{ role:'user', content:'(The student walks in. Greet them and start the scenario.)' }];
     const reply = await callClaude(state.aiMessages, sys);
     state.aiMessages.push({ role:'assistant', content: reply });
-    hideTyping();
-    addBubble('ai', reply.replace('[END]','').trim());
-  } catch(e){
-    hideTyping();
-    addSystemBubble('⚠️ AI 连接失败：' + e.message + '。已自动切换为内置剧本模式。', 'feedback');
-    state.aiMode = false;
-    aiSpeakStep();
-  } finally {
+    const clean = reply.replace('[END]','').trim();
+    state.lastLine = { text: clean, zh: null };
     state.busy = false;
+    speakLine(clean, () => { $('user-input').focus(); });
+  } catch(e){
+    showWave(false);
+    setCaption('⚠️ AI 连接失败：' + escapeHtml(e.message) + '。已自动切换为内置剧本模式。', 'err');
+    state.aiMode = false;
+    state.busy = false;
+    setTimeout(presentStep, 1200);
   }
 }
 
 async function sendToAi(text){
   const input = $('user-input');
-  addBubble('user', text);
   input.value = '';
   hideHints();
+  stopSpeaking();
   state.aiTurns++;
   state.totalAnswered++;
   if (state.hintUsedOnStep){ state.xp += 5; } else { state.xp += 10; state.selfAnswered++; }
   state.hintUsedOnStep = false;
   updateHud();
+  setCaption(null);
 
   state.busy = true;
-  showTyping();
+  showWave(true);
+  setMood('talk');
   try {
     state.aiMessages.push({ role:'user', content: text });
     const reply = await callClaude(state.aiMessages, buildSystemPrompt(state.scenario));
     state.aiMessages.push({ role:'assistant', content: reply });
-    hideTyping();
     const ended = reply.includes('[END]');
-    addBubble('ai', reply.replace('[END]','').trim());
-    if (ended || state.aiTurns >= 10){
-      setTimeout(finishPractice, 1400);
-    }
+    const clean = reply.replace('[END]','').trim();
+    state.lastLine = { text: clean, zh: null };
+    state.busy = false;
+    speakLine(clean, () => {
+      if (ended || state.aiTurns >= 10){ setTimeout(finishPractice, 900); }
+      else { $('user-input').focus(); }
+    });
   } catch(e){
-    hideTyping();
-    addSystemBubble('⚠️ 请求失败：' + e.message, 'feedback');
-  } finally {
+    showWave(false);
+    setMood('neutral');
+    setCaption('⚠️ 请求失败：' + escapeHtml(e.message), 'err');
     state.busy = false;
   }
 }
 
 async function fetchAiHints(panel){
-  state.hintUsedOnStep = true;
   const loading = document.createElement('div');
   loading.className = 'hint-title';
   loading.textContent = '正在为你想句子…';
@@ -1172,7 +1230,6 @@ async function fetchAiHints(panel){
       chip.onclick = () => { $('user-input').value = s; $('user-input').focus(); };
       panel.appendChild(chip);
     });
-    scrollBottom();
   } catch(e){
     loading.textContent = '⚠️ 获取提示失败：' + e.message;
   }
@@ -1208,8 +1265,11 @@ $('btn-send').onclick = handleSend;
 $('user-input').addEventListener('keydown', e => { if (e.key === 'Enter') handleSend(); });
 $('user-input').addEventListener('input', e => e.target.classList.remove('shake'));
 $('btn-hint').onclick = showHints;
+$('btn-replay').onclick = () => {
+  if (state.lastLine && !state.busy) speakLine(state.lastLine.text);
+};
 $('btn-quit').onclick = () => {
-  if (confirm('确定要退出本次练习吗？进度将不会保存。')){ renderHome(); show('home'); }
+  if (confirm('确定要退出本次练习吗？进度将不会保存。')){ stopSpeaking(); renderHome(); show('home'); }
 };
 $('btn-finish-ai').onclick = () => finishPractice();
 $('btn-again').onclick = () => startScenario(state.scenario);
@@ -1221,6 +1281,7 @@ $('ai-toggle').onchange = e => $('api-key-box').classList.toggle('hidden', !e.ta
 $('settings-mask').addEventListener('click', e => {
   if (e.target === $('settings-mask')) $('settings-mask').classList.add('hidden');
 });
+window.addEventListener('beforeunload', stopSpeaking);
 
 $('hero-owl').innerHTML = owlSVG();
 renderHome();
