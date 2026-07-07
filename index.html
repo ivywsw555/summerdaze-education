@@ -135,6 +135,16 @@ button{font-family:inherit}
 .scene-face svg{width:100%; height:100%}
 
 .speak-row{display:flex; align-items:center; gap:14px; min-height:40px}
+.voice-status{
+  font-size:12.5px; font-weight:800; color:var(--blue-dark);
+  background:#eef9ff; border:2px solid #bfe9ff; border-radius:999px; padding:5px 14px;
+  display:flex; align-items:center; gap:8px;
+}
+.voice-status .spin{
+  width:13px; height:13px; border-radius:50%;
+  border:2.5px solid #bfe9ff; border-top-color:var(--blue); animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
 .listen-btn{
   background:#fff; border:2px solid var(--gray); border-radius:999px;
   box-shadow:0 3px 0 var(--gray);
@@ -377,6 +387,7 @@ button{font-family:inherit}
       <button class="listen-btn" id="btn-replay">🔊 再听一遍</button>
       <div class="sound-wave hidden" id="sound-wave"><i></i><i></i><i></i><i></i></div>
     </div>
+    <div class="voice-status hidden" id="voice-status"></div>
     <div class="scene-caption hidden" id="scene-caption"></div>
   </div>
 
@@ -415,7 +426,17 @@ button{font-family:inherit}
 <div class="modal-mask hidden" id="settings-mask">
   <div class="modal">
     <h3>⚙️ 练习设置</h3>
-    <p>默认使用<b>内置剧本模式</b>：完全免费、离线可用，按精心设计的对话剧本练习。开启 <b>AI 智能模式</b>后，将由 Claude 大模型实时扮演对话角色，可以自由发挥聊天。</p>
+
+    <div class="switch-row">
+      <span class="lbl">🎙️ 真人 AI 语音<br><span style="font-size:12px;font-weight:600;color:var(--text-light)">Kokoro 神经网络语音，更自然</span></span>
+      <label class="switch">
+        <input type="checkbox" id="voice-toggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="note" id="voice-note">🎧 开启后，角色将用真人般的神经网络语音说话。语音模型（约 80MB）会在你第一次练习时下载并缓存到本机，之后即刻可用、完全离线。关闭则使用设备自带语音。</div>
+
+    <p style="margin-top:20px">开启 <b>AI 智能模式</b>后，将由 Claude 大模型实时扮演对话角色，可以自由发挥聊天（需自备 API Key）；默认的<b>内置剧本模式</b>完全免费、无需联网。</p>
     <div class="switch-row">
       <span class="lbl">🤖 AI 智能对话模式</span>
       <label class="switch">
@@ -832,7 +853,8 @@ function waveHello(){
 const LS = {
   best: id => 'sd_best_' + id,
   key: 'sd_api_key',
-  aiMode: 'sd_ai_mode'
+  aiMode: 'sd_ai_mode',
+  tts: 'sd_tts'          // 'kokoro' (neural, default) | 'browser'
 };
 const state = {
   scenario: null,
@@ -849,7 +871,16 @@ const state = {
   aiMode: localStorage.getItem(LS.aiMode) === '1',
   apiKey: localStorage.getItem(LS.key) || '',
   aiMessages: [],
-  aiTurns: 0
+  aiTurns: 0,
+  // text-to-speech engine
+  tts: {
+    engine: localStorage.getItem(LS.tts) || 'kokoro',
+    model: null,       // loaded Kokoro instance
+    loading: null,     // in-flight load promise
+    failed: false,     // neural unavailable this session → use browser voice
+    audioEl: null,     // <audio> for neural playback
+    seq: 0             // cancellation token
+  }
 };
 
 const $ = id => document.getElementById(id);
@@ -863,8 +894,61 @@ function escapeHtml(s){
 }
 
 /* =====================================================
-   Speech — the character talks out loud (Web Speech API)
+   Speech — neural (Kokoro, human-sounding) with a graceful
+   fall-back to the browser's built-in voice, then subtitles.
 ===================================================== */
+
+/* --- Kokoro: on-device neural TTS (runs fully in the browser) --- */
+const KOKORO_MODEL = 'onnx-community/Kokoro-82M-v1.0-ONNX';
+const KOKORO_CDNS = [
+  'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.0/dist/kokoro.web.js',
+  'https://esm.sh/kokoro-js@1.2.0'
+];
+/* one distinct, character-appropriate neural voice per role */
+const KOKORO_VOICE = {
+  barista:  'am_liam',     // friendly young man
+  agent:    'af_sarah',    // warm professional woman
+  officer:  'am_onyx',     // deep, serious man
+  emma:     'af_heart',    // bright, upbeat young woman
+  landlord: 'am_michael',  // older, easy-going man
+  professor:'bm_george',   // distinguished British man
+  me:       'af_nicole'    // the student
+};
+
+async function importKokoro(){
+  let lastErr;
+  for (const url of KOKORO_CDNS){
+    try {
+      const m = await import(/* @vite-ignore */ url);
+      const K = m.KokoroTTS || (m.default && m.default.KokoroTTS);
+      if (K) return K;
+    } catch(e){ lastErr = e; }
+  }
+  throw lastErr || new Error('kokoro import failed');
+}
+function loadKokoro(){
+  if (state.tts.model) return Promise.resolve(state.tts.model);
+  if (!state.tts.loading){
+    state.tts.loading = (async () => {
+      const K = await importKokoro();
+      const device = (typeof navigator !== 'undefined' && navigator.gpu) ? 'webgpu' : 'wasm';
+      const tts = await K.from_pretrained(KOKORO_MODEL, { dtype: 'q8', device });
+      state.tts.model = tts;
+      return tts;
+    })().catch(err => { state.tts.loading = null; throw err; });
+  }
+  return state.tts.loading;
+}
+function withTimeout(p, ms){
+  return Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]);
+}
+async function audioToBlob(audio){
+  if (audio && typeof audio.toBlob === 'function') return await audio.toBlob();
+  if (audio && typeof audio.toWav === 'function')  return new Blob([audio.toWav()], { type: 'audio/wav' });
+  throw new Error('unknown audio result');
+}
+
+/* --- browser built-in voice (fallback engine) --- */
 let voices = [];
 function loadVoices(){
   try { voices = speechSynthesis.getVoices() || []; } catch(_){ voices = []; }
@@ -875,58 +959,115 @@ if ('speechSynthesis' in window){
 }
 function pickVoice(gender){
   const en = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
-  const male   = /david|mark|guy|daniel|alex|fred|george|james|ryan|male/i;
-  const female = /zira|samantha|jenny|aria|susan|victoria|karen|michelle|google us english|female/i;
+  // prefer modern neural "Natural"/"Online" system voices when present
+  const natural = en.filter(v => /natural|neural|online|premium|enhanced/i.test(v.name));
+  const male   = /david|mark|guy|daniel|alex|fred|george|james|ryan|male|christopher|roger/i;
+  const female = /zira|samantha|jenny|aria|susan|victoria|karen|michelle|emma|ava|google us english|female|sonia/i;
   const pref = gender === 'm' ? male : female;
-  return en.find(v => pref.test(v.name) && v.lang === 'en-US')
+  return natural.find(v => pref.test(v.name))
+      || en.find(v => pref.test(v.name) && v.lang === 'en-US')
+      || natural[0]
       || en.find(v => pref.test(v.name))
       || en.find(v => v.lang === 'en-US')
       || en[0] || null;
 }
+
+function showWave(on){ $('sound-wave').classList.toggle('hidden', !on); }
+function voiceStatus(html){
+  const el = $('voice-status');
+  if (!el) return;
+  if (html){ el.innerHTML = html; el.classList.remove('hidden'); }
+  else { el.innerHTML = ''; el.classList.add('hidden'); }
+}
 function stopSpeaking(){
+  state.tts.seq++;                       // invalidate any in-flight speech
   try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch(_){}
+  try { if (state.tts.audioEl) state.tts.audioEl.pause(); } catch(_){}
+  voiceStatus(null);
   showWave(false);
 }
-function showWave(on){
-  $('sound-wave').classList.toggle('hidden', !on);
+function currentVoiceCfg(){
+  return (state.scenario && CHARACTERS[state.scenario.char] && CHARACTERS[state.scenario.char].voice)
+      || { gender:'f', pitch:1.05, rate:.92 };
 }
-/* Speak a line. If TTS is unavailable (or blocked), fall back to
-   showing the line as an on-screen subtitle so practice still works. */
+/* Kick off the (one-time, cached) model download early so the first
+   spoken line isn't held up by it. Safe to call repeatedly. */
+function warmUpVoice(){
+  if (state.tts.engine === 'kokoro' && !state.tts.failed && !state.tts.model){
+    loadKokoro().catch(() => {});
+  }
+}
+
+/* Speak one line. Engine order: Kokoro → browser voice → subtitle. */
 function speakLine(text, onDone){
-  let finished = false, started = false;
-  const simulatedMs = Math.min(6000, 900 + text.length * 45);
+  const mySeq = ++state.tts.seq;
+  let finished = false;
+  const stale = () => mySeq !== state.tts.seq;
   const finish = () => {
     if (finished) return;
     finished = true;
-    showWave(false);
-    setMood('neutral');
+    if (!stale()){ showWave(false); voiceStatus(null); setMood('neutral'); }
     if (onDone) onDone();
   };
+
+  if (state.tts.engine === 'kokoro' && !state.tts.failed){
+    if (state.tts.model){ showWave(true); setMood('talk'); }
+    else { voiceStatus('<span class="spin"></span>正在加载真人语音…（首次约需下载 80MB）'); setMood('neutral'); }
+    speakKokoro(text, mySeq, finish).catch(() => {
+      if (stale()) return;
+      state.tts.failed = true;           // don't keep retrying the download
+      voiceStatus('（已切换为设备语音）');
+      setTimeout(() => { if (!stale()) voiceStatus(null); }, 1800);
+      speakBrowser(text, mySeq, finish);
+    });
+    return;
+  }
+  showWave(true); setMood('talk');
+  speakBrowser(text, mySeq, finish);
+}
+
+async function speakKokoro(text, mySeq, finish){
+  const tts = await withTimeout(loadKokoro(), 120000);
+  if (mySeq !== state.tts.seq) return;                 // user moved on during load
+  voiceStatus(null); showWave(true); setMood('talk');
+  const voice = KOKORO_VOICE[state.scenario && state.scenario.char] || 'af_heart';
+  const audio = await tts.generate(text, { voice });
+  if (mySeq !== state.tts.seq) return;
+  const blob = await audioToBlob(audio);
+  if (mySeq !== state.tts.seq) return;
+  const url = URL.createObjectURL(blob);
+  const el = state.tts.audioEl || (state.tts.audioEl = new Audio());
+  el.onended = () => { URL.revokeObjectURL(url); finish(); };
+  el.onerror = () => { URL.revokeObjectURL(url); finish(); };
+  el.src = url;
+  setMood('talk'); showWave(true);
+  await el.play();                                      // rejects if blocked → caught upstream
+}
+
+function speakBrowser(text, mySeq, finish){
+  let done = false, started = false;
+  const fin = () => { done = true; finish(); };
+  const simulatedMs = Math.min(6000, 900 + text.length * 45);
   const fallbackToSubtitle = () => {
+    if (mySeq !== state.tts.seq) return;
     revealLineAsSubtitle();
     showWave(false);
     setMood('talk', simulatedMs);
-    setTimeout(finish, simulatedMs);
+    setTimeout(fin, simulatedMs);
   };
-
-  showWave(true);
-  setMood('talk');
-
   if (!('speechSynthesis' in window)){ fallbackToSubtitle(); return; }
   try {
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    const vc = (state.scenario && CHARACTERS[state.scenario.char] && CHARACTERS[state.scenario.char].voice)
-             || {gender:'f', pitch:1.05, rate:.92};
+    const vc = currentVoiceCfg();
     u.lang = 'en-US'; u.rate = vc.rate; u.pitch = vc.pitch;
     const v = pickVoice(vc.gender); if (v) u.voice = v;
-    u.onstart = () => { started = true; };
-    u.onend = finish;
-    u.onerror = () => { if (!started){ fallbackToSubtitle(); } else { finish(); } };
+    u.onstart = () => { started = true; if (mySeq === state.tts.seq){ showWave(true); setMood('talk'); } };
+    u.onend = fin;
+    u.onerror = () => { if (!started) fallbackToSubtitle(); else fin(); };
     speechSynthesis.speak(u);
-    // Some environments have speechSynthesis but never actually speak
     setTimeout(() => {
-      if (!started && !finished){
+      if (!started && !done && mySeq === state.tts.seq){
         try { speechSynthesis.cancel(); } catch(_){}
         fallbackToSubtitle();
       }
@@ -1021,6 +1162,7 @@ function startScenario(sc){
   show('chat');
   updateHud();
   waveHello();
+  warmUpVoice();   // start the (cached) neural-voice download early
 
   if (state.aiMode && state.apiKey){
     startAiConversation();
@@ -1325,12 +1467,21 @@ async function fetchAiHints(panel){
    Settings modal
 ===================================================== */
 function openSettings(){
+  $('voice-toggle').checked = state.tts.engine === 'kokoro';
   $('ai-toggle').checked = state.aiMode;
   $('api-key-input').value = state.apiKey;
   $('api-key-box').classList.toggle('hidden', !state.aiMode);
   $('settings-mask').classList.remove('hidden');
 }
 function saveSettings(){
+  const prevEngine = state.tts.engine;
+  state.tts.engine = $('voice-toggle').checked ? 'kokoro' : 'browser';
+  localStorage.setItem(LS.tts, state.tts.engine);
+  if (state.tts.engine === 'kokoro' && prevEngine !== 'kokoro'){
+    state.tts.failed = false;   // let it try the neural model again
+    warmUpVoice();
+  }
+
   state.aiMode = $('ai-toggle').checked;
   state.apiKey = $('api-key-input').value.trim();
   localStorage.setItem(LS.aiMode, state.aiMode ? '1' : '0');
