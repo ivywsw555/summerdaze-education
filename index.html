@@ -946,17 +946,23 @@ function loadKokoro(){
   if (!state.tts.loading){
     state.tts.loading = (async () => {
       const K = await importKokoro();
-      const device = (typeof navigator !== 'undefined' && navigator.gpu) ? 'webgpu' : 'wasm';
-      const tts = await K.from_pretrained(KOKORO_MODEL, {
-        dtype: 'q8',
-        device,
-        progress_callback: (p) => {
-          if (p && p.status === 'progress' && typeof p.progress === 'number'){
-            state.tts.pct = Math.min(99, Math.round(p.progress));
-            voiceStatus('<span class="spin"></span>正在下载真人语音 ' + state.tts.pct + '%');
-          }
+      const progress_callback = (p) => {
+        if (p && p.status === 'progress' && typeof p.progress === 'number'){
+          state.tts.pct = Math.min(99, Math.round(p.progress));
+          voiceStatus('<span class="spin"></span>正在下载真人语音 ' + state.tts.pct + '%');
         }
-      });
+      };
+      // WASM + q8 is the universally-reliable combo (works on every browser,
+      // ~82MB). WebGPU is faster but CANNOT run q8 (int8) models — auto-picking
+      // it made the model download and then fail to run, falling back to the
+      // robotic voice. So run on WASM.
+      let tts;
+      try {
+        tts = await K.from_pretrained(KOKORO_MODEL, { dtype: 'q8', device: 'wasm', progress_callback });
+      } catch (e1) {
+        try { console.warn('[neural voice] q8/wasm failed, retrying fp32/wasm', e1); } catch(_){}
+        tts = await K.from_pretrained(KOKORO_MODEL, { dtype: 'fp32', device: 'wasm', progress_callback });
+      }
       state.tts.model = tts;
       return tts;
     })().catch(err => { state.tts.loading = null; throw err; });
@@ -1054,11 +1060,12 @@ function speakLine(text, onDone){
 }
 
 async function speakKokoro(text, mySeq, finish){
-  const tts = await withTimeout(loadKokoro(), 120000);
+  const tts = await withTimeout(loadKokoro(), 180000);
   if (mySeq !== state.tts.seq) return;                 // user moved on during load
-  voiceStatus(null); showWave(true); setMood('talk');
+  voiceStatus('<span class="spin"></span>正在合成真人语音…');
+  setMood('neutral');
   const voice = KOKORO_VOICE[state.scenario && state.scenario.char] || 'af_heart';
-  const audio = await tts.generate(text, { voice });
+  const audio = await tts.generate(text, { voice });   // WASM synth can take a moment
   if (mySeq !== state.tts.seq) return;
   const blob = await audioToBlob(audio);
   if (mySeq !== state.tts.seq) return;
@@ -1067,8 +1074,20 @@ async function speakKokoro(text, mySeq, finish){
   el.onended = () => { URL.revokeObjectURL(url); finish(); };
   el.onerror = () => { URL.revokeObjectURL(url); finish(); };
   el.src = url;
-  setMood('talk'); showWave(true);
-  await el.play();                                      // rejects if blocked → caught upstream
+  voiceStatus(null); setMood('talk'); showWave(true);
+  try {
+    await el.play();
+  } catch (playErr){
+    // Autoplay blocked (common on iOS after a long download). Don't disable
+    // neural for the whole session — just show this one line as a subtitle;
+    // later lines are triggered by button taps and will play fine.
+    try { console.warn('[neural voice] autoplay blocked, subtitling this line', playErr); } catch(_){}
+    URL.revokeObjectURL(url);
+    revealLineAsSubtitle();
+    const ms = Math.min(6000, 900 + text.length * 45);
+    showWave(false); setMood('talk', ms);
+    setTimeout(finish, ms);
+  }
 }
 
 function speakBrowser(text, mySeq, finish){
