@@ -1,444 +1,1377 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title >SummerDaze留学工作室 - 你的专属工科申请合伙人</title>
-    
-    <!-- Tailwind CSS for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <style>
-        /* Custom styles */
-        body {
-            font-family: 'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-            background-color: #f8fafc; /* slate-50 */
-            color: #334155; /* slate-700 */
-        }
-        .gradient-text {
-            background: linear-gradient(to right, #14b8a6, #0ea5e9);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .cta-button {
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        }
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-        }
-        html {
-            scroll-behavior: smooth;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>SummerDaze English · 英语情景对话练习</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#58cc02; --green-dark:#58a700; --green-light:#d7ffb8;
+  --blue:#1cb0f6; --blue-dark:#1899d6;
+  --red:#ff4b4b; --yellow:#ffc800;
+  --gray:#e5e5e5; --gray-dark:#afafaf; --text:#3c3c3c; --text-light:#777;
+  --bg:#ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:'Nunito','Helvetica Neue',Arial,sans-serif;
+  background:var(--bg); color:var(--text);
+  min-height:100vh;
+}
+button{font-family:inherit}
+.hidden{display:none !important}
+
+/* ============ Duolingo-style buttons ============ */
+.btn{
+  display:inline-block; border:none; cursor:pointer;
+  border-radius:16px; padding:13px 26px;
+  font-weight:800; font-size:15px; letter-spacing:.8px; text-transform:uppercase;
+  background:var(--green); color:#fff;
+  box-shadow:0 4px 0 var(--green-dark);
+  transition:filter .15s;
+  user-select:none;
+}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:translateY(4px); box-shadow:0 0 0 var(--green-dark)}
+.btn:disabled{background:var(--gray); color:var(--gray-dark); box-shadow:0 4px 0 #d0d0d0; cursor:not-allowed}
+.btn-blue{background:var(--blue); box-shadow:0 4px 0 var(--blue-dark)}
+.btn-blue:active{box-shadow:0 0 0 var(--blue-dark)}
+.btn-white{
+  background:#fff; color:var(--blue);
+  border:2px solid var(--gray); box-shadow:0 4px 0 var(--gray);
+}
+.btn-white:active{box-shadow:0 0 0 var(--gray)}
+
+/* ============ Home / scenario picker ============ */
+.home-header{
+  border-bottom:2px solid var(--gray);
+  padding:14px 20px; display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; background:#fff; z-index:10;
+}
+.home-header .logo{font-weight:900; font-size:22px; color:var(--green); text-decoration:none}
+.home-header .logo span{color:var(--text)}
+.home-header .right{display:flex; gap:10px; align-items:center}
+.icon-btn{
+  background:none; border:none; font-size:22px; cursor:pointer;
+  padding:6px 8px; border-radius:12px;
+}
+.icon-btn:hover{background:#f2f2f2}
+.back-link{font-size:14px; font-weight:800; color:var(--blue); text-decoration:none; text-transform:uppercase; letter-spacing:.5px}
+
+.hero{max-width:720px; margin:0 auto; padding:36px 20px 8px; text-align:center}
+.hero .owl{width:110px; height:114px; margin:0 auto; animation:bob 2.6s ease-in-out infinite}
+.hero .owl svg{width:100%; height:100%}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.hero h1{font-size:28px; font-weight:900; margin-top:10px}
+.hero p{color:var(--text-light); margin-top:8px; font-size:15px; line-height:1.6}
+.ai-badge{
+  display:inline-flex; align-items:center; gap:6px; margin-top:12px;
+  font-size:12.5px; font-weight:800; color:var(--blue-dark);
+  background:#e6f6ff; border:2px solid #bfe9ff; border-radius:999px; padding:5px 14px;
+}
+
+.scenarios{
+  max-width:720px; margin:20px auto 60px; padding:0 20px;
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:16px;
+}
+.card{
+  border:2px solid var(--gray); border-radius:18px; background:#fff;
+  padding:20px 16px; cursor:pointer; text-align:center;
+  box-shadow:0 4px 0 var(--gray);
+  transition:transform .12s, box-shadow .12s, border-color .12s;
+}
+.card:hover{transform:translateY(-2px); border-color:var(--green); box-shadow:0 6px 0 var(--green-light)}
+.card:active{transform:translateY(3px); box-shadow:0 0 0 var(--gray)}
+.card h3{margin-top:10px; font-size:16.5px; font-weight:900}
+.card .zh{color:var(--text-light); font-size:13.5px; margin-top:2px}
+.card .meta{
+  margin-top:10px; display:flex; justify-content:center; gap:6px; flex-wrap:wrap;
+}
+.tag{font-size:11px; font-weight:800; padding:3px 9px; border-radius:999px; letter-spacing:.4px}
+.tag.lv1{background:#e9ffd9; color:var(--green-dark)}
+.tag.lv2{background:#fff4d6; color:#b8860b}
+.tag.gray{background:#f2f2f2; color:var(--text-light)}
+.card .best{margin-top:8px; font-size:12px; font-weight:800; color:var(--yellow)}
+.card .face-wrap{width:86px; height:90px; margin:0 auto}
+.card .face-wrap svg{width:100%; height:100%}
+
+/* ============ Practice view — face-to-face scene ============ */
+#view-chat{display:flex; flex-direction:column; height:100vh; height:100dvh}
+.chat-top{
+  display:flex; align-items:center; gap:14px;
+  padding:14px 18px; border-bottom:2px solid var(--gray); background:#fff;
+}
+.chat-top .quit{font-size:22px; color:var(--gray-dark); background:none; border:none; cursor:pointer; font-weight:900}
+.chat-top .quit:hover{color:var(--text)}
+.progress{flex:1; height:16px; background:var(--gray); border-radius:999px; overflow:hidden}
+.progress .fill{
+  height:100%; width:0%; background:var(--green); border-radius:999px;
+  transition:width .4s ease; position:relative;
+}
+.progress .fill::after{
+  content:''; position:absolute; top:3px; left:8px; right:8px; height:4px;
+  background:rgba(255,255,255,.35); border-radius:999px;
+}
+.hearts{font-weight:900; font-size:16px; color:var(--red); display:flex; align-items:center; gap:4px; min-width:56px; justify-content:flex-end}
+.xp-pill{font-weight:900; font-size:14px; color:var(--yellow)}
+
+.scenario-banner{
+  text-align:center; padding:8px 16px; background:#f7f7f7; border-bottom:2px solid var(--gray);
+  font-size:13px; color:var(--text-light); font-weight:700;
+}
+
+.scene{
+  flex:1; overflow-y:auto;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:12px; padding:18px 20px;
+  background:linear-gradient(#f2fbff 0%, #ffffff 70%);
+}
+.scene-name{font-weight:900; font-size:17px; text-align:center}
+.scene-name .zh{display:block; font-size:12.5px; color:var(--text-light); font-weight:700}
+.scene-face{width:clamp(150px, 30vh, 230px); height:clamp(156px, 31vh, 238px)}
+.scene-face svg{width:100%; height:100%}
+
+.speak-row{display:flex; align-items:center; gap:14px; min-height:40px}
+.listen-btn{
+  background:#fff; border:2px solid var(--gray); border-radius:999px;
+  box-shadow:0 3px 0 var(--gray);
+  padding:9px 18px; font-size:14px; font-weight:900; color:var(--blue); cursor:pointer;
+}
+.listen-btn:hover{border-color:var(--blue)}
+.listen-btn:active{transform:translateY(3px); box-shadow:0 0 0 var(--gray)}
+.sound-wave{display:flex; align-items:center; gap:4px; height:26px}
+.sound-wave i{
+  width:5px; border-radius:99px; background:var(--blue);
+  animation:wave .8s ease-in-out infinite;
+}
+.sound-wave i:nth-child(1){height:10px}
+.sound-wave i:nth-child(2){height:20px; animation-delay:.15s}
+.sound-wave i:nth-child(3){height:26px; animation-delay:.3s}
+.sound-wave i:nth-child(4){height:16px; animation-delay:.45s}
+@keyframes wave{0%,100%{transform:scaleY(.45)}50%{transform:scaleY(1)}}
+
+.scene-caption{
+  max-width:520px; text-align:center;
+  border:2px solid var(--green-light); background:#f3ffe8; color:var(--green-dark);
+  border-radius:16px; padding:11px 18px;
+  font-size:14.5px; font-weight:700; line-height:1.6;
+  animation:pop .18s ease-out;
+}
+.scene-caption.err{border-color:#ffd6d6; background:#fff5f5; color:#c44}
+.scene-caption.plain{border-color:var(--gray); background:#fff; color:var(--text)}
+.scene-caption .en{font-size:16px; font-weight:800; display:block}
+.scene-caption .zh{display:block; margin-top:4px; font-size:13px; color:var(--text-light); font-weight:600}
+@keyframes pop{from{transform:scale(.92); opacity:0}to{transform:scale(1); opacity:1}}
+
+/* hint / reference panel */
+.hint-panel{
+  max-width:640px; margin:0 auto; width:100%;
+  display:flex; flex-direction:column; gap:8px; padding:4px 0 8px;
+  max-height:42vh; overflow-y:auto;
+}
+.said-box{
+  border:2px solid #bfe9ff; background:#eef9ff; border-radius:14px;
+  padding:11px 15px; font-size:14.5px; font-weight:700; line-height:1.55;
+}
+.said-box .who{font-size:11.5px; font-weight:900; color:var(--blue-dark); letter-spacing:.5px; text-transform:uppercase; display:block; margin-bottom:3px}
+.said-box .zh{display:block; margin-top:4px; font-size:12.5px; color:var(--text-light); font-weight:600}
+.hint-title{font-size:12.5px; font-weight:900; color:var(--text-light); text-transform:uppercase; letter-spacing:.6px}
+.chip{
+  text-align:left; background:#fff; border:2px solid var(--gray); border-radius:14px;
+  box-shadow:0 3px 0 var(--gray);
+  padding:11px 15px; font-size:14.5px; font-weight:700; cursor:pointer; color:var(--text);
+  transition:border-color .12s;
+}
+.chip:hover{border-color:var(--blue); color:var(--blue-dark)}
+.chip:active{transform:translateY(3px); box-shadow:0 0 0 var(--gray)}
+.chip .zh{display:block; font-size:12px; color:var(--text-light); font-weight:600; margin-top:2px}
+
+/* input bar */
+.input-bar{border-top:2px solid var(--gray); background:#fff; padding:12px 16px 16px}
+.input-inner{max-width:640px; margin:0 auto; display:flex; flex-direction:column; gap:10px}
+.input-row{display:flex; gap:10px}
+.input-row input{
+  flex:1; border:2px solid var(--gray); border-radius:14px;
+  padding:13px 16px; font-size:15.5px; font-weight:700; font-family:inherit;
+  background:#f7f7f7; outline:none; color:var(--text);
+}
+.input-row input:focus{border-color:var(--blue); background:#fff}
+.input-row input.shake{animation:shake .4s; border-color:var(--red)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.helper-row{display:flex; justify-content:space-between; align-items:center}
+.hint-btn{
+  background:none; border:none; cursor:pointer;
+  font-size:13.5px; font-weight:900; color:var(--blue); letter-spacing:.4px;
+  padding:4px 6px; border-radius:8px; text-transform:uppercase;
+}
+.hint-btn:hover{background:#e6f6ff}
+.skip-btn{
+  background:none; border:none; cursor:pointer;
+  font-size:13px; font-weight:800; color:var(--gray-dark); padding:4px 6px;
+}
+.skip-btn:hover{color:var(--text-light)}
+
+/* ============ completion ============ */
+#view-done{
+  min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:30px 20px; position:relative; overflow:hidden;
+}
+#done-face{width:150px; height:156px; margin:0 auto; animation:bob 2s ease-in-out infinite}
+#done-face svg{width:100%; height:100%}
+#view-done h2{font-size:28px; font-weight:900; margin-top:12px; color:var(--green)}
+#view-done .sub{color:var(--text-light); margin-top:8px; font-weight:700}
+.stats{display:flex; gap:14px; margin-top:26px; flex-wrap:wrap; justify-content:center}
+.stat{
+  border:2px solid var(--gray); border-radius:16px; padding:14px 22px; min-width:120px;
+}
+.stat .label{font-size:11px; font-weight:900; letter-spacing:.8px; text-transform:uppercase}
+.stat .value{font-size:24px; font-weight:900; margin-top:4px}
+.stat.xp{border-color:var(--yellow)} .stat.xp .label,.stat.xp .value{color:var(--yellow)}
+.stat.acc{border-color:var(--green)} .stat.acc .label,.stat.acc .value{color:var(--green)}
+.stat.hp{border-color:var(--red)} .stat.hp .label,.stat.hp .value{color:var(--red)}
+.done-actions{margin-top:32px; display:flex; gap:14px; flex-wrap:wrap; justify-content:center}
+.confetti{position:absolute; top:-12px; font-size:20px; animation:fall linear forwards; pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg); opacity:.6}}
+
+/* ============ settings modal ============ */
+.modal-mask{
+  position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:50;
+  display:flex; align-items:center; justify-content:center; padding:20px;
+}
+.modal{
+  background:#fff; border-radius:20px; max-width:440px; width:100%;
+  padding:26px 24px; max-height:88vh; overflow-y:auto;
+}
+.modal h3{font-size:20px; font-weight:900}
+.modal p{font-size:13.5px; color:var(--text-light); line-height:1.6; margin-top:8px}
+.switch-row{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-top:18px; padding:14px; border:2px solid var(--gray); border-radius:14px;
+}
+.switch-row .lbl{font-weight:800; font-size:15px}
+.switch{position:relative; width:52px; height:30px; flex-shrink:0}
+.switch input{opacity:0; width:0; height:0}
+.slider{
+  position:absolute; inset:0; background:var(--gray); border-radius:999px; cursor:pointer;
+  transition:background .2s;
+}
+.slider::before{
+  content:''; position:absolute; width:24px; height:24px; border-radius:50%;
+  background:#fff; top:3px; left:3px; transition:transform .2s; box-shadow:0 1px 3px rgba(0,0,0,.25);
+}
+.switch input:checked + .slider{background:var(--green)}
+.switch input:checked + .slider::before{transform:translateX(22px)}
+.modal input[type=password], .modal input[type=text]{
+  width:100%; margin-top:10px; border:2px solid var(--gray); border-radius:12px;
+  padding:11px 14px; font-size:14px; font-family:inherit; font-weight:700; outline:none;
+}
+.modal input:focus{border-color:var(--blue)}
+.modal .note{font-size:12px; color:var(--gray-dark); margin-top:8px; line-height:1.5}
+.modal .actions{display:flex; gap:10px; margin-top:22px; justify-content:flex-end}
+
+/* ============ SVG characters — vivid, Duolingo-style ============ */
+.face{display:block; overflow:visible}
+.face .ch{transform-box:fill-box; transform-origin:50% 100%}
+/* idle life: breathing torso, swaying head, wandering eyes, blinking */
+.face .torso{transform-box:fill-box; transform-origin:50% 100%; animation:breathe 3.4s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.04)}}
+.face .head{transform-box:fill-box; transform-origin:50% 78%; animation:headSway 5.6s ease-in-out infinite}
+@keyframes headSway{0%,100%{transform:rotate(-1.3deg)}50%{transform:rotate(1.5deg)}}
+.face .eye-n{transform-box:fill-box; transform-origin:center; animation:eyeblink 4.4s infinite}
+@keyframes eyeblink{0%,90.5%,94.5%,100%{transform:scaleY(1)}92.5%{transform:scaleY(.08)}}
+.face .pupil{transform-box:fill-box; animation:lookAround 7.5s ease-in-out infinite}
+@keyframes lookAround{0%,30%,100%{transform:translateX(0)}36%,50%{transform:translateX(2.4px)}56%,70%{transform:translateX(0)}76%,88%{transform:translateX(-2.2px)}}
+/* arms */
+.face .arm{transform-box:fill-box; transition:transform .35s ease}
+.face .arm-l{transform-origin:92% 10%}
+.face .arm-r{transform-origin:8% 10%}
+/* expression parts hidden by default */
+.face .eye-h,.face .m-open,.face .m-grin,.face .m-sad{opacity:0}
+.face .m-open,.face .beak{transform-box:fill-box; transform-origin:center}
+/* talking: mouth + head bobs along */
+.face.talk .m-smile{opacity:0}
+.face.talk .m-open{opacity:1; animation:talkAnim .28s infinite alternate}
+.face.talk .beak{animation:talkAnim .28s infinite alternate}
+.face.talk .head{animation:headTalk .55s ease-in-out infinite}
+@keyframes headTalk{0%,100%{transform:translateY(0) rotate(-.6deg)}50%{transform:translateY(2px) rotate(.9deg)}}
+@keyframes talkAnim{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
+/* happy: grin, ^^ eyes, arms up, squash-and-stretch jump */
+.face.happy .m-smile,.face.happy .m-sad,.face.happy .m-open{opacity:0}
+.face.happy .m-grin{opacity:1}
+.face.happy .eye-n{opacity:0}
+.face.happy .eye-h{opacity:1}
+.face.happy .arm-l{transform:rotate(150deg)}
+.face.happy .arm-r{transform:rotate(-150deg)}
+.face.happy .ch{animation:cheer .6s ease 2}
+@keyframes cheer{0%,100%{transform:translateY(0) scaleY(1)}25%{transform:translateY(3px) scaleY(.94)}60%{transform:translateY(-11px) scaleY(1.04)}}
+/* sad: frown, drooping head and arms */
+.face.sad .m-smile{opacity:0}
+.face.sad .m-sad{opacity:1}
+.face .brow{transform-box:fill-box; transform-origin:center; transition:transform .25s}
+.face.sad .brow-l{transform:rotate(14deg) translateY(2px)}
+.face.sad .brow-r{transform:rotate(-14deg) translateY(2px)}
+.face.sad .head{animation:none; transform:rotate(3.5deg) translateY(3px)}
+.face.sad .arm-l{transform:rotate(-8deg)}
+.face.sad .arm-r{transform:rotate(8deg)}
+/* wave hello at the start of a conversation */
+.face.wave .arm-r{animation:waveArm 1.9s ease-in-out}
+@keyframes waveArm{0%,100%{transform:rotate(0)}22%{transform:rotate(-150deg)}38%{transform:rotate(-116deg)}54%{transform:rotate(-150deg)}70%{transform:rotate(-116deg)}86%{transform:rotate(-148deg)}}
+/* emote particles around the big character */
+.scene-face{position:relative}
+.sparkle{
+  position:absolute; font-size:20px; pointer-events:none;
+  animation:sparklePop 1.1s ease-out forwards;
+}
+@keyframes sparklePop{0%{transform:scale(.3) translateY(4px); opacity:0}30%{opacity:1}100%{transform:scale(1.25) translateY(-30px); opacity:0}}
+
+@media (max-width:520px){
+  .stats{gap:10px}
+  .hero h1{font-size:23px}
+}
+@media (max-height:640px){
+  .scene-face{width:120px; height:124px}
+  .scene{gap:8px; padding:10px 16px}
+}
+</style>
 </head>
-<body class="antialiased">
+<body>
 
-    <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-sm">
-        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-slate-800">
-                SummerDaze<span class="text-teal-500">.</span>
-            </a>
-            <nav class="hidden md:flex items-center space-x-8 text-slate-600 font-medium">
-                <a href="#team" class="hover:text-teal-500 transition">导师团队</a>
-                <a href="#highschool" class="hover:text-teal-500 transition text-sky-600 font-bold">高中/衔接服务</a>
-                <a href="#pricing" class="hover:text-teal-500 transition text-teal-600 font-bold">本科/研究生申请服务</a>
-                <a href="#servicedetails" class="hover:text-teal-500 transition">服务详情</a>
-                <a href="#disclaimer" class="hover:text-teal-500 transition">重要须知</a>
-                <a href="./practice.html" class="hover:text-teal-500 transition text-lime-600 font-bold">🦉 英语对话练习</a>
-            </nav>
-            <a href="#contact" class="bg-teal-500 text-white font-semibold px-5 py-2 rounded-lg cta-button">
-                免费咨询
-            </a>
-        </div>
-    </header>
+<!-- ==================== HOME ==================== -->
+<div id="view-home">
+  <header class="home-header">
+    <a class="logo" href="#">SummerDaze<span>·English</span></a>
+    <div class="right">
+      
+      <button class="icon-btn" id="btn-settings" title="设置 / AI 模式">⚙️</button>
+    </div>
+  </header>
 
-    <main id="home" class="pt-24 md:pt-32">
-        <section class="container mx-auto px-6 text-center pt-20 relative overflow-hidden">
-    
-            <div id="threejs-container" class="absolute inset-0 z-0 opacity-20">
-            </div>
-            
-            <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight relative z-10">
-                你的专属<span class="gradient-text">学校申请合伙人</span>
-            </h1>
-            
-            <p class="mt-6 text-lg md:text-xl max-w-3xl mx-auto text-slate-600 relative z-10">
-            </p>
-            <div class="mt-8 flex justify-center gap-4 relative z-10">
-            </div>
-        </section>
-        
-        <section class="container mx-auto px-6 text-center pt-10">
+  <section class="hero">
+    <div class="owl" id="hero-owl"></div>
+    <h1>留学英语情景对话练习</h1>
+    <p>像面对面聊天一样：角色会<b>开口对你说英语</b>，先认真听、自己回答。<br>
+    听不清可以 <b>🔊 重听</b>；实在不会回答，再点 <b>💡</b> 查看原文和参考回答。</p>
+    <div class="ai-badge" id="mode-badge">📖 内置剧本模式（免费，无需联网 API）</div>
+  </section>
 
-            <p class="mt-6 text-lg md:text-lg max-w-3xl mx-auto text-slate-600">
-                    团队汇集加州理工学院、哥伦比亚大学、芝加哥大学、南加大、港大、港科大等offer背景，我们只用实战经验，带你冲进北美/香港名校。
-            </p>
-            <div class="mt-8 flex justify-center gap-4 flex-wrap">
-                <a href="#contact" class="bg-teal-500 text-white font-bold text-lg px-8 py-4 rounded-lg cta-button">
-                    立即免费咨询
-                </a>
-                <a href="./practice.html" class="bg-lime-500 text-white font-bold text-lg px-8 py-4 rounded-lg cta-button">
-                    🦉 免费英语情景对话练习
-                </a>
-            </div>
-            
-            <!-- <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight relative z-10">
-                你的专属<span class="gradient-text">学校申请合伙人</span>
-            </h1> -->
-            
-        </div>
-        <div class="my-20"> <p class="text-sm text-slate-500 font-medium">团队成员背景或录取院校包括</p>
-            <div class="mt-8 flex justify-center items-center flex-wrap gap-x-6 md:gap-x-8 gap-y-4 opacity-70 py-8"> 
-                <img src="./school icon/caltech.png" alt="加州理工学院 Logo" class="h-11 md:h-11">
-                <img src="./school icon/uchicago.png" alt="芝加哥大学 Logo" class="h-9 md:h-15">
-                <img src="./school icon/cu.png" alt="哥伦比亚大学 Logo" class="h-9 md:h-15">
-                <img src="./school icon/usc.png" alt="南加州大学 Logo" class="h-9 md:h-15">
-                <img src="./school icon/purdue.png" alt="普渡大学 Logo" class="h-9 md:h-15">
-                <img src="./school icon/waterloo.png" alt="滑铁卢大学 Logo" class="h-9 md:h-15">
-                <img src="./school icon/kcl.png" alt="伦敦大学国王学院 Logo" class="h-9 md:h-15">
-                <img src="./school icon/hku.png" alt="香港大学 Logo" class="h-9 md:h-15">
-                <img src="./school icon/hkust.png" alt="香港科技大学 Logo" class="h-9 md:h-15">
-                
-            </div>
-        </div>
-        <div class="mt-16 py-8 bg-teal-50/50 rounded-2xl border-2 border-teal-200 shadow-xl max-w-4xl mx-auto backdrop-blur-sm">
-        <div class="text-center px-4">
-            <p class="text-xl md:text-2xl font-extrabold text-slate-800 flex items-center justify-center gap-3">
-                <i data-lucide="sparkles" class="w-7 h-7 text-amber-500 fill-amber-500"></i>
-                一站式留学安顿方案 <span class="text-teal-600">|</span> 签证、住宿、接送机<span class="text-teal-600">|</span>学生活动
-            </p>
-            
-            <p class="mt-3 text-lg text-slate-600 max-w-2xl mx-auto font-medium">
-               <span class="font-bold text-slate-700">2026 奖学金申请通道</span> 现已开放，<span class="font-bold text-slate-700">10000元</span>奖学金等你来拿。加入微信群来认识新的小伙伴吧
-            </p>
+  <div class="scenarios" id="scenario-list"></div>
+</div>
 
-            <div class="mt-6 flex justify-center items-center gap-x-10 md:gap-x-15">
-                <a href="#highschool" class="bg-sky-500 text-white font-bold text-base px-6 py-3 rounded-xl cta-button inline-flex items-center gap-2 hover:bg-teal-700">
-                    <!-- <i data-lucide="book-open" class="w-5 h-5"></i> -->
-                    高中/本科衔接服务
-                </a>
-                <a href="#features" class="bg-teal-600 text-white font-bold text-base px-6 py-3 rounded-xl cta-button inline-flex items-center gap-2 hover:bg-teal-700">
-                    <!-- <i data-lucide="book-open" class="w-5 h-5"></i> -->
-                    本科/研究生申请服务
-                </a>
-            </div>
-        </div>
-        </section>
-        <section id="highschool" class="py-20 md:py-28 bg-sky-50 mt-20">
-            <div class="container mx-auto px-6">
-                <div class="text-center">
-                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">🚀 高中/本科衔接 一站式留学安顿服务</h2>
-                    <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">
-                        我们为尚未毕业的高中生、或计划通过语言班/社区大学过渡的学生，提供从申请到落地生活的全方位支持，让您和您的家人安心无忧。
-                    </p>
-                    <a href="#contact" class="mt-6 inline-block bg-sky-500 text-white font-bold text-lg px-8 py-3 rounded-lg cta-button">
-                        免费定制您的“衔接+安顿”计划
-                    </a>
-                </div>
+<!-- ==================== PRACTICE SCENE ==================== -->
+<div id="view-chat" class="hidden">
+  <div class="chat-top">
+    <button class="quit" id="btn-quit" title="退出练习">✕</button>
+    <div class="progress"><div class="fill" id="progress-fill"></div></div>
+    <div class="xp-pill" id="xp-pill">⚡0</div>
+    <div class="hearts" id="hearts">❤️ 3</div>
+  </div>
+  <div class="scenario-banner" id="scenario-banner"></div>
 
-                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div class="bg-white p-8 rounded-xl shadow-lg border border-sky-200">
-                        <i data-lucide="file-check-2" class="w-10 h-10 text-sky-600"></i>
-                        <h3 class="mt-4 text-xl font-bold text-slate-800">定制化申请与奖学金</h3>
-                        <p class="mt-2 text-slate-600">目标锁定语言学校、预科、社区大学。现正火热招募**2026奖学金**申请者，冲刺学费减免。</p>
-                    </div>
-                    <div class="bg-white p-8 rounded-xl shadow-lg border border-sky-200">
-                        <i data-lucide="plane" class="w-10 h-10 text-sky-600"></i>
-                        <h3 class="mt-4 text-xl font-bold text-slate-800">全程签证与行前指导</h3>
-                        <p class="mt-2 text-slate-600">专业的签证材料梳理、面试辅导，并提供全面的行前准备清单与指导。</p>
-                    </div>
-                    <div class="bg-white p-8 rounded-xl shadow-lg border border-sky-200">
-                        <i data-lucide="home" class="w-10 h-10 text-sky-600"></i>
-                        <h3 class="mt-4 text-xl font-bold text-slate-800">住宿安排与接送机</h3>
-                        <p class="mt-2 text-slate-600">协助安排安全可靠的住宿（寄宿家庭/校内/公寓），并提供点对点接送机服务。</p>
-                    </div>
-                    <div class="bg-white p-8 rounded-xl shadow-lg border border-sky-200">
-                        <i data-lucide="map-pin" class="w-10 h-10 text-sky-600"></i>
-                        <h3 class="mt-4 text-xl font-bold text-slate-800">生活落地与安顿</h3>
-                        <p class="mt-2 text-slate-600">协助办理当地手机卡、银行开户、基础生活区域导览等，快速融入当地生活。</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+  <div class="scene">
+    <div class="scene-name"><span id="stage-name"></span><span class="zh" id="stage-zh"></span></div>
+    <div class="scene-face" id="stage-face"></div>
+    <div class="speak-row">
+      <button class="listen-btn" id="btn-replay">🔊 再听一遍</button>
+      <div class="sound-wave hidden" id="sound-wave"><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="scene-caption hidden" id="scene-caption"></div>
+  </div>
 
-        <section id="features" class="py-20 md:py-28 bg-white mt-20">
-            <div class="container mx-auto px-6">
-                <div class="text-center">
-                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">本科/研究生留学申请，你是否也“压力山大”？</h2>
-                    <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">别怕，这些坑我们都踩过，让我们一起绕开。</p>
-                </div>
-                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div class="bg-slate-50 p-8 rounded-xl border border-slate-200/80"><i data-lucide="compass" class="w-12 h-12 text-teal-500"></i><h3 class="mt-4 text-xl font-bold text-slate-800">信息过载，无从下手？</h3><p class="mt-2 text-slate-600">海量信息真假难辨，宝贵时间浪费在无效搜索上。</p></div>
-                    <div class="bg-slate-50 p-8 rounded-xl border border-slate-200/80"><i data-lucide="trending-up" class="w-12 h-12 text-teal-500"></i><h3 class="mt-4 text-xl font-bold text-slate-800">背景平平，缺乏亮点？</h3><p class="mt-2 text-slate-600">GPA不高，科研平平，不知道如何在文书中脱颖而出。</p></div>
-                    <div class="bg-slate-50 p-8 rounded-xl border border-slate-200/80"><i data-lucide="file-text" class="w-12 h-12 text-teal-500"></i><h3 class="mt-4 text-xl font-bold text-slate-800">DDL临近，文书难产？</h3><p class="mt-2 text-slate-600">PS迟迟动不了笔，或反复修改仍不满意，陷入焦虑。</p></div>
-                    <div class="bg-slate-50 p-8 rounded-xl border border-slate-200/80"><i data-lucide="shield-off" class="w-12 h-12 text-teal-500"></i><h3 class="mt-4 text-xl font-bold text-slate-800">中介太坑，不敢相信？</h3><p class="mt-2 text-slate-600">流水线作业，模板化文书，把未来交给不确定的运气？</p></div>
-                </div>
-            </div>
-        </section>
+  <div class="input-bar">
+    <div class="input-inner">
+      <div id="hint-panel" class="hint-panel hidden"></div>
+      <div class="helper-row">
+        <button class="hint-btn" id="btn-hint">💡 不会回答？看原文和参考回答</button>
+        <button class="skip-btn hidden" id="btn-finish-ai">结束对话 ➜</button>
+      </div>
+      <div class="input-row">
+        <input type="text" id="user-input" placeholder="听完后，用英语输入你的回答…" autocomplete="off">
+        <button class="btn" id="btn-send">发送</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-        <section id="team" class="py-20 md:py-28">
-            <div class="container mx-auto px-6">
-                <div class="text-center">
-                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">认识一下核心团队成员</h2>
-                    <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">我们不讲理论，只讲我们是怎么赢的。我们的成功经验，就是你最好的攻略。</p>
-                </div>
-                <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                     <div class="bg-white rounded-xl shadow-lg overflow-hidden text-center transition hover:scale-105 hover:shadow-2xl duration-300"><img src="./Ivy.jpg" alt="Ivy学姐" class="w-full h-56 object-cover"><div class="p-6"><h3 class="text-xl font-bold text-slate-800">Ivy</h3><p class="mt-1 text-teal-600 font-semibold">核心老师</p><p class="mt-1 text-slate-500">University of Southern California</p><p class="mt-4 text-sm text-slate-600">“深挖每段经历，让文书成为你的王牌。同在崴，沟通无障碍！”</p></div></div>
-                     <div class="bg-white rounded-xl shadow-lg overflow-hidden text-center transition hover:scale-105 hover:shadow-2xl duration-300"><img src="./woody.jpeg" alt="Woody学长" class="w-full h-56 object-cover"><div class="p-6"><h3 class="text-xl font-bold text-slate-800">Woody</h3><p class="mt-1 text-sky-600 font-semibold">核心老师</p><p class="mt-1 text-slate-500">USC&Waterloo&港科大</p><p class="mt-4 text-sm text-slate-600">“从找到您的独特定位开始，我们将一同制定缜密计划，让前往北美深造的每一步都清晰而踏实。”</p></div></div>
-                     <div class="bg-white rounded-xl shadow-lg overflow-hidden text-center transition hover:scale-105 hover:shadow-2xl duration-300"><img src="./fly.jfif" alt="Fly学姐" class="w-full h-56 object-cover"><div class="p-6"><h3 class="text-xl font-bold text-slate-800">Fly</h3><p class="mt-1 text-teal-600 font-semibold">核心老师</p><p class="mt-1 text-slate-500">King's College London</p><p class="mt-4 text-sm text-slate-600">“深挖每段经历，让文书成为你的王牌”</p></div></div>
-                     <div class="bg-white rounded-xl shadow-lg overflow-hidden text-center transition hover:scale-105 hover:shadow-2xl duration-300"><img src="./jason.jfif" alt="Jason学长" class="w-full h-56 object-cover"><div class="p-6"><h3 class="text-xl font-bold text-slate-800">Jason</h3><p class="mt-1 text-sky-600 font-semibold">核心老师</p><p class="mt-1 text-slate-500">King's College London</p><p class="mt-4 text-sm text-slate-600">“深挖每段经历，让文书成为你的王牌”</p></div></div>
-   
-                    <!-- <div class="bg-white rounded-xl shadow-lg overflow-hidden text-center transition hover:scale-105 hover:shadow-2xl duration-300"><img src="./Image_fx.jpg" alt="导师" class="w-full h-56 object-cover"><div class="p-6"><h3 class="text-xl font-bold text-slate-800">咨询导师团</h3><p class="mt-1 text-indigo-600 font-semibold">核心导师群</p><p class="mt-1 text-slate-500">主要集中在北美与香港</p><p class="mt-4 text-sm text-slate-600">“汇集Stanford，UCLA，多伦多大学等超亲密朋友圈，为学生咨询提供多元化视角和支持。”</p></div></div> -->
-                </div>
-            </div>
-        </section>
+<!-- ==================== DONE ==================== -->
+<div id="view-done" class="hidden">
+  <div id="done-face"></div>
+  <h2>🎉 对话完成！</h2>
+  <div class="sub" id="done-sub"></div>
+  <div class="stats">
+    <div class="stat xp"><div class="label">总经验 XP</div><div class="value" id="done-xp">0</div></div>
+    <div class="stat acc"><div class="label">独立作答</div><div class="value" id="done-acc">0%</div></div>
+    <div class="stat hp"><div class="label">剩余体力</div><div class="value" id="done-hearts">❤️3</div></div>
+  </div>
+  <div class="done-actions">
+    <button class="btn btn-white" id="btn-again">再练一次</button>
+    <button class="btn" id="btn-home">继续 · 选新场景</button>
+  </div>
+</div>
 
-        <section id="pricing" class="py-20 md:py-28 bg-white">
-            <div class="container mx-auto px-6">
-                <div class="text-center">
-                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">选择最适合你的计划</h2>
-                    <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">透明定价，无隐藏消费。我们的目标是用最合适的教育投资，帮你拿到最具含金量的Offer。</p>
-                </div>
-                <div class="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto items-start">
-                    <!-- Pricing Card 1 -->
-                    <div class="border-2 border-slate-200 rounded-2xl p-8 flex flex-col transition hover:border-slate-300 h-full">
-                        <h3 class="text-xl font-bold text-slate-800">王牌全包套餐</h3>
-                        <p class="mt-2 text-slate-500">适合目标明确，需要全面支持的你</p>
-                        <p class="mt-6 text-5xl font-extrabold text-slate-900">¥16,800</p>
-                        <ul class="mt-8 space-y-4 text-slate-600 flex-grow">
-                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>申请地区: 北美/英国/香港</li>
-                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>申请院校: 8所</li>
-                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>全套文书(PS/SOP)精修</li>
-                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>学姐及local学长全程规划指导</li>
-                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>面试指导</li>
-                        </ul>
-                        <a href="#contact" class="mt-8 w-full text-center bg-slate-100 text-slate-800 font-bold py-3 rounded-lg hover:bg-slate-200 transition">选择此计划</a>
-                    </div>
-                    <!-- Pricing Card 2 (Recommended) -->
-                    <div class="border-2 border-teal-500 rounded-2xl p-8 flex flex-col relative shadow-2xl lg:scale-105 h-full">
-                        <span class="absolute top-0 -translate-y-1/2 bg-teal-500 text-white text-xs font-bold px-3 py-1 rounded-full">强烈推荐</span>
-                        <h3 class="text-xl font-bold text-slate-800">创始合伙人套餐(早鸟价)</h3> 
-                        <h3 class="text-xl font-bold text-slate-800">仅限10人</h3> 
+<!-- ==================== SETTINGS MODAL ==================== -->
+<div class="modal-mask hidden" id="settings-mask">
+  <div class="modal">
+    <h3>⚙️ 练习设置</h3>
+    <p>默认使用<b>内置剧本模式</b>：完全免费、离线可用，按精心设计的对话剧本练习。开启 <b>AI 智能模式</b>后，将由 Claude 大模型实时扮演对话角色，可以自由发挥聊天。</p>
+    <div class="switch-row">
+      <span class="lbl">🤖 AI 智能对话模式</span>
+      <label class="switch">
+        <input type="checkbox" id="ai-toggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div id="api-key-box" class="hidden">
+      <input type="password" id="api-key-input" placeholder="粘贴你的 Anthropic API Key (sk-ant-…)">
+      <div class="note">🔒 Key 只保存在你自己浏览器的 localStorage 中，直接调用 Anthropic 官方接口，不会发送到任何其他服务器。可在 platform.claude.com 获取。</div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-white" id="btn-settings-close">取消</button>
+      <button class="btn" id="btn-settings-save">保存</button>
+    </div>
+  </div>
+</div>
 
-                        <p class="mt-2 text-slate-500">为前几位客户准备的超值之选</p>
-                        <p class="mt-6 text-5xl font-extrabold text-slate-900">¥9,999</p>
-                        <ul class="mt-8 space-y-4 text-slate-600 flex-grow">
-                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>申请地区: 北美/英国/香港</li>
-                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i><span class="font-bold">申请院校:7所（可加）</span></li>
-                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>核心文书(PS/SOP)精修</li>
-                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>CV/推荐信精修</li>
-                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>GRE/托福雅思/绩点备考规划</li>
-                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>学姐全程规划指导</li>
-                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>面试指导</li>
-                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>三段式付费</li>
+<script>
+/* =====================================================
+   Scenario data — scripted dialogue trees
+   Each step: { ai, zh, options:[{text, zh, keys:[ "word|synonym", ... ]}] }
+   The last step may omit options → conversation ends.
+===================================================== */
+const SCENARIOS = [
+{
+  id:'coffee', emoji:'☕', title:'Ordering Coffee', zh:'咖啡店点单', level:1, char:'barista',
+  role:'Barista · 咖啡师', intro:'你走进一家咖啡店，店员正微笑着向你打招呼。',
+  steps:[
+    { ai:"Hi there! Welcome to SummerDaze Café. What can I get for you today?",
+      zh:'你好！欢迎来到 SummerDaze 咖啡馆。今天想喝点什么？',
+      options:[
+        {text:"Hi! Can I get a latte, please?", zh:'你好！请给我一杯拿铁。', keys:['latte|coffee|cappuccino|americano|mocha']},
+        {text:"Could I have a cup of green tea?", zh:'可以给我一杯绿茶吗？', keys:['tea']},
+        {text:"What do you recommend?", zh:'你有什么推荐吗？', keys:['recommend|popular|suggest|best']}
+      ]},
+    { ai:"Sure thing! What size would you like — small, medium, or large?",
+      zh:'没问题！要什么杯型 —— 小杯、中杯还是大杯？',
+      options:[
+        {text:"Medium, please.", zh:'中杯，谢谢。', keys:['small|medium|large|grande|big']},
+        {text:"A large one, please.", zh:'要大杯的，谢谢。', keys:['small|medium|large|grande|big']}
+      ]},
+    { ai:"Got it. Would you like it hot or iced?",
+      zh:'好的。要热的还是冰的？',
+      options:[
+        {text:"Iced, please. It's so hot today!", zh:'冰的，今天太热了！', keys:['iced|ice|cold']},
+        {text:"Hot, please.", zh:'热的，谢谢。', keys:['hot|warm']}
+      ]},
+    { ai:"Nice choice! Anything else? Our blueberry muffins are fresh out of the oven.",
+      zh:'好选择！还要别的吗？我们的蓝莓玛芬刚出炉。',
+      options:[
+        {text:"No, thanks. That's all.", zh:'不用了，谢谢。就这些。', keys:["no|that's all|thats all|nothing|just"]},
+        {text:"Sure, I'll take one muffin too.", zh:'好啊，那也来一个玛芬。', keys:['muffin|yes|sure|okay|ok|one']}
+      ]},
+    { ai:"Great! That'll be $6.50. For here or to go?",
+      zh:'好的！一共 6.5 美元。在这里喝还是带走？',
+      options:[
+        {text:"To go, please.", zh:'带走，谢谢。', keys:['to go|takeaway|take away|take out|takeout']},
+        {text:"For here, please.", zh:'在这里喝。', keys:['here|stay|for here']}
+      ]},
+    { ai:"Perfect. Can I get a name for the order?",
+      zh:'好的。请问点单写什么名字？',
+      options:[
+        {text:"It's Ivy. I-V-Y.", zh:'我叫 Ivy。I-V-Y。', keys:["it's|its|name|i'm|i am|call me|my"]}
+      ]},
+    { ai:"Thanks! Your order will be ready in a few minutes. Have a great day!",
+      zh:'谢谢！几分钟后就好。祝你今天愉快！' }
+  ]
+},
+{
+  id:'airport', emoji:'✈️', title:'Airport Check-in', zh:'机场值机', level:1, char:'agent',
+  role:'Check-in Agent · 值机员', intro:'你到达机场，正在航空公司柜台办理值机手续。',
+  steps:[
+    { ai:"Good morning! May I see your passport and ticket, please?",
+      zh:'早上好！请出示您的护照和机票。',
+      options:[
+        {text:"Sure, here you are.", zh:'好的，给您。', keys:['here|sure|of course|yes']}
+      ]},
+    { ai:"Thank you. And where are you flying today?",
+      zh:'谢谢。您今天飞往哪里？',
+      options:[
+        {text:"I'm flying to Los Angeles.", zh:'我飞往洛杉矶。', keys:["to|flying|going|los angeles|new york|london|toronto"]}
+      ]},
+    { ai:"Great. How many bags are you checking in?",
+      zh:'好的。您要托运几件行李？',
+      options:[
+        {text:"Just one suitcase.", zh:'就一个行李箱。', keys:['one|two|1|2|bag|suitcase|just|luggage']},
+        {text:"Two bags, please.", zh:'两件行李。', keys:['one|two|1|2|bag|suitcase|luggage']}
+      ]},
+    { ai:"Please put it on the scale... Hmm, it's slightly overweight. You'll need to remove something, or pay an extra fee.",
+      zh:'请把行李放到秤上……嗯，稍微超重了。您需要拿出一些东西，或者支付超重费。',
+      options:[
+        {text:"How much is the fee?", zh:'超重费是多少？', keys:['how much|fee|pay|cost|charge']},
+        {text:"OK, I'll take something out.", zh:'好吧，我拿出一些东西。', keys:['take|remove|out|repack|something']}
+      ]},
+    { ai:"The fee is $50, or you can move about two kilograms into your carry-on bag.",
+      zh:'超重费是 50 美元，或者您可以把大约两公斤的东西放进随身行李。',
+      options:[
+        {text:"I'll move some things to my carry-on, then.", zh:'那我把一些东西放到随身行李里吧。', keys:['carry|move|then|ok|okay|put']},
+        {text:"That's fine, I'll pay the fee.", zh:'没关系，我付超重费。', keys:['pay|fee|fine|card']}
+      ]},
+    { ai:"Perfect, that works. Now, would you like a window seat or an aisle seat?",
+      zh:'好的，可以了。您想要靠窗还是靠过道的座位？',
+      options:[
+        {text:"A window seat, please.", zh:'靠窗的座位，谢谢。', keys:['window|aisle|middle']},
+        {text:"An aisle seat would be great.", zh:'靠过道的就很好。', keys:['window|aisle|middle']}
+      ]},
+    { ai:"All set! Here's your boarding pass. Boarding starts at 9:30 at Gate 12. Have a nice flight!",
+      zh:'都办好了！这是您的登机牌。9:30 在 12 号登机口开始登机。祝您旅途愉快！' }
+  ]
+},
+{
+  id:'immigration', emoji:'🛂', title:'Immigration Interview', zh:'入境边检问答', level:2, char:'officer',
+  role:'Immigration Officer · 边检官', intro:'你刚下飞机，正在排队过边检。轮到你了 —— 沉着回答边检官的问题。',
+  steps:[
+    { ai:"Next, please. Good afternoon. What's the purpose of your visit?",
+      zh:'下一位。下午好。您此行的目的是什么？',
+      options:[
+        {text:"I'm here to study. I'm an international student.", zh:'我是来读书的，我是国际学生。', keys:['study|student|school|university|studying']}
+      ]},
+    { ai:"I see. Which school will you be attending?",
+      zh:'明白了。您将就读哪所学校？',
+      options:[
+        {text:"I'll be studying at the University of Southern California.", zh:'我将就读南加州大学。', keys:['university|college|usc|school|attending|studying at']}
+      ]},
+    { ai:"And how long do you plan to stay in the United States?",
+      zh:'您计划在美国停留多久？',
+      options:[
+        {text:"About four years, for my bachelor's degree.", zh:'大约四年，读完本科学位。', keys:["year|years|month|months|semester|degree|program|four|two"]},
+        {text:"Two years. I'm doing a master's program.", zh:'两年，我读硕士项目。', keys:["year|years|month|months|master|program|two"]}
+      ]},
+    { ai:"Where will you be staying?",
+      zh:'您将住在哪里？',
+      options:[
+        {text:"I'll be living in the on-campus dormitory.", zh:'我会住在校内宿舍。', keys:['dorm|dormitory|campus|apartment|homestay|live|living|stay|staying']}
+      ]},
+    { ai:"Do you have your I-20 form and admission letter with you?",
+      zh:'您带了 I-20 表格和录取通知书吗？',
+      options:[
+        {text:"Yes, here they are.", zh:'带了，给您。', keys:['yes|here|sure|of course|i do']}
+      ]},
+    { ai:"Everything looks good. Welcome to the United States, and good luck with your studies!",
+      zh:'一切没有问题。欢迎来到美国，祝你学业顺利！' }
+  ]
+},
+{
+  id:'campus', emoji:'🏫', title:'Making Friends on Campus', zh:'校园交新朋友', level:1, char:'emma',
+  role:'Classmate Emma · 同学', intro:'开学第一周，教室里一位同学在你旁边坐下，主动跟你搭话。',
+  steps:[
+    { ai:"Hey! Is this seat taken? I'm Emma, by the way.",
+      zh:'嗨！这个座位有人吗？对了，我叫 Emma。',
+      options:[
+        {text:"No, go ahead! I'm Ivy. Nice to meet you.", zh:'没有，请坐！我叫 Ivy，很高兴认识你。', keys:['no|go ahead|sure|free|not taken', "i'm|i am|name|nice to meet"]}
+      ]},
+    { ai:"Nice to meet you too! Are you new here? I haven't seen you around before.",
+      zh:'我也很高兴认识你！你是新来的吗？我以前没见过你。',
+      options:[
+        {text:"Yes, this is my first semester. I just moved here.", zh:'是的，这是我的第一个学期，我刚搬来。', keys:['yes|yeah|first|new|just moved|semester']}
+      ]},
+    { ai:"That's exciting! So what are you majoring in?",
+      zh:'太棒了！那你学什么专业？',
+      options:[
+        {text:"I'm majoring in computer science. How about you?", zh:'我学计算机科学专业，你呢？', keys:['major|majoring|computer|business|engineering|economics|study|studying|science']}
+      ]},
+    { ai:"Cool! I'm in the business school. So, how are you finding the campus so far?",
+      zh:'酷！我在商学院。那你觉得校园怎么样？',
+      options:[
+        {text:"It's really big! I actually got lost this morning.", zh:'真的好大！我今天早上还迷路了。', keys:['big|huge|beautiful|nice|great|lost|amazing|love']}
+      ]},
+    { ai:"Haha, everyone gets lost in the first week, don't worry. Hey, do you want to grab lunch together after class?",
+      zh:'哈哈，第一周大家都会迷路，别担心。对了，下课后要不要一起吃午饭？',
+      options:[
+        {text:"Sure, I'd love to! Where do you usually eat?", zh:'当然，我很乐意！你平时都在哪儿吃？', keys:["sure|love|sounds|yes|yeah|great|i'd"]}
+      ]},
+    { ai:"There's a great taco place near the library. Let's meet at the main entrance at noon!",
+      zh:'图书馆附近有一家很棒的墨西哥卷饼店。我们中午在正门见吧！',
+      options:[
+        {text:"Perfect, see you then!", zh:'太好了，到时候见！', keys:['perfect|see you|ok|okay|great|sounds|noon|deal']}
+      ]},
+    { ai:"Awesome, see you at noon!",
+      zh:'太好了，中午见！' }
+  ]
+},
+{
+  id:'apartment', emoji:'🏠', title:'Renting an Apartment', zh:'租房看房', level:2, char:'landlord',
+  role:'Landlord · 房东', intro:'你约好去看一间校外公寓，房东来给你开门。',
+  steps:[
+    { ai:"Hello! You must be here about the apartment. Come on in!",
+      zh:'你好！你就是来看公寓的吧，快请进！',
+      options:[
+        {text:"Yes, thanks for showing me around.", zh:'是的，谢谢您带我看房。', keys:['yes|thanks|thank|hi|hello|nice to meet']}
+      ]},
+    { ai:"This is the one-bedroom unit. It comes furnished with a bed, a desk, and a sofa. What do you think?",
+      zh:'这是一居室，带家具：床、书桌和沙发。你觉得怎么样？',
+      options:[
+        {text:"It looks nice. How much is the rent per month?", zh:'看起来不错。每个月租金多少？', keys:['rent|how much|price|month|cost']},
+        {text:"I like it! Is the rent expensive?", zh:'我喜欢！租金贵吗？', keys:['rent|expensive|price|how much']}
+      ]},
+    { ai:"It's $1,200 a month, and that includes water and internet. Electricity is separate.",
+      zh:'每月 1200 美元，包含水费和网络费。电费另算。',
+      options:[
+        {text:"Is there a deposit?", zh:'需要押金吗？', keys:['deposit']},
+        {text:"How long is the lease?", zh:'租期是多久？', keys:['lease|contract|how long|term']}
+      ]},
+    { ai:"The deposit is one month's rent, and the minimum lease is six months.",
+      zh:'押金是一个月的房租，最短租期是六个月。',
+      options:[
+        {text:"That sounds reasonable. Is the neighborhood quiet and safe?", zh:'听起来挺合理。这附近安静、安全吗？', keys:['safe|quiet|neighborhood|area|reasonable|security']}
+      ]},
+    { ai:"Very safe — campus security patrols nearby, and the bus stop is just a two-minute walk away.",
+      zh:'很安全 —— 校园保安就在附近巡逻，公交站步行两分钟就到。',
+      options:[
+        {text:"Great. When can I move in?", zh:'太好了。我什么时候可以入住？', keys:['move in|when|available|take it|move']}
+      ]},
+    { ai:"It's available from the first of next month. Just bring your ID and we can sign the lease!",
+      zh:'下个月一号起就可以入住。带上你的证件，我们就可以签租约了！' }
+  ]
+},
+{
+  id:'office', emoji:'📚', title:"Professor's Office Hours", zh:'教授答疑时间', level:2, char:'professor',
+  role:'Professor Miller · 教授', intro:'你对作业有疑问，于是来到 Miller 教授的办公室答疑时间。',
+  steps:[
+    { ai:"Come in! You must be from my Monday lecture. What can I help you with?",
+      zh:'请进！你是我周一大课上的学生吧。有什么可以帮你的？',
+      options:[
+        {text:"Hi Professor Miller. I have a question about the assignment.", zh:'Miller 教授您好，我有一个关于作业的问题。', keys:['question|assignment|homework|help|essay|paper']}
+      ]},
+    { ai:"Of course. Which part is giving you trouble?",
+      zh:'当然可以。哪一部分让你觉得困难？',
+      options:[
+        {text:"I'm not sure I understand the requirements for part two.", zh:'我不太确定第二部分的要求是什么。', keys:["part|understand|requirement|not sure|confused|second|two"]}
+      ]},
+    { ai:"Ah, part two. You need to compare the two case studies, and explain which approach works better — and why.",
+      zh:'哦，第二部分。你需要比较两个案例，并说明哪种方法更好 —— 以及为什么。',
+      options:[
+        {text:"I see. How long should the analysis be?", zh:'明白了。分析大概要写多长？', keys:['how long|word|words|page|pages|length|should']}
+      ]},
+    { ai:"Around 1,000 words is fine. Quality matters more than length, though.",
+      zh:'1000 词左右就可以。不过质量比长度更重要。',
+      options:[
+        {text:"Got it. Could I send you a draft before the deadline?", zh:'知道了。我可以在截止日期前先发一份草稿给您吗？', keys:['draft|send|email|deadline|review|feedback|before']}
+      ]},
+    { ai:"Sure, send it to me by Friday and I'll give you some feedback.",
+      zh:'当然可以，周五之前发给我，我会给你一些反馈。',
+      options:[
+        {text:"Thank you so much, Professor. That really helps!", zh:'太感谢您了，教授。这真的很有帮助！', keys:['thank|thanks|appreciate|helps|helpful']}
+      ]},
+    { ai:"You're welcome! Good luck with the assignment.",
+      zh:'不客气！祝你作业顺利。' }
+  ]
+}
+];
 
-                        </ul>
-                        <a href="#contact" class="mt-8 w-full text-center bg-teal-500 text-white font-bold py-3 rounded-lg cta-button">选择此计划</a>
-                    </div>
-                    <!-- Pricing Card 3: Hong Kong Special -->
-                    <div class="border-2 border-slate-200 rounded-2xl p-8 flex flex-col transition hover:border-slate-300 h-full">
-                        <h3 class="text-xl font-bold text-slate-800">香港专项套餐</h3>
-                        <p class="mt-2 text-slate-500">聚焦港校申请，轻量且高效</p>
-                        <p class="mt-6 text-5xl font-extrabold text-slate-900">¥6,999</p>
-                        <ul class="mt-8 space-y-4 text-slate-600 flex-grow">
-                           <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>申请地区: 仅限香港</li>
-                           <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>申请院校: 5所（可加）</li>
-                           <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>核心文书(PS/SOP)精修</li>
-                           <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>CV/推荐信精修</li>
-                           <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>托福雅思/绩点备考规划</li>
-                           <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>学姐及local学长全程规划指导</li>
-                           <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>面试指导</li>
-                           <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0 mt-0.5"></i>三段式付费</li>
+/* =====================================================
+   Cute SVG characters
+===================================================== */
+const CHARACTERS = {
+  barista:  {skin:'#ffd9b8', hair:'#7a4a21', style:'short',    hat:'cap',    hatColor:'#58cc02', hatDark:'#4aa002', shirt:'#3f9d47',
+             voice:{gender:'m', pitch:1.02, rate:.95}},
+  agent:    {skin:'#ffe0c2', hair:'#3b2b20', style:'under',    hat:'pilot',  hatColor:'#2c4a7c', hatDark:'#1f3559', shirt:'#2c4a7c', blush:true,
+             voice:{gender:'f', pitch:1.12, rate:.93}},
+  officer:  {skin:'#e8b98c', hair:'#2b2b2b', style:'under',    hat:'police', hatColor:'#33415e', hatDark:'#242e43', shirt:'#33415e', mustache:true,
+             voice:{gender:'m', pitch:.8,  rate:.88}},
+  emma:     {skin:'#ffdcc0', hair:'#e07b39', style:'long',     shirt:'#b06ae8', blush:true,
+             voice:{gender:'f', pitch:1.25, rate:.98}},
+  landlord: {skin:'#f2c091', hair:'#9b9b9b', style:'baldside', beard:true,   shirt:'#8d6e63',
+             voice:{gender:'m', pitch:.75, rate:.9}},
+  professor:{skin:'#ffd9b8', hair:'#cfcfcf', style:'side',     glasses:true, beard:true, shirt:'#546a8c',
+             voice:{gender:'m', pitch:.85, rate:.88}},
+  me:       {skin:'#ffe2c9', hair:'#4a3050', style:'buns',     shirt:'#1cb0f6', blush:true,
+             voice:{gender:'f', pitch:1.1, rate:.95}}
+};
 
-                        </ul>
-                        <a href="#contact" class="mt-8 w-full text-center bg-slate-100 text-slate-800 font-bold py-3 rounded-lg hover:bg-slate-200 transition">联系我们定制</a>
-                    </div>
-                </div>
-            </div>
-        </section>
+function faceSVG(key, cls){
+  const c = CHARACTERS[key] || CHARACTERS.me;
+  const brow = (c.style === 'baldside' || c.glasses) ? '#8a8a8a' : c.hair;
+  let hairBack = '', hairFront = '', hat = '', extras = '';
 
-        <section id="servicedetails" class="py-20 md:py-28 bg-slate-100">
-            <div class="container mx-auto px-6">
-                <div class="text-center">
-                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">服务流程与付款方案详解</h2>
-                    <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">我们坚信，透明的流程和清晰的目标是成功申请的基石。</p>
-                </div>
-                <div class="mt-16">
-                    <h3 class="text-2xl font-bold text-center text-slate-800 mb-10">三段式付费方案 (创始合伙人套餐为例)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                        <div class="bg-white p-8 rounded-xl shadow-md"><div class="bg-teal-100 text-teal-600 font-bold rounded-full w-16 h-16 flex items-center justify-center text-2xl mx-auto">1</div><h4 class="mt-6 text-xl font-bold text-slate-800">签约与启动</h4><p class="mt-2 text-2xl font-bold text-teal-600">40% <span class="text-lg text-slate-500 font-normal">(¥2,500)</span></p><p class="mt-4 text-left text-slate-600">完成背景评估与申请战略制定，共同确定7所最终院校名单。</p></div>
-                        <div class="bg-white p-8 rounded-xl shadow-md"><div class="bg-teal-100 text-teal-600 font-bold rounded-full w-16 h-16 flex items-center justify-center text-2xl mx-auto">2</div><h4 class="mt-6 text-xl font-bold text-slate-800">文书创作</h4><p class="mt-2 text-2xl font-bold text-teal-600">40% <span class="text-lg text-slate-500 font-normal">(¥5,500)</span></p><p class="mt-4 text-left text-slate-600">打造全套核心申请文书，在你对PS/SOP终稿确认满意后支付。</p></div>
-                        <div class="bg-white p-8 rounded-xl shadow-md"><div class="bg-teal-100 text-teal-600 font-bold rounded-full w-16 h-16 flex items-center justify-center text-2xl mx-auto">3</div><h4 class="mt-6 text-xl font-bold text-slate-800">申请与后续</h4><p class="mt-2 text-2xl font-bold text-teal-600">20% <span class="text-lg text-slate-500 font-normal">(¥1,999)</span></p><p class="mt-4 text-left text-slate-600">所有网申提交完毕后支付，并提供签证、选课等录取后咨询。</p></div>
-                    </div>
-                </div>
-                <div class="mt-20 max-w-4xl mx-auto">
-                     <h3 class="text-2xl font-bold text-center text-slate-800 mb-10">创始合伙人套餐服务范围详解</h3>
-                     <div class="space-y-6">
-                        <div class="bg-white p-6 rounded-lg shadow-sm"><h4 class="font-bold text-slate-800 text-lg">申请院校 (7所)</h4><p class="mt-2 text-slate-600">指7个“学校+专业”的组合。例如“USC的CS专业”算1所。如需增加，额外费用为 ¥800/所。</p></div>
-                        <div class="bg-white p-6 rounded-lg shadow-sm"><h4 class="font-bold text-slate-800 text-lg">核心文书精修</h4><p class="mt-2 text-slate-600">指主个人陈述(PS/SOP)，包含从初稿到终稿的5次主要修改循环，确保质量。</p></div>
-                        <div class="bg-white p-6 rounded-lg shadow-sm"><h4 class="font-bold text-slate-800 text-lg">CV/推荐信指导</h4><p class="mt-2 text-slate-600">我们提供专业CV模板并负责内容优化。推荐信方面，我们不代写，但会提供核心内容草稿并指导你与推荐人沟通。</p></div>
-                        <div class="bg-white p-6 rounded-lg shadow-sm"><h4 class="font-bold text-slate-800 text-lg">备考与绩点规划</h4><p class="mt-2 text-slate-600">此项为“策略指导”，非“培训课程”。高分托福和GRE的导师会为你制定备考时间线、推荐资料、分享高分心得。</p></div>
-                        <div class="bg-white p-6 rounded-lg shadow-sm"><h4 class="font-bold text-slate-800 text-lg">录取后留学咨询</h4><p class="mt-2 text-slate-600">收到Offer后，提供一次性个性化的后续支持，包括非常全面的签证流程讲解、住宿建议、行前准备清单等。</p></div>
-                     </div>
-                </div>
-            </div>
-        </section>
+  if (c.style === 'long'){
+    hairBack = `<path d="M60,10 Q12,14 16,62 Q10,104 28,108 Q38,110 36,92 L36,60 L84,60 L84,92 Q82,110 92,108 Q110,104 104,62 Q108,14 60,10 Z" fill="${c.hair}"/>`;
+    hairFront = `<path d="M20,62 Q18,16 60,16 Q102,16 100,62 Q96,34 68,36 Q38,40 20,62 Z" fill="${c.hair}"/>`;
+  } else if (c.style === 'short'){
+    hairFront = `<path d="M19,62 Q17,14 60,14 Q103,14 101,62 Q99,36 60,36 Q21,36 19,62 Z" fill="${c.hair}"/>`;
+  } else if (c.style === 'side'){
+    hairFront = `<path d="M19,62 Q17,16 60,16 Q103,16 101,62 Q97,32 72,34 Q40,38 19,62 Z" fill="${c.hair}"/>`;
+  } else if (c.style === 'under'){
+    hairFront = `<path d="M19,60 Q19,30 60,30 Q101,30 101,60 Q99,44 60,44 Q21,44 19,60 Z" fill="${c.hair}"/>`;
+  } else if (c.style === 'baldside'){
+    hairFront = `<path d="M19,62 Q17,42 30,34 Q27,52 29,62 Z" fill="${c.hair}"/>
+                 <path d="M101,62 Q103,42 90,34 Q93,52 91,62 Z" fill="${c.hair}"/>`;
+  } else if (c.style === 'buns'){
+    hairFront = `<path d="M19,62 Q17,14 60,14 Q103,14 101,62 Q99,36 60,36 Q21,36 19,62 Z" fill="${c.hair}"/>
+                 <circle cx="22" cy="30" r="10" fill="${c.hair}"/>
+                 <circle cx="98" cy="30" r="10" fill="${c.hair}"/>`;
+  }
 
-        <section id="disclaimer" class="py-20 md:py-28 bg-white">
-            <div class="container mx-auto px-6">
-                <div class="text-center">
-                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">重要须知与服务声明</h2>
-                    <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">在开始我们的合作前，请您仔细阅读以下条款，以确保我们合作愉快、顺畅。</p>
-                </div>
-                <div class="mt-16 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-                    <div class="flex items-start">
-                        <i data-lucide="shield-check" class="w-10 h-10 text-rose-500 mr-4 flex-shrink-0"></i>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-lg">不保证录取结果</h4>
-                            <p class="mt-1 text-slate-600">我们承诺利用全部经验和资源，最大限度提升您的申请竞争力。但最终录取决定权在各大学招生委员会，因此我们无法对任何学校的录取结果做出保证。</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start">
-                        <i data-lucide="user-check" class="w-10 h-10 text-rose-500 mr-4 flex-shrink-0"></i>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-lg">您的责任与义务</h4>
-                            <p class="mt-1 text-slate-600">您需保证所提供的个人信息、学术材料真实、准确、完整。如因提供虚假材料导致的一切后果，由您自行承担。</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start">
-                        <i data-lucide="landmark" class="w-10 h-10 text-rose-500 mr-4 flex-shrink-0"></i>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-lg">关于第三方费用</h4>
-                            <p class="mt-1 text-slate-600">我们的服务费不包含任何第三方收取的费用，如学校申请费、标化考试费、成绩单认证费、签证费等。</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start">
-                        <i data-lucide="calendar-clock" class="w-10 h-10 text-rose-500 mr-4 flex-shrink-0"></i>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-lg">服务周期</h4>
-                            <p class="mt-1 text-slate-600">我们的服务从签约日开始，至当季申请全部截止或收到所有录取结果为止。具体起止日期将在服务协议中明确。</p>
-                        </div>
-                    </div>
-                     <div class="flex items-start">
-                        <i data-lucide="piggy-bank" class="w-10 h-10 text-rose-500 mr-4 flex-shrink-0"></i>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-lg">退款政策</h4>
-                            <p class="mt-1 text-slate-600">我们采用分阶段付款方式，已完成阶段的服务费用将不予退还。若因我方原因无法继续服务，将按协议退还未提供服务的费用。</p>
-                        </div>
-                    </div>
-                     <div class="flex items-start">
-                        <i data-lucide="copyright" class="w-10 h-10 text-rose-500 mr-4 flex-shrink-0"></i>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-lg">文书知识产权</h4>
-                            <p class="mt-1 text-slate-600">我们为您创作的文书，其知识产权在您付清全款后归您所有，但我们保留将其用于匿名案例展示的权利。</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+  if (c.hat === 'cap'){
+    hat = `<path d="M26,45 Q26,15 60,15 Q94,15 94,45 Z" fill="${c.hatColor}"/>
+           <ellipse cx="60" cy="45" rx="41" ry="7.5" fill="${c.hatDark}"/>`;
+  } else if (c.hat === 'pilot' || c.hat === 'police'){
+    hat = `<path d="M24,43 Q24,15 60,15 Q96,15 96,43 Z" fill="${c.hatColor}"/>
+           <rect x="22" y="39" width="76" height="9" rx="4.5" fill="${c.hatDark}"/>
+           <ellipse cx="60" cy="51" rx="29" ry="5" fill="#20242e"/>
+           ${c.hat === 'police'
+             ? '<circle cx="60" cy="28" r="5.5" fill="#ffc800"/>'
+             : '<rect x="49" y="25" width="22" height="5" rx="2.5" fill="#ffc800"/>'}`;
+  }
 
+  if (c.glasses){
+    extras += `<g><circle cx="44" cy="60" r="11.5" fill="rgba(255,255,255,.2)" stroke="#4b4b4b" stroke-width="3"/>
+               <circle cx="76" cy="60" r="11.5" fill="rgba(255,255,255,.2)" stroke="#4b4b4b" stroke-width="3"/>
+               <path d="M55.5,60 L64.5,60" stroke="#4b4b4b" stroke-width="3"/></g>`;
+  }
+  if (c.mustache){
+    extras += `<path d="M45,74.5 Q60,69.5 75,74.5 Q60,79 45,74.5 Z" fill="${c.hair}"/>`;
+  }
+  const beard = c.beard
+    ? `<path d="M23,66 Q25,106 60,106 Q95,106 97,66 Q90,92 60,92 Q30,92 23,66 Z" fill="${c.hair}"/>` : '';
+  const blush = c.blush
+    ? `<ellipse cx="35" cy="72" rx="6" ry="3.6" fill="#ffb3c1" opacity=".65"/>
+       <ellipse cx="85" cy="72" rx="6" ry="3.6" fill="#ffb3c1" opacity=".65"/>` : '';
 
-        <section id="contact" class="py-20 md:py-28">
-            <div class="container mx-auto px-6">
-                <div class="bg-slate-800 rounded-2xl p-8 md:p-16 text-center shadow-2xl">
-                    <h2 class="text-3xl md:text-4xl font-bold text-white">还在等什么？</h2>
-                    <p class="mt-4 text-lg text-slate-300 max-w-2xl mx-auto">你的梦校Offer只差一次沟通！最好的投资是投资自己，最好的时机就是现在。</p>
-                    <div class="mt-10 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
-                        <div class="bg-white p-4 rounded-lg">
-                            <img src="./scan.png" alt="微信二维码" class="w-40 h-40 md:w-48 md:h-48">
-                        </div>
-                        <div class="text-left">
-                            <p class="text-xl font-semibold text-white">扫描二维码，添加微信</p>
-                            <p class="mt-2 text-3xl font-bold gradient-text">立即开启免费咨询</p>
-                            <p class="mt-4 text-slate-400">微信号: SummerDaze555</p>
-                            <p class="mt-1 text-slate-400">添加请备注: 留学咨询</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+  // full body: ground shadow + torso (breathing) + head (swaying) + arms (wave/cheer)
+  const armL = `<g class="arm arm-l"><path d="M44,106 Q34,117 32,129" stroke="${c.shirt}" stroke-width="11" fill="none" stroke-linecap="round"/><circle cx="31.5" cy="131" r="6" fill="${c.skin}"/></g>`;
+  const armR = `<g class="arm arm-r"><path d="M96,106 Q106,117 108,129" stroke="${c.shirt}" stroke-width="11" fill="none" stroke-linecap="round"/><circle cx="108.5" cy="131" r="6" fill="${c.skin}"/></g>`;
 
-    </main>
+  return `<svg class="face ${cls||''}" viewBox="0 0 140 142" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <ellipse cx="70" cy="136" rx="34" ry="4.5" fill="rgba(0,0,0,.07)"/>
+    <g class="ch">
+      <g transform="translate(10,6)">
+        ${hairBack}
+        <path class="torso" d="M22,128 Q22,98 60,98 Q98,98 98,128 L98,131 L22,131 Z" fill="${c.shirt}"/>
+      </g>
+      <g class="head"><g transform="translate(10,6)">
+        <circle cx="19" cy="64" r="6.5" fill="${c.skin}" stroke="rgba(0,0,0,.08)" stroke-width="2"/>
+        <circle cx="101" cy="64" r="6.5" fill="${c.skin}" stroke="rgba(0,0,0,.08)" stroke-width="2"/>
+        <circle cx="60" cy="62" r="40" fill="${c.skin}" stroke="rgba(0,0,0,.1)" stroke-width="3"/>
+        ${blush}
+        ${hairFront}${hat}
+        <path class="brow brow-l" d="M35,47 Q44,42.5 53,47" stroke="${brow}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path class="brow brow-r" d="M67,47 Q76,42.5 85,47" stroke="${brow}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <g class="eye-n"><ellipse cx="44" cy="60" rx="7.5" ry="8.5" fill="#fff"/><g class="pupil"><circle cx="45" cy="61" r="4" fill="#33261d"/><circle cx="46.6" cy="58.8" r="1.5" fill="#fff"/></g></g>
+        <g class="eye-n"><ellipse cx="76" cy="60" rx="7.5" ry="8.5" fill="#fff"/><g class="pupil"><circle cx="77" cy="61" r="4" fill="#33261d"/><circle cx="78.6" cy="58.8" r="1.5" fill="#fff"/></g></g>
+        <path class="eye-h" d="M36,60 Q44,51.5 52,60" stroke="#33261d" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path class="eye-h" d="M68,60 Q76,51.5 84,60" stroke="#33261d" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="60" cy="68.5" rx="3.2" ry="2.2" fill="rgba(150,85,40,.35)"/>
+        ${beard}
+        <g class="mouth">
+          <path class="m-smile" d="M48,78 Q60,88 72,78" stroke="#9c4a1d" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <g class="m-open"><ellipse cx="60" cy="82" rx="8" ry="6.5" fill="#8c2f39"/><ellipse cx="60" cy="85.5" rx="4.5" ry="2.4" fill="#ff8fa3"/></g>
+          <path class="m-grin" d="M46,77 Q60,95 74,77 Z" fill="#8c2f39"/>
+          <path class="m-sad" d="M50,85 Q60,76.5 70,85" stroke="#9c4a1d" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        </g>
+        ${extras}
+      </g></g>
+      ${armL}${armR}
+    </g>
+  </svg>`;
+}
 
-    <footer class="bg-white border-t border-slate-200">
-        <div class="container mx-auto px-6 py-8 text-center text-slate-500">
-            <p>&copy; 2025 SummerDaze留学工作室. All Rights Reserved.</p>
-            <p class="mt-2 text-sm">由有梦想的我们，为有梦想的你服务。</p>
-        </div>
-    </footer>
+function owlSVG(cls){
+  return `<svg class="face ${cls||''}" viewBox="0 0 120 124" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M30,18 L40,4 L46,20 Z" fill="#58cc02"/>
+    <path d="M90,18 L80,4 L74,20 Z" fill="#58cc02"/>
+    <path d="M60,8 Q18,10 17,56 Q15,104 60,110 Q105,104 103,56 Q102,10 60,8 Z" fill="#58cc02" stroke="#46a302" stroke-width="3"/>
+    <ellipse cx="60" cy="84" rx="27" ry="20" fill="#89e219"/>
+    <g class="eye-n"><circle cx="42" cy="50" r="16" fill="#fff" stroke="#e8e8e8" stroke-width="2"/><g class="pupil"><circle cx="45" cy="52" r="6.5" fill="#4b4b4b"/><circle cx="47.5" cy="49" r="2.2" fill="#fff"/></g></g>
+    <g class="eye-n"><circle cx="78" cy="50" r="16" fill="#fff" stroke="#e8e8e8" stroke-width="2"/><g class="pupil"><circle cx="81" cy="52" r="6.5" fill="#4b4b4b"/><circle cx="83.5" cy="49" r="2.2" fill="#fff"/></g></g>
+    <path class="eye-h" d="M32,50 Q42,40 52,50" stroke="#4b4b4b" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path class="eye-h" d="M68,50 Q78,40 88,50" stroke="#4b4b4b" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path class="beak" d="M52,62 L68,62 L60,74 Z" fill="#ffc200" stroke="#e0a800" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M46,110 q2,8 8,8 M66,110 q2,8 8,8" stroke="#ffc200" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
 
-    <script>
-        /* Three.js Script */
-        function initThreeJS() {
-            const container = document.getElementById('threejs-container');
-            if (!container) return;
+/* Character mood on the big face: 'talk' | 'happy' | 'sad' | 'neutral' */
+let moodTimer = null;
+function setMood(mood, ms){
+  const f = document.querySelector('#stage-face svg');
+  if (!f) return;
+  f.classList.remove('talk','happy','sad');
+  if (mood && mood !== 'neutral') f.classList.add(mood);
+  if (mood === 'happy') spawnEmotes(['✨','⭐','🌟','💚'], 6);
+  if (mood === 'sad') spawnEmotes(['💧'], 1);
+  clearTimeout(moodTimer);
+  if (ms) moodTimer = setTimeout(() => f.classList.remove('talk','happy','sad'), ms);
+}
+/* burst of emoji particles around the big character */
+function spawnEmotes(glyphs, n){
+  const host = $('stage-face');
+  if (!host) return;
+  for (let i = 0; i < n; i++){
+    const s = document.createElement('span');
+    s.className = 'sparkle';
+    s.textContent = glyphs[i % glyphs.length];
+    s.style.left = (8 + Math.random()*78) + '%';
+    s.style.top  = (6 + Math.random()*55) + '%';
+    s.style.animationDelay = (Math.random()*0.3) + 's';
+    host.appendChild(s);
+    setTimeout(() => s.remove(), 1500);
+  }
+}
+/* wave hello when a conversation starts */
+function waveHello(){
+  const f = document.querySelector('#stage-face svg');
+  if (!f) return;
+  f.classList.add('wave');
+  setTimeout(() => f.classList.remove('wave'), 2000);
+}
 
-            // 1. Scene setup
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.5, 1000);
-            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); // alpha: true enables transparent background
-            
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            container.appendChild(renderer.domElement);
+/* =====================================================
+   State & persistence
+===================================================== */
+const LS = {
+  best: id => 'sd_best_' + id,
+  key: 'sd_api_key',
+  aiMode: 'sd_ai_mode'
+};
+const state = {
+  scenario: null,
+  stepIndex: 0,
+  hearts: 3,
+  xp: 0,
+  selfAnswered: 0,   // answered without hints
+  totalAnswered: 0,
+  wrongOnStep: 0,
+  hintUsedOnStep: false,
+  busy: false,
+  lastLine: null,    // { text, zh } — what the character just said
+  // AI mode
+  aiMode: localStorage.getItem(LS.aiMode) === '1',
+  apiKey: localStorage.getItem(LS.key) || '',
+  aiMessages: [],
+  aiTurns: 0
+};
 
-            // 2. Geometry (Icosahedron for polygon look)
-            const geometry = new THREE.IcosahedronGeometry(9, 1); 
+const $ = id => document.getElementById(id);
+const views = { home:$('view-home'), chat:$('view-chat'), done:$('view-done') };
+function show(name){
+  Object.entries(views).forEach(([k,el]) => el.classList.toggle('hidden', k!==name));
+  window.scrollTo(0,0);
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
-            // 3. Material (Wireframe for a "cool tech" look)
-            const material = new THREE.MeshBasicMaterial({
-                color: 0x14b8a6, // Teal color (matching your gradient)
-                wireframe: true
-            });
-            
-            const sphere = new THREE.Mesh(geometry, material);
-            scene.add(sphere);
+/* =====================================================
+   Speech — the character talks out loud (Web Speech API)
+===================================================== */
+let voices = [];
+function loadVoices(){
+  try { voices = speechSynthesis.getVoices() || []; } catch(_){ voices = []; }
+}
+if ('speechSynthesis' in window){
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+function pickVoice(gender){
+  const en = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+  const male   = /david|mark|guy|daniel|alex|fred|george|james|ryan|male/i;
+  const female = /zira|samantha|jenny|aria|susan|victoria|karen|michelle|google us english|female/i;
+  const pref = gender === 'm' ? male : female;
+  return en.find(v => pref.test(v.name) && v.lang === 'en-US')
+      || en.find(v => pref.test(v.name))
+      || en.find(v => v.lang === 'en-US')
+      || en[0] || null;
+}
+function stopSpeaking(){
+  try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch(_){}
+  showWave(false);
+}
+function showWave(on){
+  $('sound-wave').classList.toggle('hidden', !on);
+}
+/* Speak a line. If TTS is unavailable (or blocked), fall back to
+   showing the line as an on-screen subtitle so practice still works. */
+function speakLine(text, onDone){
+  let finished = false, started = false;
+  const simulatedMs = Math.min(6000, 900 + text.length * 45);
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    showWave(false);
+    setMood('neutral');
+    if (onDone) onDone();
+  };
+  const fallbackToSubtitle = () => {
+    revealLineAsSubtitle();
+    showWave(false);
+    setMood('talk', simulatedMs);
+    setTimeout(finish, simulatedMs);
+  };
 
-            // 4. Position camera and sphere
-            camera.position.z = 15;
+  showWave(true);
+  setMood('talk');
 
-            // 5. Animation loop
-            const animate = () => {
-                requestAnimationFrame(animate);
+  if (!('speechSynthesis' in window)){ fallbackToSubtitle(); return; }
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const vc = (state.scenario && CHARACTERS[state.scenario.char] && CHARACTERS[state.scenario.char].voice)
+             || {gender:'f', pitch:1.05, rate:.92};
+    u.lang = 'en-US'; u.rate = vc.rate; u.pitch = vc.pitch;
+    const v = pickVoice(vc.gender); if (v) u.voice = v;
+    u.onstart = () => { started = true; };
+    u.onend = finish;
+    u.onerror = () => { if (!started){ fallbackToSubtitle(); } else { finish(); } };
+    speechSynthesis.speak(u);
+    // Some environments have speechSynthesis but never actually speak
+    setTimeout(() => {
+      if (!started && !finished){
+        try { speechSynthesis.cancel(); } catch(_){}
+        fallbackToSubtitle();
+      }
+    }, 1500);
+  } catch(e){ fallbackToSubtitle(); }
+}
+function revealLineAsSubtitle(){
+  if (!state.lastLine) return;
+  setCaption(
+    `<span class="en">💬 ${escapeHtml(state.lastLine.text)}</span>` +
+    (state.lastLine.zh ? `<span class="zh">${escapeHtml(state.lastLine.zh)}</span>` : ''),
+    'plain'
+  );
+}
 
-                // Simple rotation for movement
-                sphere.rotation.x += 0.0005;
-                sphere.rotation.y += 0.001;
+/* =====================================================
+   Scene caption (context / feedback under the character)
+===================================================== */
+function setCaption(html, cls){
+  const c = $('scene-caption');
+  if (!html){ c.classList.add('hidden'); c.innerHTML = ''; return; }
+  c.innerHTML = html;
+  c.className = 'scene-caption' + (cls ? ' ' + cls : '');
+  c.classList.remove('hidden');
+}
 
-                renderer.render(scene, camera);
-            };
-            
-            // 6. Handle resizing
-            window.addEventListener('resize', () => {
-                camera.aspect = container.clientWidth / container.clientHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(container.clientWidth, container.clientHeight);
-            });
+/* =====================================================
+   Home screen
+===================================================== */
+function renderHome(){
+  stopSpeaking();
+  const list = $('scenario-list');
+  list.innerHTML = '';
+  SCENARIOS.forEach(sc => {
+    const best = localStorage.getItem(LS.best(sc.id));
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="face-wrap">${faceSVG(sc.char)}</div>
+      <h3>${sc.title}</h3>
+      <div class="zh">${sc.zh}</div>
+      <div class="meta">
+        <span class="tag ${sc.level===1?'lv1':'lv2'}">${sc.level===1?'初级 A2':'中级 B1'}</span>
+        <span class="tag gray">${sc.steps.length} 轮对话</span>
+      </div>
+      ${best ? `<div class="best">🏆 最佳 ${best} XP</div>` : ''}`;
+    card.onclick = () => startScenario(sc);
+    list.appendChild(card);
+  });
+  $('mode-badge').textContent = state.aiMode && state.apiKey
+    ? '🤖 AI 智能模式已开启（由 Claude 实时对话）'
+    : '📖 内置剧本模式（免费，无需 API）';
+}
 
-            animate();
-        }
+/* =====================================================
+   HUD
+===================================================== */
+function updateHud(){
+  $('xp-pill').textContent = '⚡' + state.xp;
+  $('hearts').textContent = '❤️ ' + state.hearts;
+  const total = state.aiMode && state.apiKey ? 8 : state.scenario.steps.length;
+  const cur = state.aiMode && state.apiKey ? state.aiTurns : state.stepIndex;
+  $('progress-fill').style.width = Math.min(100, Math.round(cur/total*100)) + '%';
+}
 
-        // Ensure the function runs after the DOM is loaded
-        initThreeJS();
+/* =====================================================
+   Practice flow (scripted)
+===================================================== */
+function startScenario(sc){
+  state.scenario = sc;
+  state.stepIndex = 0;
+  state.hearts = 3;
+  state.xp = 0;
+  state.selfAnswered = 0;
+  state.totalAnswered = 0;
+  state.wrongOnStep = 0;
+  state.hintUsedOnStep = false;
+  state.busy = false;
+  state.lastLine = null;
+  state.aiMessages = [];
+  state.aiTurns = 0;
 
-        lucide.createIcons();
-    </script>
+  hideHints();
+  $('user-input').value = '';
+  $('scenario-banner').textContent = `${sc.emoji} ${sc.title} · ${sc.zh}`;
+  $('stage-face').innerHTML = faceSVG(sc.char);
+  const roleParts = sc.role.split(' · ');
+  $('stage-name').textContent = roleParts[0];
+  $('stage-zh').textContent = roleParts[1] || '';
+  $('btn-finish-ai').classList.toggle('hidden', !(state.aiMode && state.apiKey));
+  setCaption('📍 ' + escapeHtml(sc.intro) + '<br>👂 仔细听 Ta 说什么，然后用英语回答。');
+  show('chat');
+  updateHud();
+  waveHello();
 
+  if (state.aiMode && state.apiKey){
+    startAiConversation();
+  } else {
+    setTimeout(presentStep, 900);
+  }
+}
+
+function presentStep(){
+  const step = state.scenario.steps[state.stepIndex];
+  if (!step) { finishPractice(); return; }
+  state.lastLine = { text: step.ai, zh: step.zh };
+  const isFinal = !step.options;
+  state.busy = true;
+  speakLine(step.ai, () => {
+    state.busy = false;
+    if (isFinal){
+      setTimeout(finishPractice, 700);
+    } else {
+      $('user-input').focus();
+    }
+  });
+  if (!isFinal){
+    // allow answering as soon as speech starts
+    setTimeout(() => { state.busy = false; }, 600);
+  }
+}
+
+function normalize(s){
+  return ' ' + String(s).toLowerCase()
+    .replace(/[’‘]/g,"'")
+    .replace(/[^a-z0-9' ]+/g,' ')
+    .replace(/\s+/g,' ')
+    .trim() + ' ';
+}
+function matchOption(input, option){
+  const text = normalize(input);            // padded with spaces on both ends
+  if (text.trim() === normalize(option.text).trim()) return true;
+  let hits = 0;
+  for (const group of option.keys){
+    // whole-word/phrase match only — ' no ' must not match inside 'nonsense'
+    if (group.split('|').some(k => text.includes(' ' + normalize(k).trim() + ' '))) hits++;
+  }
+  return hits >= Math.max(1, Math.ceil(option.keys.length * 0.5));
+}
+
+function handleSend(){
+  const input = $('user-input');
+  const text = input.value.trim();
+  if (!text || state.busy) return;
+
+  if (state.aiMode && state.apiKey){
+    sendToAi(text);
+    return;
+  }
+
+  const step = state.scenario.steps[state.stepIndex];
+  if (!step || !step.options) return;
+
+  stopSpeaking();
+  const matched = step.options.some(op => matchOption(text, op));
+  if (matched){
+    input.value = '';
+    hideHints();
+    state.totalAnswered++;
+    let gain;
+    if (state.hintUsedOnStep){ gain = 5; } else { gain = 10; state.selfAnswered++; }
+    state.xp += gain;
+    state.stepIndex++;
+    state.wrongOnStep = 0;
+    state.hintUsedOnStep = false;
+    updateHud();
+    setMood('happy', 1400);
+    setCaption(`✅ 回答得很好！ +${gain} XP`);
+    state.busy = true;
+    setTimeout(() => { state.busy = false; presentStep(); }, 1100);
+  } else {
+    state.wrongOnStep++;
+    if (state.hearts > 0){ state.hearts--; updateHud(); }
+    input.classList.remove('shake'); void input.offsetWidth; input.classList.add('shake');
+    setMood('sad', 1800);
+    const tips = [
+      '🤔 意思好像不太对哦…点 🔊 再听一遍，再试试？',
+      '💪 很接近了！点 💡 看看 Ta 说了什么、可以怎么回答。'
+    ];
+    setCaption(tips[Math.min(state.wrongOnStep-1, tips.length-1)], 'err');
+    if (state.wrongOnStep >= 2 || state.hearts === 0) showHints();
+  }
+}
+
+/* =====================================================
+   Hints — reveal the dialog + reference responses
+===================================================== */
+function showHints(){
+  const panel = $('hint-panel');
+  panel.innerHTML = '';
+
+  // 1. what the character just said
+  if (state.lastLine){
+    const said = document.createElement('div');
+    said.className = 'said-box';
+    said.innerHTML = `<span class="who">📢 Ta 刚才说</span>${escapeHtml(state.lastLine.text)}` +
+      (state.lastLine.zh ? `<span class="zh">${escapeHtml(state.lastLine.zh)}</span>` : '');
+    panel.appendChild(said);
+  }
+
+  // 2. reference responses
+  const title = document.createElement('div');
+  title.className = 'hint-title';
+  title.textContent = '💬 你可以这样回答（点一下填入输入框）';
+  panel.appendChild(title);
+
+  if (state.aiMode && state.apiKey){
+    state.hintUsedOnStep = true;
+    panel.classList.remove('hidden');
+    fetchAiHints(panel);
+    return;
+  }
+
+  const step = state.scenario.steps[state.stepIndex];
+  if (!step || !step.options){ panel.classList.remove('hidden'); return; }
+  state.hintUsedOnStep = true;
+  step.options.forEach(op => {
+    const chip = document.createElement('button');
+    chip.className = 'chip';
+    chip.innerHTML = `${escapeHtml(op.text)}<span class="zh">${escapeHtml(op.zh)}</span>`;
+    chip.onclick = () => {
+      $('user-input').value = op.text;
+      $('user-input').classList.remove('shake');
+      $('user-input').focus();
+    };
+    panel.appendChild(chip);
+  });
+  panel.classList.remove('hidden');
+}
+function hideHints(){
+  $('hint-panel').classList.add('hidden');
+  $('hint-panel').innerHTML = '';
+}
+
+/* =====================================================
+   Completion
+===================================================== */
+function finishPractice(){
+  stopSpeaking();
+  const total = state.totalAnswered || 1;
+  const acc = Math.round(state.selfAnswered / total * 100);
+  state.xp += state.hearts * 2;   // bonus for remaining hearts
+  $('done-xp').textContent = state.xp;
+  $('done-acc').textContent = acc + '%';
+  $('done-hearts').textContent = '❤️' + state.hearts;
+  $('done-sub').textContent = `${state.scenario.emoji} ${state.scenario.title} · ${state.scenario.zh}`;
+  $('done-face').innerHTML = faceSVG(state.scenario.char, 'happy');
+
+  const bestKey = LS.best(state.scenario.id);
+  const best = parseInt(localStorage.getItem(bestKey) || '0', 10);
+  if (state.xp > best) localStorage.setItem(bestKey, String(state.xp));
+
+  show('done');
+  throwConfetti();
+}
+function throwConfetti(){
+  const host = $('view-done');
+  const glyphs = ['🎉','⭐','🎊','💚','✨','🏅'];
+  for (let i=0; i<26; i++){
+    const c = document.createElement('span');
+    c.className = 'confetti';
+    c.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
+    c.style.left = Math.random()*100 + '%';
+    c.style.animationDuration = (2.2 + Math.random()*2.2) + 's';
+    c.style.animationDelay = (Math.random()*0.8) + 's';
+    host.appendChild(c);
+    setTimeout(() => c.remove(), 6000);
+  }
+}
+
+/* =====================================================
+   AI mode — talk to Claude directly from the browser
+===================================================== */
+function buildSystemPrompt(sc){
+  return `You are role-playing to help a Chinese student practice everyday English conversation.
+Scenario: "${sc.title}" (${sc.zh}). You play: ${sc.role}. Setting: ${sc.intro}
+Rules:
+- Stay in character at all times. Never mention you are an AI.
+- Keep every reply to 1-2 short, natural sentences, CEFR A2-B1 level English.
+- Be warm and encouraging. If the student makes a serious grammar mistake, briefly show the corrected phrase in parentheses, then continue the conversation.
+- Ask one question at a time to keep the dialogue going.
+- After about 8 exchanges, wrap up the conversation naturally and end your final message with the token [END].`;
+}
+
+async function callClaude(messages, system, maxTokens){
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': state.apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-opus-4-8',
+      max_tokens: maxTokens || 300,
+      system: system,
+      messages: messages
+    })
+  });
+  if (!res.ok){
+    const err = await res.text().catch(() => '');
+    throw new Error('API ' + res.status + ' ' + err.slice(0,200));
+  }
+  const data = await res.json();
+  return (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('').trim();
+}
+
+async function startAiConversation(){
+  state.busy = true;
+  showWave(true);
+  setMood('talk');
+  try {
+    const sys = buildSystemPrompt(state.scenario);
+    state.aiMessages = [{ role:'user', content:'(The student walks in. Greet them and start the scenario.)' }];
+    const reply = await callClaude(state.aiMessages, sys);
+    state.aiMessages.push({ role:'assistant', content: reply });
+    const clean = reply.replace('[END]','').trim();
+    state.lastLine = { text: clean, zh: null };
+    state.busy = false;
+    speakLine(clean, () => { $('user-input').focus(); });
+  } catch(e){
+    showWave(false);
+    setCaption('⚠️ AI 连接失败：' + escapeHtml(e.message) + '。已自动切换为内置剧本模式。', 'err');
+    state.aiMode = false;
+    state.busy = false;
+    setTimeout(presentStep, 1200);
+  }
+}
+
+async function sendToAi(text){
+  const input = $('user-input');
+  input.value = '';
+  hideHints();
+  stopSpeaking();
+  state.aiTurns++;
+  state.totalAnswered++;
+  if (state.hintUsedOnStep){ state.xp += 5; } else { state.xp += 10; state.selfAnswered++; }
+  state.hintUsedOnStep = false;
+  updateHud();
+  setCaption(null);
+
+  state.busy = true;
+  showWave(true);
+  setMood('talk');
+  try {
+    state.aiMessages.push({ role:'user', content: text });
+    const reply = await callClaude(state.aiMessages, buildSystemPrompt(state.scenario));
+    state.aiMessages.push({ role:'assistant', content: reply });
+    const ended = reply.includes('[END]');
+    const clean = reply.replace('[END]','').trim();
+    state.lastLine = { text: clean, zh: null };
+    state.busy = false;
+    speakLine(clean, () => {
+      if (ended || state.aiTurns >= 10){ setTimeout(finishPractice, 900); }
+      else { $('user-input').focus(); }
+    });
+  } catch(e){
+    showWave(false);
+    setMood('neutral');
+    setCaption('⚠️ 请求失败：' + escapeHtml(e.message), 'err');
+    state.busy = false;
+  }
+}
+
+async function fetchAiHints(panel){
+  const loading = document.createElement('div');
+  loading.className = 'hint-title';
+  loading.textContent = '正在为你想句子…';
+  panel.appendChild(loading);
+  try {
+    const msgs = state.aiMessages.concat([{
+      role: 'user',
+      content: 'Based on this conversation, suggest 3 short natural English sentences the student could say next. Reply with ONLY a JSON array of 3 strings, nothing else.'
+    }]);
+    const raw = await callClaude(msgs, buildSystemPrompt(state.scenario), 250);
+    let suggestions = [];
+    try {
+      const m = raw.match(/\[[\s\S]*\]/);
+      suggestions = JSON.parse(m ? m[0] : raw);
+    } catch(_){ suggestions = [raw]; }
+    loading.remove();
+    suggestions.slice(0,3).forEach(s => {
+      const chip = document.createElement('button');
+      chip.className = 'chip';
+      chip.textContent = s;
+      chip.onclick = () => { $('user-input').value = s; $('user-input').classList.remove('shake'); $('user-input').focus(); };
+      panel.appendChild(chip);
+    });
+  } catch(e){
+    loading.textContent = '⚠️ 获取提示失败：' + e.message;
+  }
+}
+
+/* =====================================================
+   Settings modal
+===================================================== */
+function openSettings(){
+  $('ai-toggle').checked = state.aiMode;
+  $('api-key-input').value = state.apiKey;
+  $('api-key-box').classList.toggle('hidden', !state.aiMode);
+  $('settings-mask').classList.remove('hidden');
+}
+function saveSettings(){
+  state.aiMode = $('ai-toggle').checked;
+  state.apiKey = $('api-key-input').value.trim();
+  localStorage.setItem(LS.aiMode, state.aiMode ? '1' : '0');
+  localStorage.setItem(LS.key, state.apiKey);
+  if (state.aiMode && !state.apiKey){
+    alert('AI 智能模式需要填写 Anthropic API Key，否则将继续使用内置剧本模式。');
+    state.aiMode = false;
+    localStorage.setItem(LS.aiMode, '0');
+  }
+  $('settings-mask').classList.add('hidden');
+  renderHome();
+}
+
+/* =====================================================
+   Wire up events
+===================================================== */
+$('btn-send').onclick = handleSend;
+$('user-input').addEventListener('keydown', e => { if (e.key === 'Enter') handleSend(); });
+$('user-input').addEventListener('input', e => e.target.classList.remove('shake'));
+$('btn-hint').onclick = showHints;
+$('btn-replay').onclick = () => {
+  if (state.lastLine && !state.busy) speakLine(state.lastLine.text);
+};
+$('btn-quit').onclick = () => {
+  if (confirm('确定要退出本次练习吗？进度将不会保存。')){ stopSpeaking(); renderHome(); show('home'); }
+};
+$('btn-finish-ai').onclick = () => finishPractice();
+$('btn-again').onclick = () => startScenario(state.scenario);
+$('btn-home').onclick = () => { renderHome(); show('home'); };
+$('btn-settings').onclick = openSettings;
+$('btn-settings-close').onclick = () => $('settings-mask').classList.add('hidden');
+$('btn-settings-save').onclick = saveSettings;
+$('ai-toggle').onchange = e => $('api-key-box').classList.toggle('hidden', !e.target.checked);
+$('settings-mask').addEventListener('click', e => {
+  if (e.target === $('settings-mask')) $('settings-mask').classList.add('hidden');
+});
+window.addEventListener('beforeunload', stopSpeaking);
+
+$('hero-owl').innerHTML = owlSVG();
+renderHome();
+show('home');
+</script>
 </body>
-
 </html>
-
-
-
-
-
