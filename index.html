@@ -900,10 +900,25 @@ function escapeHtml(s){
 
 /* --- Kokoro: on-device neural TTS (runs fully in the browser) --- */
 const KOKORO_MODEL = 'onnx-community/Kokoro-82M-v1.0-ONNX';
+/* kokoro.web.js is a self-contained browser bundle (transformers.js inlined);
+   the +esm / esm.sh entries are dependency-resolving fallbacks. */
 const KOKORO_CDNS = [
-  'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.0/dist/kokoro.web.js',
-  'https://esm.sh/kokoro-js@1.2.0'
+  'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/dist/kokoro.web.js',
+  'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm',
+  'https://esm.sh/kokoro-js@1.2.1'
 ];
+/* tiny silent clip used to "unlock" audio playback on the first tap, so a
+   later programmatic play() (after the long model download) isn't blocked. */
+const SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+function unlockAudio(){
+  try {
+    const el = state.tts.audioEl || (state.tts.audioEl = new Audio());
+    el.src = SILENT_WAV;
+    const p = el.play();
+    if (p && p.then) p.then(() => { try{ el.pause(); el.currentTime = 0; }catch(_){}; }).catch(() => {});
+    state.tts.unlocked = true;
+  } catch(_){}
+}
 /* one distinct, character-appropriate neural voice per role */
 const KOKORO_VOICE = {
   barista:  'am_liam',     // friendly young man
@@ -932,7 +947,16 @@ function loadKokoro(){
     state.tts.loading = (async () => {
       const K = await importKokoro();
       const device = (typeof navigator !== 'undefined' && navigator.gpu) ? 'webgpu' : 'wasm';
-      const tts = await K.from_pretrained(KOKORO_MODEL, { dtype: 'q8', device });
+      const tts = await K.from_pretrained(KOKORO_MODEL, {
+        dtype: 'q8',
+        device,
+        progress_callback: (p) => {
+          if (p && p.status === 'progress' && typeof p.progress === 'number'){
+            state.tts.pct = Math.min(99, Math.round(p.progress));
+            voiceStatus('<span class="spin"></span>正在下载真人语音 ' + state.tts.pct + '%');
+          }
+        }
+      });
       state.tts.model = tts;
       return tts;
     })().catch(err => { state.tts.loading = null; throw err; });
@@ -1013,11 +1037,14 @@ function speakLine(text, onDone){
   if (state.tts.engine === 'kokoro' && !state.tts.failed){
     if (state.tts.model){ showWave(true); setMood('talk'); }
     else { voiceStatus('<span class="spin"></span>正在加载真人语音…（首次约需下载 80MB）'); setMood('neutral'); }
-    speakKokoro(text, mySeq, finish).catch(() => {
+    speakKokoro(text, mySeq, finish).catch((err) => {
       if (stale()) return;
-      state.tts.failed = true;           // don't keep retrying the download
-      voiceStatus('（已切换为设备语音）');
-      setTimeout(() => { if (!stale()) voiceStatus(null); }, 1800);
+      // surface the real reason so a remaining issue is diagnosable, not silent
+      try { console.error('[neural voice] fell back:', err); } catch(_){}
+      const reason = (err && (err.name || err.message)) ? String(err.name || err.message).slice(0, 60) : '未知原因';
+      state.tts.failed = true;           // don't keep retrying the download this session
+      voiceStatus('⚠️ 真人语音不可用（' + escapeHtml(reason) + '），已改用设备语音');
+      setTimeout(() => { if (!stale()) voiceStatus(null); }, 4500);
       speakBrowser(text, mySeq, finish);
     });
     return;
@@ -1162,6 +1189,7 @@ function startScenario(sc){
   show('chat');
   updateHud();
   waveHello();
+  unlockAudio();   // this runs inside the card-tap gesture → survives the long download
   warmUpVoice();   // start the (cached) neural-voice download early
 
   if (state.aiMode && state.apiKey){
