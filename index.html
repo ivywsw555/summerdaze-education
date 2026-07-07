@@ -202,6 +202,34 @@ button{font-family:inherit}
 /* input bar */
 .input-bar{border-top:2px solid var(--gray); background:#fff; padding:12px 16px 16px}
 .input-inner{max-width:640px; margin:0 auto; display:flex; flex-direction:column; gap:10px}
+
+/* voice-first answering */
+#mic-area{display:flex; flex-direction:column; align-items:center; gap:8px; padding:2px 0}
+.transcript{
+  width:100%; max-width:560px; min-height:22px; text-align:center;
+  font-size:16px; font-weight:800; color:var(--blue-dark); line-height:1.4;
+}
+.transcript.interim{color:var(--gray-dark); font-weight:700}
+.mic-btn{
+  width:74px; height:74px; border-radius:50%; border:none; cursor:pointer;
+  background:var(--blue); color:#fff; box-shadow:0 5px 0 var(--blue-dark);
+  display:flex; align-items:center; justify-content:center;
+  transition:filter .15s, transform .1s;
+}
+.mic-btn:hover{filter:brightness(1.06)}
+.mic-btn:active{transform:translateY(4px); box-shadow:0 1px 0 var(--blue-dark)}
+.mic-btn.listening{
+  background:var(--red); box-shadow:0 5px 0 #d13c3c;
+  animation:micpulse 1.3s ease-in-out infinite;
+}
+.mic-btn.thinking{background:var(--gray-dark); box-shadow:0 5px 0 #8f8f8f; cursor:default}
+@keyframes micpulse{
+  0%,100%{box-shadow:0 5px 0 #d13c3c, 0 0 0 0 rgba(255,75,75,.45)}
+  50%{box-shadow:0 5px 0 #d13c3c, 0 0 0 16px rgba(255,75,75,0)}
+}
+.mic-label{font-size:13px; font-weight:800; color:var(--text-light); text-align:center; min-height:18px}
+.mic-btn.listening + .mic-label{color:var(--red)}
+
 .input-row{display:flex; gap:10px}
 .input-row input{
   flex:1; border:2px solid var(--gray); border-radius:14px;
@@ -394,12 +422,28 @@ button{font-family:inherit}
   <div class="input-bar">
     <div class="input-inner">
       <div id="hint-panel" class="hint-panel hidden"></div>
+
+      <!-- voice-first answering (Sesame-style) -->
+      <div id="mic-area">
+        <div class="transcript hidden" id="transcript"></div>
+        <button class="mic-btn" id="btn-mic" aria-label="按住/点击说话">
+          <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" aria-hidden="true">
+            <path d="M12 15a3.5 3.5 0 0 0 3.5-3.5v-5a3.5 3.5 0 1 0-7 0v5A3.5 3.5 0 0 0 12 15Z"/>
+            <path d="M18 11.5a1 1 0 1 0-2 0 4 4 0 0 1-8 0 1 1 0 1 0-2 0 6 6 0 0 0 5 5.917V20H8.5a1 1 0 1 0 0 2h7a1 1 0 1 0 0-2H13v-2.583A6 6 0 0 0 18 11.5Z"/>
+          </svg>
+        </button>
+        <div class="mic-label" id="mic-label">点击麦克风，用英语说出你的回答 🎙️</div>
+      </div>
+
       <div class="helper-row">
         <button class="hint-btn" id="btn-hint">💡 不会回答？看原文和参考回答</button>
+        <button class="skip-btn" id="btn-type">⌨️ 改用打字</button>
         <button class="skip-btn hidden" id="btn-finish-ai">结束对话 ➜</button>
       </div>
-      <div class="input-row">
-        <input type="text" id="user-input" placeholder="听完后，用英语输入你的回答…" autocomplete="off">
+
+      <!-- typing fallback (hidden unless chosen / speech unsupported) -->
+      <div class="input-row hidden" id="type-row">
+        <input type="text" id="user-input" placeholder="用英语输入你的回答…" autocomplete="off">
         <button class="btn" id="btn-send">发送</button>
       </div>
     </div>
@@ -1204,7 +1248,8 @@ function startScenario(sc){
   $('stage-name').textContent = roleParts[0];
   $('stage-zh').textContent = roleParts[1] || '';
   $('btn-finish-ai').classList.toggle('hidden', !(state.aiMode && state.apiKey));
-  setCaption('📍 ' + escapeHtml(sc.intro) + '<br>👂 仔细听 Ta 说什么，然后用英语回答。');
+  setCaption('📍 ' + escapeHtml(sc.intro) + '<br>👂 仔细听 Ta 说什么，然后用英语<b>开口回答</b>。');
+  stopListening(); showTranscript(null); micUI('idle');
   show('chat');
   updateHud();
   waveHello();
@@ -1218,6 +1263,112 @@ function startScenario(sc){
   }
 }
 
+/* =====================================================
+   Speech recognition — the user TALKS their answer
+   (Sesame-style: character speaks → you speak back).
+===================================================== */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const stt = {
+  rec: null,
+  supported: !!SR,
+  listening: false,
+  granted: false,          // mic permission obtained at least once
+  denied: false,
+  finalText: '',
+  mode: SR ? 'voice' : 'type'   // 'voice' = mic-first, 'type' = keyboard
+};
+
+function micUI(s){
+  const btn = $('btn-mic'), label = $('mic-label');
+  if (!btn) return;
+  btn.classList.remove('listening','thinking');
+  if (s === 'listening'){ btn.classList.add('listening'); label.textContent = '🎙️ 在听… 说完停顿一下即可'; }
+  else if (s === 'thinking'){ btn.classList.add('thinking'); label.textContent = '识别中…'; }
+  else { label.textContent = stt.granted ? '轮到你了 — 点击麦克风说 🎙️' : '点击麦克风，用英语说出你的回答 🎙️'; }
+}
+function showTranscript(text, interim){
+  const t = $('transcript');
+  if (!t) return;
+  if (!text){ t.classList.add('hidden'); t.textContent = ''; t.classList.remove('interim'); return; }
+  t.textContent = '“' + text + '”';
+  t.classList.toggle('interim', !!interim);
+  t.classList.remove('hidden');
+}
+function ensureRec(){
+  if (!SR) return null;
+  if (stt.rec) return stt.rec;
+  const rec = new SR();
+  rec.lang = 'en-US';
+  rec.interimResults = true;
+  rec.continuous = false;
+  rec.maxAlternatives = 1;
+  rec.onresult = (e) => {
+    let interim = '', final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++){
+      const alt = e.results[i][0].transcript;
+      if (e.results[i].isFinal) final += alt; else interim += alt;
+    }
+    if (final){ stt.finalText = (stt.finalText + ' ' + final).trim(); showTranscript(stt.finalText, false); }
+    else if (interim){ showTranscript((stt.finalText + ' ' + interim).trim(), true); }
+  };
+  rec.onerror = (e) => {
+    stt.listening = false;
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed'){
+      stt.denied = true;
+      setTypeMode(true);
+      setCaption('🎤 没有麦克风权限，已切换为打字。在浏览器设置允许麦克风后刷新即可用语音。', 'err');
+    } else if (e.error === 'no-speech'){
+      micUI('idle'); $('mic-label').textContent = '没听清，点麦克风再说一遍';
+    } else {
+      micUI('idle');
+    }
+  };
+  rec.onend = () => {
+    stt.listening = false;
+    const said = (stt.finalText || '').trim();
+    stt.finalText = '';
+    if (said){ micUI('thinking'); submitAnswer(said, true); }
+    else { micUI('idle'); }
+  };
+  stt.rec = rec;
+  return rec;
+}
+function startListening(){
+  if (stt.mode !== 'voice' || !SR || stt.listening || stt.denied) return;
+  stopSpeaking();              // never record the character's own voice
+  state.busy = false;
+  const rec = ensureRec();
+  if (!rec) return;
+  stt.finalText = '';
+  showTranscript(null);
+  try {
+    rec.start();
+    stt.listening = true;
+    stt.granted = true;
+    micUI('listening');
+  } catch(_){ /* start() throws if already running — ignore */ }
+}
+function stopListening(){
+  if (stt.rec && stt.listening){ try { stt.rec.stop(); } catch(_){} }
+}
+/* Called after the character finishes talking: hand the turn to the user. */
+function promptForAnswer(){
+  if (stt.mode === 'voice' && SR && !stt.denied){
+    if (stt.granted) startListening();   // hands-free once permission is granted
+    else micUI('idle');                  // first turn: user taps the mic (grants permission)
+  } else {
+    $('user-input').focus();
+  }
+}
+function setTypeMode(on){
+  stt.mode = on ? 'type' : 'voice';
+  $('type-row').classList.toggle('hidden', !on);
+  $('mic-area').classList.toggle('hidden', on);
+  $('btn-type').textContent = on ? '🎙️ 改用语音' : '⌨️ 改用打字';
+  if (on){ stopListening(); showTranscript(null); $('user-input').focus(); }
+  else { micUI('idle'); }
+}
+
 function presentStep(){
   const step = state.scenario.steps[state.stepIndex];
   if (!step) { finishPractice(); return; }
@@ -1227,15 +1378,12 @@ function presentStep(){
   speakLine(step.ai, () => {
     state.busy = false;
     if (isFinal){
+      stopListening();
       setTimeout(finishPractice, 700);
     } else {
-      $('user-input').focus();
+      promptForAnswer();
     }
   });
-  if (!isFinal){
-    // allow answering as soon as speech starts
-    setTimeout(() => { state.busy = false; }, 600);
-  }
 }
 
 function normalize(s){
@@ -1257,22 +1405,28 @@ function matchOption(input, option){
 }
 
 function handleSend(){
-  const input = $('user-input');
-  const text = input.value.trim();
-  if (!text || state.busy) return;
+  submitAnswer($('user-input').value, false);
+}
+
+/* Unified answer handler — used by both spoken and typed input. */
+function submitAnswer(text, fromVoice){
+  text = (text || '').trim();
+  if (!text || state.busy){ if (fromVoice) micUI('idle'); return; }
 
   if (state.aiMode && state.apiKey){
+    $('user-input').value = '';
     sendToAi(text);
     return;
   }
 
   const step = state.scenario.steps[state.stepIndex];
-  if (!step || !step.options) return;
+  if (!step || !step.options){ if (fromVoice) micUI('idle'); return; }
 
   stopSpeaking();
   const matched = step.options.some(op => matchOption(text, op));
   if (matched){
-    input.value = '';
+    $('user-input').value = '';
+    showTranscript(null); micUI('idle');
     hideHints();
     state.totalAnswered++;
     let gain;
@@ -1283,14 +1437,21 @@ function handleSend(){
     state.hintUsedOnStep = false;
     updateHud();
     setMood('happy', 1400);
-    setCaption(`✅ 回答得很好！ +${gain} XP`);
+    setCaption(`✅ 说得很好！ +${gain} XP`);
     state.busy = true;
     setTimeout(() => { state.busy = false; presentStep(); }, 1100);
   } else {
     state.wrongOnStep++;
     if (state.hearts > 0){ state.hearts--; updateHud(); }
-    input.classList.remove('shake'); void input.offsetWidth; input.classList.add('shake');
     setMood('sad', 1800);
+    micUI('idle');
+    if (fromVoice){
+      showTranscript(text, false);
+      $('mic-label').textContent = '再点麦克风说一遍，或点 💡 看参考';
+    } else {
+      const input = $('user-input');
+      input.classList.remove('shake'); void input.offsetWidth; input.classList.add('shake');
+    }
     const tips = [
       '🤔 意思好像不太对哦…点 🔊 再听一遍，再试试？',
       '💪 很接近了！点 💡 看看 Ta 说了什么、可以怎么回答。'
@@ -1337,9 +1498,8 @@ function showHints(){
     chip.className = 'chip';
     chip.innerHTML = `${escapeHtml(op.text)}<span class="zh">${escapeHtml(op.zh)}</span>`;
     chip.onclick = () => {
-      $('user-input').value = op.text;
-      $('user-input').classList.remove('shake');
-      $('user-input').focus();
+      if (stt.mode === 'voice'){ submitAnswer(op.text, false); }
+      else { $('user-input').value = op.text; $('user-input').classList.remove('shake'); $('user-input').focus(); }
     };
     panel.appendChild(chip);
   });
@@ -1436,7 +1596,7 @@ async function startAiConversation(){
     const clean = reply.replace('[END]','').trim();
     state.lastLine = { text: clean, zh: null };
     state.busy = false;
-    speakLine(clean, () => { $('user-input').focus(); });
+    speakLine(clean, () => { promptForAnswer(); });
   } catch(e){
     showWave(false);
     setCaption('⚠️ AI 连接失败：' + escapeHtml(e.message) + '。已自动切换为内置剧本模式。', 'err');
@@ -1470,8 +1630,8 @@ async function sendToAi(text){
     state.lastLine = { text: clean, zh: null };
     state.busy = false;
     speakLine(clean, () => {
-      if (ended || state.aiTurns >= 10){ setTimeout(finishPractice, 900); }
-      else { $('user-input').focus(); }
+      if (ended || state.aiTurns >= 10){ stopListening(); setTimeout(finishPractice, 900); }
+      else { promptForAnswer(); }
     });
   } catch(e){
     showWave(false);
@@ -1502,7 +1662,10 @@ async function fetchAiHints(panel){
       const chip = document.createElement('button');
       chip.className = 'chip';
       chip.textContent = s;
-      chip.onclick = () => { $('user-input').value = s; $('user-input').classList.remove('shake'); $('user-input').focus(); };
+      chip.onclick = () => {
+        if (stt.mode === 'voice'){ submitAnswer(s, false); }
+        else { $('user-input').value = s; $('user-input').classList.remove('shake'); $('user-input').focus(); }
+      };
       panel.appendChild(chip);
     });
   } catch(e){
@@ -1552,8 +1715,14 @@ $('btn-hint').onclick = showHints;
 $('btn-replay').onclick = () => {
   if (state.lastLine && !state.busy) speakLine(state.lastLine.text);
 };
+/* mic: tap to talk (also grants permission the first time); tap again to stop */
+$('btn-mic').onclick = () => {
+  if (stt.listening) stopListening();
+  else startListening();
+};
+$('btn-type').onclick = () => setTypeMode(stt.mode === 'voice');
 $('btn-quit').onclick = () => {
-  if (confirm('确定要退出本次练习吗？进度将不会保存。')){ stopSpeaking(); renderHome(); show('home'); }
+  if (confirm('确定要退出本次练习吗？进度将不会保存。')){ stopSpeaking(); stopListening(); renderHome(); show('home'); }
 };
 $('btn-finish-ai').onclick = () => finishPractice();
 $('btn-again').onclick = () => startScenario(state.scenario);
@@ -1565,7 +1734,10 @@ $('ai-toggle').onchange = e => $('api-key-box').classList.toggle('hidden', !e.ta
 $('settings-mask').addEventListener('click', e => {
   if (e.target === $('settings-mask')) $('settings-mask').classList.add('hidden');
 });
-window.addEventListener('beforeunload', stopSpeaking);
+window.addEventListener('beforeunload', () => { stopSpeaking(); stopListening(); });
+
+// If the browser can't do speech recognition, fall back to typing up front.
+if (!stt.supported) setTypeMode(true);
 
 $('hero-owl').innerHTML = owlSVG();
 renderHome();
