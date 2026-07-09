@@ -223,6 +223,11 @@ button{font-family:inherit}
   animation:micpulse 1.3s ease-in-out infinite;
 }
 .mic-btn.thinking{background:var(--gray-dark); box-shadow:0 5px 0 #8f8f8f; cursor:default}
+.mic-btn.muted{background:var(--gray-dark); box-shadow:0 5px 0 #8f8f8f; position:relative}
+.mic-btn.muted::after{
+  content:''; position:absolute; left:12px; right:12px; top:50%; height:4px;
+  background:#fff; border-radius:2px; transform:rotate(-45deg);
+}
 @keyframes micpulse{
   0%,100%{box-shadow:0 5px 0 #d13c3c, 0 0 0 0 rgba(255,75,75,.45)}
   50%{box-shadow:0 5px 0 #d13c3c, 0 0 0 16px rgba(255,75,75,0)}
@@ -1303,17 +1308,18 @@ function showTranscript(text, interim){
 function updateCallUI(){
   const btn = $('btn-mic'), label = $('mic-label');
   if (!btn) return;
-  btn.classList.remove('listening','thinking');
+  btn.classList.remove('listening','thinking','muted');
   if (!stt.live){
-    label.textContent = stt.granted ? '点击开始对话 🎙️' : '点击开始对话，然后直接开口说英语 🎙️';
+    label.textContent = '麦克风将自动开启，直接说英语即可 🎙️';
   } else if (stt.paused){
-    btn.classList.add('thinking');
-    label.textContent = '🔇 已静音 · 点击继续对话';
+    btn.classList.add('muted');
+    label.textContent = '🔇 麦克风已静音 · 点击重新开启';
   } else if (stt.botSpeaking){
-    label.textContent = '🔊 对方正在说话…（可直接开口打断）';
+    btn.classList.add('listening');
+    label.textContent = '🔊 对方正在说话…（可直接开口打断）· 点击可静音';
   } else {
     btn.classList.add('listening');
-    label.textContent = '🎙️ 请直接开口说英语 · 随时说，无需按键';
+    label.textContent = '🎙️ 麦克风已开启 · 直接说英语即可（点击可静音）';
   }
 }
 
