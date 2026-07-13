@@ -276,6 +276,56 @@ button{font-family:inherit}
 .stat.acc{border-color:var(--green)} .stat.acc .label,.stat.acc .value{color:var(--green)}
 .stat.hp{border-color:var(--red)} .stat.hp .label,.stat.hp .value{color:var(--red)}
 .done-actions{margin-top:32px; display:flex; gap:14px; flex-wrap:wrap; justify-content:center}
+
+/* ============ exam mode (IELTS / TOEFL) ============ */
+.sec-title{
+  max-width:720px; margin:26px auto 0; padding:0 20px;
+  font-size:17px; font-weight:900; display:flex; align-items:center; gap:8px;
+}
+.sec-title .sub{font-size:12.5px; font-weight:700; color:var(--text-light)}
+.card.exam-card{border-color:#c9b8ff; box-shadow:0 4px 0 #e4dbff}
+.card.exam-card:hover{border-color:#8b5cf6; box-shadow:0 6px 0 #e4dbff}
+.tag.exam{background:#efe9ff; color:#6d3df0}
+.timer-pill{
+  font-size:14px; font-weight:900; color:#b8860b;
+  background:#fff4d6; border:2px solid #ffe4a1; border-radius:999px; padding:5px 14px;
+}
+.timer-pill.talk{color:var(--green-dark); background:#e9ffd9; border-color:#c9f3a6}
+.done-answer-btn{
+  background:var(--green); color:#fff; border:none; cursor:pointer;
+  border-radius:12px; padding:7px 14px; font-size:13px; font-weight:900;
+  box-shadow:0 3px 0 var(--green-dark); letter-spacing:.3px;
+}
+.done-answer-btn:active{transform:translateY(3px); box-shadow:0 0 0 var(--green-dark)}
+.transcript.exam{
+  text-align:left; font-weight:600; font-size:14.5px; color:var(--text);
+  max-height:96px; overflow-y:auto;
+  border:2px solid var(--gray); border-radius:12px; padding:8px 12px; background:#fafafa;
+}
+.cue-card{
+  max-width:520px; text-align:left;
+  border:2px solid #c9b8ff; background:#f7f4ff; border-radius:16px; padding:14px 18px;
+  font-size:14.5px; font-weight:700; line-height:1.65;
+}
+.cue-card .topic{font-size:15.5px; font-weight:900; margin-bottom:6px}
+.cue-card ul{margin:4px 0 0 18px}
+.cue-card .zh{color:var(--text-light); font-size:12.5px; font-weight:600}
+#exam-report{max-width:640px; width:100%; margin:26px auto 0; text-align:left}
+.report-title{font-size:15px; font-weight:900; margin-bottom:10px}
+.report-q{
+  border:2px solid var(--gray); border-radius:14px; padding:11px 14px; margin-bottom:10px;
+  font-size:13.5px; line-height:1.6;
+}
+.report-q .q{font-weight:900; color:var(--blue-dark)}
+.report-q .a{margin-top:4px; font-weight:600; white-space:pre-wrap}
+.report-q .meta{margin-top:4px; font-size:11.5px; color:var(--gray-dark); font-weight:800}
+.feedback-box{margin-top:14px; text-align:center}
+.feedback-box .note{font-size:12px; color:var(--gray-dark); margin-top:8px}
+#feedback-out{
+  margin-top:12px; text-align:left; border:2px solid #bfe9ff; background:#f2fbff;
+  border-radius:14px; padding:13px 16px; font-size:14px; font-weight:600;
+  line-height:1.7; white-space:pre-wrap;
+}
 .confetti{position:absolute; top:-12px; font-size:20px; animation:fall linear forwards; pointer-events:none}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg); opacity:.6}}
 
@@ -394,13 +444,13 @@ button{font-family:inherit}
 
   <section class="hero">
     <div class="owl" id="hero-owl"></div>
-    <h1>留学英语情景对话练习</h1>
-    <p>像面对面聊天一样：角色会<b>开口对你说英语</b>，先认真听、自己回答。<br>
-    听不清可以 <b>🔊 重听</b>；实在不会回答，再点 <b>💡</b> 查看原文和参考回答。</p>
+    <h1>雅思 · 托福口语陪练</h1>
+    <p>像真实考试一样：考官<b>开口向你提问</b>，你<b>自由开口作答</b> —— 想说几句说几句，<br>
+    没有标准答案，不打断你。练完可查看逐题文字记录，还能让 AI 考官<b>估分点评</b>。</p>
     <div class="ai-badge" id="mode-badge">📖 内置剧本模式（免费，无需联网 API）</div>
   </section>
 
-  <div class="scenarios" id="scenario-list"></div>
+  <div id="home-lists"></div>
 </div>
 
 <!-- ==================== PRACTICE SCENE ==================== -->
@@ -419,6 +469,7 @@ button{font-family:inherit}
     <div class="speak-row">
       <button class="listen-btn" id="btn-replay">🔊 再听一遍</button>
       <div class="sound-wave hidden" id="sound-wave"><i></i><i></i><i></i><i></i></div>
+      <div class="timer-pill hidden" id="exam-timer"></div>
     </div>
     <div class="voice-status hidden" id="voice-status"></div>
     <div class="scene-caption hidden" id="scene-caption"></div>
@@ -443,6 +494,7 @@ button{font-family:inherit}
       <div class="helper-row">
         <button class="hint-btn" id="btn-hint">💡 不会回答？看原文和参考回答</button>
         <button class="skip-btn" id="btn-type">⌨️ 改用打字</button>
+        <button class="done-answer-btn hidden" id="btn-done-answer">✅ 我说完了</button>
         <button class="skip-btn hidden" id="btn-finish-ai">结束对话 ➜</button>
       </div>
 
@@ -462,9 +514,21 @@ button{font-family:inherit}
   <div class="sub" id="done-sub"></div>
   <div class="stats">
     <div class="stat xp"><div class="label">总经验 XP</div><div class="value" id="done-xp">0</div></div>
-    <div class="stat acc"><div class="label">独立作答</div><div class="value" id="done-acc">0%</div></div>
-    <div class="stat hp"><div class="label">剩余体力</div><div class="value" id="done-hearts">❤️3</div></div>
+    <div class="stat acc"><div class="label" id="done-acc-label">独立作答</div><div class="value" id="done-acc">0%</div></div>
+    <div class="stat hp"><div class="label" id="done-hearts-label">剩余体力</div><div class="value" id="done-hearts">❤️3</div></div>
   </div>
+
+  <!-- exam-mode report: your transcript + optional AI examiner feedback -->
+  <div id="exam-report" class="hidden">
+    <div class="report-title">📝 你的回答记录</div>
+    <div id="report-list"></div>
+    <div class="feedback-box">
+      <button class="btn btn-blue" id="btn-feedback">🤖 让 AI 考官点评（估分 + 建议）</button>
+      <div class="note" id="feedback-note">一次点评仅一次 API 调用（约几美分）。需在 ⚙️ 设置中填入 Anthropic API Key。</div>
+      <div id="feedback-out" class="hidden"></div>
+    </div>
+  </div>
+
   <div class="done-actions">
     <button class="btn btn-white" id="btn-again">再练一次</button>
     <button class="btn" id="btn-home">继续 · 选新场景</button>
@@ -740,6 +804,88 @@ const SCENARIOS = [
 ];
 
 /* =====================================================
+   IELTS / TOEFL speaking practice — FREE-FLOWING mode.
+   The examiner asks; you answer freely (any length, any
+   words). No matching, no hearts — just talk. Costs no
+   API money; an optional single Claude call at the end
+   can grade your transcript.
+===================================================== */
+const EXAMS = [
+{
+  exam:true, id:'ielts1', emoji:'🎤', title:'IELTS Speaking Part 1', zh:'雅思口语 · 日常问答', level:'P1',
+  char:'examiner', role:'Examiner Sarah · 雅思考官', kind:'qa',
+  intro:'考官会问你约 9 个日常话题的问题。自由作答，每题建议说 3~5 句。停顿 5 秒或点「我说完了」进入下一题。',
+  questions:[
+    {q:"Good afternoon. My name is Sarah, and I'll be your examiner today. Could you tell me your full name, please?", zh:'下午好，我是你今天的考官 Sarah。请告诉我你的全名。'},
+    {q:"Now, let's talk about your hometown. Where are you from, and what do you like most about it?", zh:'我们聊聊你的家乡。你来自哪里？你最喜欢家乡的什么？'},
+    {q:"Do you work, or are you a student?", zh:'你在工作还是在读书？'},
+    {q:"What subject are you studying, and why did you choose it?", zh:'你学的是什么专业？为什么选择它？'},
+    {q:"Let's move on to free time. What do you usually do at the weekend?", zh:'聊聊空闲时间。你周末通常做什么？'},
+    {q:"Do you prefer spending time with friends, or spending time alone? Why?", zh:'你更喜欢和朋友待在一起，还是独处？为什么？'},
+    {q:"Let's talk about food. What kind of food do you like best?", zh:'聊聊食物。你最喜欢什么样的食物？'},
+    {q:"Do you enjoy cooking? Why or why not?", zh:'你喜欢做饭吗？为什么？'},
+    {q:"Finally, what's the weather usually like in your hometown? Do you prefer hot or cold weather?", zh:'最后，你家乡的天气通常怎么样？你喜欢热天还是冷天？'}
+  ]
+},
+{
+  exam:true, id:'ielts2', emoji:'🗂️', title:'IELTS Speaking Part 2', zh:'雅思口语 · 话题卡独白', level:'P2',
+  char:'examiner', role:'Examiner Sarah · 雅思考官', kind:'cue', prepSec:60, talkSec:120,
+  intro:'考官给你一张话题卡：1 分钟准备，然后连续讲最多 2 分钟。这是最接近真实考试的练习。',
+  cards:[
+    { topic:"Describe a place you would like to visit in the future.",
+      zh:'描述一个你未来想去的地方。',
+      bullets:["where it is","how you would get there","what you would do there","and explain why you want to visit this place"] },
+    { topic:"Describe a person who has had an important influence on you.",
+      zh:'描述一个对你有重要影响的人。',
+      bullets:["who this person is","how you know them","what they have done","and explain why they influenced you so much"] },
+    { topic:"Describe a skill you would like to learn.",
+      zh:'描述一项你想学习的技能。',
+      bullets:["what the skill is","why you want to learn it","how you would learn it","and explain how it would help you"] },
+    { topic:"Describe a memorable trip you have taken.",
+      zh:'描述一次让你难忘的旅行。',
+      bullets:["where you went","who you went with","what you did there","and explain why it was memorable"] },
+    { topic:"Describe a book or film that impressed you.",
+      zh:'描述一本让你印象深刻的书或电影。',
+      bullets:["what it is","when you read or watched it","what it is about","and explain why it impressed you"] }
+  ]
+},
+{
+  exam:true, id:'ielts3', emoji:'💭', title:'IELTS Speaking Part 3', zh:'雅思口语 · 深度讨论', level:'P3',
+  char:'examiner', role:'Examiner Sarah · 雅思考官', kind:'qa',
+  intro:'第三部分是更抽象的讨论题，考察观点展开与逻辑。每题建议说 4~6 句，给出理由和例子。',
+  questions:[
+    {q:"In this part, I'd like to discuss some more abstract questions with you. First — how important do you think it is for young people to study abroad?", zh:'这部分我们讨论一些更抽象的问题。首先——你认为年轻人出国留学有多重要？'},
+    {q:"What are the biggest challenges that international students face in a new country?", zh:'留学生在新的国家面临的最大挑战是什么？'},
+    {q:"Do you think technology has changed the way people learn? In what ways?", zh:'你认为科技改变了人们的学习方式吗？体现在哪些方面？'},
+    {q:"Some people say online courses will eventually replace traditional universities. Do you agree or disagree?", zh:'有人说网课最终会取代传统大学。你同意吗？'},
+    {q:"Let's talk about cities. Why do so many young people prefer to move to big cities?", zh:'我们聊聊城市。为什么这么多年轻人喜欢搬去大城市？'},
+    {q:"What could governments do to make cities better places to live?", zh:'政府可以做些什么让城市更宜居？'},
+    {q:"And finally, how do you think cities will change in the next twenty years?", zh:'最后，你认为未来二十年城市会发生什么变化？'}
+  ]
+},
+{
+  exam:true, id:'toefl1', emoji:'🎧', title:'TOEFL Independent Speaking', zh:'托福独立口语 · 限时作答', level:'T1',
+  char:'examiner', role:'Examiner Mark · 托福考官', kind:'toefl', prepSec:15, talkSec:45,
+  intro:'托福独立口语：每题 15 秒准备、45 秒作答，共 4 题。练习在时间压力下组织观点。',
+  questions:[
+    {q:"Some people prefer to study alone, while others prefer to study with friends. Which do you prefer, and why? Include details in your answer.", zh:'有人喜欢独自学习，有人喜欢和朋友一起学习。你更喜欢哪种？为什么？'},
+    {q:"Describe a place in your hometown that you would recommend to a visitor, and explain why you recommend it.", zh:'描述你家乡一个你会推荐给游客的地方，并解释原因。'},
+    {q:"Do you agree or disagree with the following statement: students learn more from teachers than from the internet. Use examples to support your opinion.", zh:'你是否同意：学生从老师那里学到的比从网络上多。请举例支持你的观点。'},
+    {q:"Talk about an important decision you made recently. Explain what it was and why it was important to you.", zh:'谈谈你最近做出的一个重要决定，说明是什么以及为什么重要。'}
+  ]
+}
+];
+/* short, varied acknowledgments the examiner says between answers */
+const EXAM_ACKS = ["Thank you.", "I see, thank you.", "Alright.", "Okay, thank you.", "That's interesting."];
+/* opener phrases shown as hints when the student is stuck */
+const EXAM_STARTERS = [
+  {text:"Well, that's an interesting question. I'd say...", zh:'嗯，这是个有意思的问题。我认为……'},
+  {text:"To be honest, I think... mainly because...", zh:'说实话，我觉得……主要是因为……'},
+  {text:"There are a couple of reasons. First of all...", zh:'有几个原因。首先……'},
+  {text:"For example, in my own experience...", zh:'比如，就我自己的经历来说……'}
+];
+
+/* =====================================================
    Cute SVG characters
 ===================================================== */
 const CHARACTERS = {
@@ -756,7 +902,9 @@ const CHARACTERS = {
   professor:{skin:'#ffd9b8', hair:'#cfcfcf', style:'side',     glasses:true, beard:true, shirt:'#546a8c',
              voice:{gender:'m', pitch:.85, rate:.88}},
   me:       {skin:'#ffe2c9', hair:'#4a3050', style:'buns',     shirt:'#1cb0f6', blush:true,
-             voice:{gender:'f', pitch:1.1, rate:.95}}
+             voice:{gender:'f', pitch:1.1, rate:.95}},
+  examiner: {skin:'#ffe0c2', hair:'#4a3a2a', style:'long',     glasses:true, shirt:'#455a7d', blush:true,
+             voice:{gender:'f', pitch:1.0, rate:.9}}
 };
 
 function faceSVG(key, cls){
@@ -906,6 +1054,8 @@ const LS = {
   tts: 'sd_tts'          // 'kokoro' (neural, default) | 'browser'
 };
 const state = {
+  mode: 'scenario',        // 'scenario' (guided dialogue) | 'exam' (free-flowing IELTS/TOEFL)
+  exam: null,              // live exam session state
   scenario: null,
   stepIndex: 0,
   hearts: 3,
@@ -976,7 +1126,8 @@ const KOKORO_VOICE = {
   emma:     'af_heart',    // bright, upbeat young woman
   landlord: 'am_michael',  // older, easy-going man
   professor:'bm_george',   // distinguished British man
-  me:       'af_nicole'    // the student
+  me:       'af_nicole',   // the student
+  examiner: 'bf_emma'      // calm professional British woman — IELTS examiner
 };
 
 async function importKokoro(){
@@ -1173,6 +1324,8 @@ function speakBrowser(text, mySeq, finish){
 }
 function revealLineAsSubtitle(){
   if (!state.lastLine) return;
+  // a displayed cue card IS the text — don't overwrite it with a subtitle
+  if (document.querySelector('#scene-caption .cue-card')) return;
   setCaption(
     `<span class="en">💬 ${escapeHtml(state.lastLine.text)}</span>` +
     (state.lastLine.zh ? `<span class="zh">${escapeHtml(state.lastLine.zh)}</span>` : ''),
@@ -1194,29 +1347,51 @@ function setCaption(html, cls){
 /* =====================================================
    Home screen
 ===================================================== */
+/* Start any practice item — exam module or daily scenario. */
+function startPractice(item){
+  if (item && item.exam) startExam(item);
+  else startScenario(item);
+}
+
 function renderHome(){
   stopSpeaking();
-  const list = $('scenario-list');
-  list.innerHTML = '';
-  SCENARIOS.forEach(sc => {
-    const best = localStorage.getItem(LS.best(sc.id));
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <div class="face-wrap">${faceSVG(sc.char)}</div>
-      <h3>${sc.title}</h3>
-      <div class="zh">${sc.zh}</div>
-      <div class="meta">
-        <span class="tag ${sc.level===1?'lv1':'lv2'}">${sc.level===1?'初级 A2':'中级 B1'}</span>
-        <span class="tag gray">${sc.steps.length} 轮对话</span>
-      </div>
-      ${best ? `<div class="best">🏆 最佳 ${best} XP</div>` : ''}`;
-    card.onclick = () => startScenario(sc);
-    list.appendChild(card);
-  });
+  const host = $('home-lists');
+  host.innerHTML = '';
+
+  const section = (titleHtml, items, isExam) => {
+    const h = document.createElement('div');
+    h.className = 'sec-title';
+    h.innerHTML = titleHtml;
+    host.appendChild(h);
+    const grid = document.createElement('div');
+    grid.className = 'scenarios';
+    items.forEach(it => {
+      const best = localStorage.getItem(LS.best(it.id));
+      const card = document.createElement('div');
+      card.className = 'card' + (isExam ? ' exam-card' : '');
+      const metaTags = isExam
+        ? `<span class="tag exam">${it.level}</span>
+           <span class="tag gray">${it.kind === 'cue' ? '话题卡 ' + it.prepSec + 's 准备 / ' + it.talkSec + 's 作答' : (it.questions.length + ' 题 · 自由作答')}</span>`
+        : `<span class="tag ${it.level===1?'lv1':'lv2'}">${it.level===1?'初级 A2':'中级 B1'}</span>
+           <span class="tag gray">${it.steps.length} 轮对话</span>`;
+      card.innerHTML = `
+        <div class="face-wrap">${faceSVG(it.char)}</div>
+        <h3>${it.title}</h3>
+        <div class="zh">${it.zh}</div>
+        <div class="meta">${metaTags}</div>
+        ${best ? `<div class="best">🏆 最佳 ${best} XP</div>` : ''}`;
+      card.onclick = () => startPractice(it);
+      grid.appendChild(card);
+    });
+    host.appendChild(grid);
+  };
+
+  section('🎯 雅思 / 托福口语专项 <span class="sub">真实考试题 · 自由开口说，不限句数 · 免费</span>', EXAMS, true);
+  section('💬 日常情景对话 <span class="sub">跟角色练习生活场景（引导式）</span>', SCENARIOS, false);
+
   $('mode-badge').textContent = state.aiMode && state.apiKey
     ? '🤖 AI 智能模式已开启（由 Claude 实时对话）'
-    : '📖 内置剧本模式（免费，无需 API）';
+    : '🎙️ 全程免费 · 开口即说，无需 API';
 }
 
 /* =====================================================
@@ -1224,6 +1399,12 @@ function renderHome(){
 ===================================================== */
 function updateHud(){
   $('xp-pill').textContent = '⚡' + state.xp;
+  if (state.mode === 'exam' && state.exam){
+    $('hearts').textContent = '🎓';
+    const total = currentExamTotal();
+    $('progress-fill').style.width = Math.min(100, Math.round(state.exam.qIndex/total*100)) + '%';
+    return;
+  }
   $('hearts').textContent = '❤️ ' + state.hearts;
   const total = state.aiMode && state.apiKey ? 8 : state.scenario.steps.length;
   const cur = state.aiMode && state.apiKey ? state.aiTurns : state.stepIndex;
@@ -1234,6 +1415,9 @@ function updateHud(){
    Practice flow (scripted)
 ===================================================== */
 function startScenario(sc){
+  state.mode = 'scenario';
+  examCleanup();
+  state.exam = null;
   state.scenario = sc;
   state.stepIndex = 0;
   state.hearts = 3;
@@ -1338,6 +1522,7 @@ function ensureRec(){
       const alt = e.results[i][0].transcript;
       if (e.results[i].isFinal) finals += alt + ' '; else interim += alt;
     }
+    if (state.mode === 'exam'){ examOnSpeech(finals.trim(), interim.trim()); return; }
     if (interim) showTranscript(interim.trim(), true);
     if (finals.trim()){
       showTranscript(finals.trim(), false);
@@ -1403,9 +1588,11 @@ function micBotSpeaking(on){
   stt.botSpeaking = on;
   stt.bargeFrames = 0;
   if (!on){
-    // character finished → hand the floor to the user automatically (no tap)
-    stt.accepting = stt.live && !stt.paused;
-    showTranscript(null);
+    // character finished → hand the floor to the user automatically (no tap).
+    // In exam mode the floor only opens during the 'answer' phase (not prep).
+    stt.accepting = stt.live && !stt.paused &&
+      (state.mode !== 'exam' || (state.exam && state.exam.phase === 'answer'));
+    if (state.mode !== 'exam') showTranscript(null);
   } else {
     stt.accepting = false;
   }
@@ -1435,7 +1622,8 @@ async function startBargeMeter(){
       let sum = 0;
       for (let i = 0; i < stt.buf.length; i++){ const v = (stt.buf[i] - 128) / 128; sum += v * v; }
       const rms = Math.sqrt(sum / stt.buf.length);
-      if (stt.live && stt.botSpeaking && !stt.paused && rms > 0.12){
+      // barge-in only in conversation mode — an exam question shouldn't be cut off by noise
+      if (stt.live && stt.botSpeaking && !stt.paused && state.mode !== 'exam' && rms > 0.12){
         if (++stt.bargeFrames >= 3){ bargeIn(); }
       } else {
         stt.bargeFrames = 0;
@@ -1481,6 +1669,301 @@ function setTypeMode(on){
 function stopListening(){ /* replaced by endCall/pause */ }
 function micUI(){ updateCallUI(); }
 
+/* =====================================================
+   EXAM ENGINE — free-flowing IELTS / TOEFL speaking.
+   Ask → you speak freely (any length) → 5s silence or the
+   '我说完了' button moves on. No matching, no hearts,
+   no per-turn API cost.
+===================================================== */
+const EXAM_SIL_MS = 5000;      // silence that ends an answer
+const EXAM_MIN_WORDS = 8;      // don't auto-end before the student has said something
+const EXAM_QA_CAP = 90;        // seconds cap for untimed (Part 1/3) answers
+
+function examTimerShow(text, cls){
+  const el = $('exam-timer');
+  if (!el) return;
+  if (!text){ el.classList.add('hidden'); el.textContent=''; return; }
+  el.textContent = text;
+  el.className = 'timer-pill' + (cls ? ' ' + cls : '');
+}
+function fmtSec(s){ return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+function wordCount(t){ const w = (t||'').trim(); return w ? w.split(/\s+/).length : 0; }
+
+function startExam(mod){
+  state.mode = 'exam';
+  state.scenario = mod;                  // reuse stage/role plumbing
+  state.xp = 0;
+  state.exam = {
+    mod, qIndex: 0, phase: 'idle',
+    answers: [], buf: '', lastSpeechAt: 0,
+    tickI: null, deadline: 0, startedAt: 0,
+    card: mod.kind === 'cue' ? mod.cards[Math.floor(Math.random()*mod.cards.length)] : null
+  };
+
+  hideHints();
+  $('user-input').value = '';
+  $('scenario-banner').textContent = `${mod.emoji} ${mod.title} · ${mod.zh}`;
+  $('stage-face').innerHTML = faceSVG(mod.char);
+  const roleParts = mod.role.split(' · ');
+  $('stage-name').textContent = roleParts[0];
+  $('stage-zh').textContent = roleParts[1] || '';
+  $('btn-finish-ai').classList.add('hidden');
+  $('btn-done-answer').classList.add('hidden');
+  $('hearts').textContent = '🎓';
+  setCaption('📍 ' + escapeHtml(mod.intro));
+  showTranscript(null);
+  examTimerShow(null);
+  stt.paused = false;
+  show('chat');
+  updateHud();
+  waveHello();
+  unlockAudio();
+  warmUpVoice();
+  if (stt.mode === 'voice' && SR && !stt.denied) startCall(); else updateCallUI();
+  setTimeout(askExamQuestion, 1200);
+}
+
+function currentExamTotal(){
+  const ex = state.exam;
+  if (!ex) return 1;
+  return ex.mod.kind === 'cue' ? 1 : ex.mod.questions.length;
+}
+
+function askExamQuestion(){
+  const ex = state.exam;
+  if (!ex) return;
+  const mod = ex.mod;
+  ex.phase = 'question';
+  updateHud();
+
+  let spoken, lineForReplay, zh;
+  if (mod.kind === 'cue'){
+    const c = ex.card;
+    spoken = "Now, I'm going to give you a topic, and I'd like you to talk about it for one to two minutes. " +
+             "You have one minute to prepare. Here is your topic: " + c.topic;
+    lineForReplay = c.topic;
+    zh = c.zh;
+    // show the written cue card, like the real test
+    setCaption(
+      `<div class="cue-card"><div class="topic">${escapeHtml(c.topic)}</div>` +
+      `<span class="zh">${escapeHtml(c.zh)}</span><ul>` +
+      c.bullets.map(b => `<li>You should say: ${escapeHtml(b)}</li>`).join('') +
+      `</ul></div>`, 'plain');
+  } else {
+    const q = mod.questions[ex.qIndex];
+    const ack = ex.qIndex > 0 ? EXAM_ACKS[Math.floor(Math.random()*EXAM_ACKS.length)] + ' ' : '';
+    spoken = ack + q.q;
+    lineForReplay = q.q;
+    zh = q.zh;
+    if (ex.qIndex > 0) setCaption(null);
+  }
+  state.lastLine = { text: lineForReplay, zh: zh };
+
+  state.busy = true;
+  speakLine(spoken, () => {
+    state.busy = false;
+    if (!state.exam) return;               // user quit mid-question
+    if (mod.prepSec){ startPrep(); }
+    else { beginAnswer(); }
+  });
+}
+
+function startPrep(){
+  const ex = state.exam;
+  ex.phase = 'prep';
+  stt.accepting = false;
+  const end = Date.now() + ex.mod.prepSec * 1000;
+  examTimerShow('🕐 准备时间 ' + fmtSec(ex.mod.prepSec));
+  $('mic-label').textContent = '先想一想要说什么 · 准备时间结束后开始作答';
+  clearInterval(ex.tickI);
+  ex.tickI = setInterval(() => {
+    const left = Math.max(0, Math.ceil((end - Date.now())/1000));
+    examTimerShow('🕐 准备时间 ' + fmtSec(left));
+    if (left <= 0){
+      clearInterval(ex.tickI);
+      state.busy = true;
+      speakLine("Alright, please begin.", () => { state.busy = false; if (state.exam) beginAnswer(); });
+    }
+  }, 250);
+}
+
+function beginAnswer(){
+  const ex = state.exam;
+  ex.phase = 'answer';
+  ex.buf = '';
+  ex.lastSpeechAt = Date.now();
+  ex.startedAt = Date.now();
+  const cap = ex.mod.talkSec || EXAM_QA_CAP;
+  ex.deadline = Date.now() + cap * 1000;
+  stt.accepting = stt.live && !stt.paused;
+  updateCallUI();
+  $('btn-done-answer').classList.remove('hidden');
+  const t = $('transcript');
+  if (t) t.classList.add('exam');
+  showTranscript(' ', false);            // open the (empty) live transcript box
+  t && (t.textContent = '');
+  $('mic-label').textContent = '🎙️ 请开始作答 · 想说多久说多久';
+  clearInterval(ex.tickI);
+  ex.tickI = setInterval(() => {
+    if (!state.exam || state.exam.phase !== 'answer') return;
+    const now = Date.now();
+    const words = wordCount(ex.buf);
+    if (ex.mod.talkSec){
+      const left = Math.max(0, Math.ceil((ex.deadline - now)/1000));
+      examTimerShow('🎙 剩余 ' + fmtSec(left) + ' · 已说 ' + words + ' 词', 'talk');
+      if (left <= 0){ endAnswer('time'); return; }
+    } else {
+      examTimerShow('已说 ' + words + ' 词 · 停顿 5 秒进入下一题', 'talk');
+      if (now > ex.deadline){ endAnswer('time'); return; }
+    }
+    // silence detection — only once they've actually said something
+    if (words >= EXAM_MIN_WORDS && now - ex.lastSpeechAt > EXAM_SIL_MS){
+      endAnswer('silence');
+    }
+  }, 300);
+}
+
+function examOnSpeech(finals, interim){
+  const ex = state.exam;
+  if (!ex || ex.phase !== 'answer') return;
+  if (finals){
+    ex.buf = (ex.buf + ' ' + finals).trim();
+    ex.lastSpeechAt = Date.now();
+  }
+  if (interim) ex.lastSpeechAt = Date.now();
+  const t = $('transcript');
+  if (t){
+    t.classList.add('exam');
+    t.classList.remove('hidden','interim');
+    t.textContent = (ex.buf + (interim ? ' ' + interim : '')).trim() || ' ';
+    t.scrollTop = t.scrollHeight;
+  }
+}
+
+/* typed answers (fallback keyboard mode) end the answer immediately */
+function examTypedAnswer(text){
+  const ex = state.exam;
+  if (!ex) return;
+  if (ex.phase !== 'answer'){ return; }
+  ex.buf = (ex.buf + ' ' + text).trim();
+  $('user-input').value = '';
+  endAnswer('typed');
+}
+
+function endAnswer(why){
+  const ex = state.exam;
+  if (!ex || ex.phase !== 'answer') return;
+  ex.phase = 'between';
+  clearInterval(ex.tickI);
+  stt.accepting = false;
+  $('btn-done-answer').classList.add('hidden');
+  examTimerShow(null);
+
+  const text = ex.buf.trim();
+  const words = wordCount(text);
+  const secs = Math.max(1, Math.round((Date.now() - ex.startedAt)/1000));
+  const qText = ex.mod.kind === 'cue' ? ex.card.topic : ex.mod.questions[ex.qIndex].q;
+  ex.answers.push({ q: qText, a: text, words, secs });
+  state.xp += Math.min(25, 5 + Math.round(words / 4));   // longer answers earn more
+  updateHud();
+  const t = $('transcript'); if (t){ t.classList.remove('exam'); }
+  showTranscript(null);
+  if (words > 0) setMood('happy', 1200);
+
+  ex.qIndex++;
+  const total = currentExamTotal();
+  if (ex.qIndex >= total){
+    state.busy = true;
+    speakLine("Thank you. That is the end of this part of the test. You did well today.", () => {
+      state.busy = false;
+      finishExam();
+    });
+  } else {
+    setTimeout(askExamQuestion, 500);
+  }
+}
+
+function examCleanup(){
+  if (state.exam){ clearInterval(state.exam.tickI); }
+  $('btn-done-answer').classList.add('hidden');
+  examTimerShow(null);
+  const t = $('transcript'); if (t) t.classList.remove('exam');
+}
+
+function finishExam(){
+  const ex = state.exam;
+  if (!ex) return;
+  examCleanup();
+  stopSpeaking();
+  endCall();
+
+  const totalWords = ex.answers.reduce((s,a) => s + a.words, 0);
+  const uniq = new Set(
+    ex.answers.map(a => a.a.toLowerCase().replace(/[^a-z' ]+/g,' ')).join(' ')
+      .split(/\s+/).filter(Boolean)
+  ).size;
+
+  $('done-xp').textContent = state.xp;
+  $('done-acc-label').textContent = '总词数';
+  $('done-acc').textContent = totalWords;
+  $('done-hearts-label').textContent = '词汇量';
+  $('done-hearts').textContent = uniq;
+  $('done-sub').textContent = `${ex.mod.emoji} ${ex.mod.title} · ${ex.mod.zh}`;
+  $('done-face').innerHTML = faceSVG(ex.mod.char, 'happy');
+
+  // transcript report
+  const list = $('report-list');
+  list.innerHTML = ex.answers.map((a,i) =>
+    `<div class="report-q"><div class="q">Q${i+1}. ${escapeHtml(a.q)}</div>` +
+    `<div class="a">${a.a ? escapeHtml(a.a) : '<i>（未作答）</i>'}</div>` +
+    `<div class="meta">${a.words} 词 · ${a.secs} 秒</div></div>`
+  ).join('');
+  $('exam-report').classList.remove('hidden');
+  $('feedback-out').classList.add('hidden');
+  $('feedback-out').textContent = '';
+  $('btn-feedback').disabled = false;
+  $('feedback-note').textContent = state.apiKey
+    ? '一次点评仅一次 API 调用（约几美分）。'
+    : '需先在 ⚙️ 设置中填入 Anthropic API Key（一次点评约几美分）。';
+
+  const bestKey = LS.best(ex.mod.id);
+  const best = parseInt(localStorage.getItem(bestKey) || '0', 10);
+  if (state.xp > best) localStorage.setItem(bestKey, String(state.xp));
+
+  show('done');
+  throwConfetti();
+}
+
+/* Optional: ONE Claude call grades the whole session (band estimate + tips). */
+async function examFeedback(){
+  const ex = state.exam;
+  if (!ex || !ex.answers.length) return;
+  if (!state.apiKey){
+    alert('请先在 ⚙️ 设置中填入你的 Anthropic API Key（仅保存在本机浏览器）。');
+    return;
+  }
+  const btn = $('btn-feedback'), out = $('feedback-out');
+  btn.disabled = true;
+  out.classList.remove('hidden');
+  out.textContent = '考官正在评阅你的回答…';
+  try {
+    const isToefl = ex.mod.kind === 'toefl';
+    const sys = `You are a certified ${isToefl ? 'TOEFL' : 'IELTS'} speaking examiner. ` +
+      `Assess the student's spoken answers (transcribed below) for ${ex.mod.title}. ` +
+      `Reply in Chinese (keep English for example phrases). Structure your reply as: ` +
+      `1) ${isToefl ? '预估得分（0-30 中的口语单项水平区间）' : '预估雅思口语分数区间（如 5.5-6.0）'} 加一句理由; ` +
+      `2) 两个做得好的地方; 3) 三个最需要改进的具体问题（引用学生原句并给出改写）; ` +
+      `4) 五个能提分的替换词汇或句型。 Be encouraging but honest. Note: the transcript comes from ` +
+      `speech recognition, so ignore punctuation issues.`;
+    const transcript = ex.answers.map((a,i) => `Q${i+1}: ${a.q}\nAnswer (${a.words} words, ${a.secs}s): ${a.a || '(no answer)'}`).join('\n\n');
+    const text = await callClaude([{ role:'user', content: transcript }], sys, 1000);
+    out.textContent = text;
+  } catch(e){
+    out.textContent = '⚠️ 点评失败：' + e.message;
+    btn.disabled = false;
+  }
+}
+
 function presentStep(){
   const step = state.scenario.steps[state.stepIndex];
   if (!step) { finishPractice(); return; }
@@ -1523,6 +2006,7 @@ function handleSend(){
 /* Unified answer handler — used by both spoken and typed input. */
 function submitAnswer(text, fromVoice){
   text = (text || '').trim();
+  if (state.mode === 'exam'){ if (text) examTypedAnswer(text); return; }
   if (!text || state.busy){ if (fromVoice) micUI('idle'); return; }
 
   if (state.aiMode && state.apiKey){
@@ -1590,6 +2074,23 @@ function showHints(){
     panel.appendChild(said);
   }
 
+  // exam mode: show the question text + opener phrases (no scoring, just reference)
+  if (state.mode === 'exam'){
+    const title0 = document.createElement('div');
+    title0.className = 'hint-title';
+    title0.textContent = '💬 开头可以这样说（仅供参考，用你自己的话）';
+    panel.appendChild(title0);
+    EXAM_STARTERS.forEach(s => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.style.cursor = 'default';
+      chip.innerHTML = `${escapeHtml(s.text)}<span class="zh">${escapeHtml(s.zh)}</span>`;
+      panel.appendChild(chip);
+    });
+    panel.classList.remove('hidden');
+    return;
+  }
+
   // 2. reference responses
   const title = document.createElement('div');
   title.className = 'hint-title';
@@ -1629,6 +2130,10 @@ function hideHints(){
 function finishPractice(){
   stopSpeaking();
   endCall();
+  // scenario-mode results: restore labels, hide the exam report block
+  $('done-acc-label').textContent = '独立作答';
+  $('done-hearts-label').textContent = '剩余体力';
+  $('exam-report').classList.add('hidden');
   const total = state.totalAnswered || 1;
   const acc = Math.round(state.selfAnswered / total * 100);
   state.xp += state.hearts * 2;   // bonus for remaining hearts
@@ -1832,11 +2337,16 @@ $('btn-replay').onclick = () => {
 /* mic button: start the call if not started; otherwise mute / resume */
 $('btn-mic').onclick = () => togglePause();
 $('btn-type').onclick = () => setTypeMode(stt.mode === 'voice');
+$('btn-done-answer').onclick = () => endAnswer('button');
+$('btn-feedback').onclick = () => examFeedback();
 $('btn-quit').onclick = () => {
-  if (confirm('确定要退出本次练习吗？进度将不会保存。')){ stopSpeaking(); endCall(); renderHome(); show('home'); }
+  if (confirm('确定要退出本次练习吗？进度将不会保存。')){
+    stopSpeaking(); endCall(); examCleanup(); state.exam = null; state.mode = 'scenario';
+    renderHome(); show('home');
+  }
 };
 $('btn-finish-ai').onclick = () => finishPractice();
-$('btn-again').onclick = () => startScenario(state.scenario);
+$('btn-again').onclick = () => startPractice(state.scenario);
 $('btn-home').onclick = () => { renderHome(); show('home'); };
 $('btn-settings').onclick = openSettings;
 $('btn-settings-close').onclick = () => $('settings-mask').classList.add('hidden');
