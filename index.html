@@ -420,9 +420,79 @@ button{font-family:inherit}
 }
 @keyframes sparklePop{0%{transform:scale(.3) translateY(4px); opacity:0}30%{opacity:1}100%{transform:scale(1.25) translateY(-30px); opacity:0}}
 
+/* ============ shop / membership & cart ============ */
+.cart-btn{position:relative}
+.cart-badge{
+  position:absolute; top:0; right:0;
+  background:var(--red); color:#fff; font-size:10.5px; font-weight:900;
+  border-radius:999px; min-width:17px; height:17px; line-height:17px; padding:0 4px;
+  text-align:center; pointer-events:none;
+}
+.shop-cta{padding:9px 16px; font-size:13px; border-radius:12px; letter-spacing:.4px}
+.plan-card{position:relative; display:flex; flex-direction:column}
+.plan-card .emoji{font-size:40px; line-height:1.2}
+.plan-pop{
+  position:absolute; top:-13px; left:50%; transform:translateX(-50%);
+  background:var(--yellow); color:#7a5b00; font-size:11px; font-weight:900;
+  border-radius:999px; padding:4px 12px; letter-spacing:.5px; white-space:nowrap;
+}
+.plan-price{margin-top:8px; font-size:30px; font-weight:900; color:var(--green-dark)}
+.plan-price .unit{font-size:14px; color:var(--text-light); font-weight:800}
+.plan-save{margin-top:2px; font-size:12px; font-weight:800; color:#b8860b}
+.plan-features{
+  list-style:none; margin:12px 0 16px; text-align:left;
+  font-size:13px; font-weight:700; color:var(--text-light);
+  display:flex; flex-direction:column; gap:6px;
+}
+.plan-features li::before{content:'✓ '; color:var(--green); font-weight:900}
+.addon-desc{color:var(--text-light); font-size:13px; margin:8px 0 16px; line-height:1.55}
+.plan-card .btn{margin-top:auto; width:100%}
+.shop-note{
+  max-width:720px; margin:10px auto 60px; padding:0 20px; text-align:center;
+  font-size:12.5px; color:var(--gray-dark); font-weight:700; line-height:1.8;
+}
+
+.cart-item{display:flex; align-items:center; gap:10px; padding:12px 0; border-bottom:2px solid #f2f2f2}
+.cart-item .emoji{font-size:22px}
+.cart-item .info{flex:1; min-width:0}
+.cart-item .name{font-weight:900; font-size:14.5px}
+.cart-item .sub-note{font-size:12px; color:var(--text-light); font-weight:700; margin-top:2px}
+.cart-item .price{font-weight:900; color:var(--green-dark); min-width:56px; text-align:right}
+.qty{display:flex; align-items:center; gap:8px}
+.qty-btn{
+  width:26px; height:26px; border-radius:8px; border:2px solid var(--gray); background:#fff;
+  font-weight:900; cursor:pointer; color:var(--text); font-size:14px; line-height:1;
+}
+.qty-btn:hover{border-color:var(--blue); color:var(--blue)}
+.qty .n{font-weight:900; min-width:18px; text-align:center; font-size:14px}
+.rm-btn{background:none; border:none; cursor:pointer; color:var(--gray-dark); font-size:16px; font-weight:900; padding:4px}
+.rm-btn:hover{color:var(--red)}
+.cart-empty{text-align:center; color:var(--text-light); font-weight:700; padding:28px 0; line-height:1.8}
+.cart-total-row{display:flex; justify-content:space-between; align-items:center; margin-top:16px; font-weight:900; font-size:15px}
+.cart-total-row b{color:var(--green-dark); font-size:22px}
+.checkout-summary{
+  margin-top:12px; border:2px solid var(--gray); border-radius:14px; padding:12px 14px;
+  font-size:13.5px; font-weight:700; line-height:1.9;
+}
+.checkout-summary .line{display:flex; justify-content:space-between; gap:12px}
+.checkout-summary .total{border-top:2px solid #f2f2f2; margin-top:6px; padding-top:6px; color:var(--green-dark); font-weight:900}
+.modal input[type=email]{
+  width:100%; margin-top:14px; border:2px solid var(--gray); border-radius:12px;
+  padding:11px 14px; font-size:14px; font-family:inherit; font-weight:700; outline:none;
+}
+.toast{
+  position:fixed; left:50%; bottom:34px; transform:translateX(-50%);
+  background:var(--text); color:#fff; font-weight:800; font-size:14px;
+  border-radius:999px; padding:10px 22px; z-index:99; pointer-events:none; white-space:nowrap;
+  animation:toastIn .25s ease-out, toastOut .3s ease-in 1.8s forwards;
+}
+@keyframes toastIn{from{opacity:0; transform:translate(-50%,10px)}to{opacity:1; transform:translate(-50%,0)}}
+@keyframes toastOut{to{opacity:0; transform:translate(-50%,8px)}}
+
 @media (max-width:520px){
   .stats{gap:10px}
   .hero h1{font-size:23px}
+  .shop-cta{padding:8px 12px; font-size:12px}
 }
 @media (max-height:640px){
   .scene-face{width:120px; height:124px}
@@ -437,7 +507,8 @@ button{font-family:inherit}
   <header class="home-header">
     <a class="logo" href="#">SummerDaze<span>·English</span></a>
     <div class="right">
-      
+      <button class="btn shop-cta" id="btn-shop">⭐ 会员订阅</button>
+      <button class="icon-btn cart-btn" title="购物车" data-open-cart>🛒<span class="cart-badge hidden" data-cart-badge>0</span></button>
       <button class="icon-btn" id="btn-settings" title="设置 / AI 模式">⚙️</button>
     </div>
   </header>
@@ -532,6 +603,64 @@ button{font-family:inherit}
   <div class="done-actions">
     <button class="btn btn-white" id="btn-again">再练一次</button>
     <button class="btn" id="btn-home">继续 · 选新场景</button>
+  </div>
+</div>
+
+<!-- ==================== SHOP / MEMBERSHIP ==================== -->
+<div id="view-shop" class="hidden">
+  <header class="home-header">
+    <a class="back-link" href="#" id="shop-back">← 返回练习</a>
+    <a class="logo" href="#" id="shop-logo">SummerDaze<span>·会员</span></a>
+    <div class="right">
+      <button class="icon-btn cart-btn" title="购物车" data-open-cart>🛒<span class="cart-badge hidden" data-cart-badge>0</span></button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>⭐ 会员订阅</h1>
+    <p>按月订阅，解锁完整的雅思 / 托福口语陪练体验。<br>随时取消，也可以单独购买加油包。</p>
+  </section>
+
+  <div class="sec-title">📅 订阅方案 <span class="sub">按周期自动续费 · 随时取消</span></div>
+  <div class="scenarios" id="shop-plans"></div>
+
+  <div class="sec-title">🎒 加油包 <span class="sub">单次购买 · 无需订阅</span></div>
+  <div class="scenarios" id="shop-addons"></div>
+
+  <div class="shop-note">提交订单后，我们会通过邮件与你确认付款并开通服务。<br>订阅可随时取消 · 价格以人民币（¥）计</div>
+</div>
+
+<!-- ==================== CART MODAL ==================== -->
+<div class="modal-mask hidden" id="cart-mask">
+  <div class="modal">
+    <h3>🛒 购物车</h3>
+    <div id="cart-items"></div>
+    <div class="cart-total-row"><span>合计</span><b id="cart-total">¥0</b></div>
+    <div class="actions">
+      <button class="btn btn-white" id="btn-cart-close">继续逛逛</button>
+      <button class="btn" id="btn-checkout">去结算</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHECKOUT MODAL ==================== -->
+<div class="modal-mask hidden" id="checkout-mask">
+  <div class="modal">
+    <div id="checkout-form">
+      <h3>📝 确认订单</h3>
+      <div class="checkout-summary" id="checkout-summary"></div>
+      <input type="email" id="checkout-email" placeholder="你的邮箱（用于确认订单和开通会员）" autocomplete="email">
+      <div class="note">点击「提交订单」会打开你的邮件应用，把订单发给我们；我们确认后回复付款方式并为你开通。🔒 本站不收集、不存储任何支付信息。</div>
+      <div class="actions">
+        <button class="btn btn-white" id="btn-checkout-back">返回购物车</button>
+        <button class="btn" id="btn-place-order">提交订单</button>
+      </div>
+    </div>
+    <div id="checkout-done" class="hidden">
+      <h3>🎉 订单已生成！</h3>
+      <p id="checkout-done-msg"></p>
+      <div class="actions"><button class="btn" id="btn-checkout-close">完成</button></div>
+    </div>
   </div>
 </div>
 
@@ -1051,7 +1180,9 @@ const LS = {
   best: id => 'sd_best_' + id,
   key: 'sd_api_key',
   aiMode: 'sd_ai_mode',
-  tts: 'sd_tts'          // 'kokoro' (neural, default) | 'browser'
+  tts: 'sd_tts',         // 'kokoro' (neural, default) | 'browser'
+  cart: 'sd_cart',       // [{id, qty}]
+  orderEmail: 'sd_order_email'
 };
 const state = {
   mode: 'scenario',        // 'scenario' (guided dialogue) | 'exam' (free-flowing IELTS/TOEFL)
@@ -1083,7 +1214,7 @@ const state = {
 };
 
 const $ = id => document.getElementById(id);
-const views = { home:$('view-home'), chat:$('view-chat'), done:$('view-done') };
+const views = { home:$('view-home'), chat:$('view-chat'), done:$('view-done'), shop:$('view-shop') };
 function show(name){
   Object.entries(views).forEach(([k,el]) => el.classList.toggle('hidden', k!==name));
   window.scrollTo(0,0);
@@ -2325,6 +2456,188 @@ function saveSettings(){
 }
 
 /* =====================================================
+   Shop — membership subscriptions & cart
+===================================================== */
+const SHOP_CONFIG = {
+  orderEmail: 'ivywang9955@gmail.com',   // orders are sent here for manual confirmation
+  /* Optional online payment: fill in a per-plan payment link (e.g. a Stripe
+     Payment Link like 'https://buy.stripe.com/…'). When a subscription in the
+     cart has a link configured, checkout opens it instead of composing an
+     order email. Example: payLinks: { m1:'https://buy.stripe.com/xxxx' } */
+  payLinks: {}
+};
+const SHOP_ITEMS = [
+  { id:'m1', sub:true, emoji:'🌱', name:'月度会员', en:'Monthly', price:39, unit:'/月',
+    features:['全部日常情景对话 & 考试题库','AI 考官估分点评 每月 10 次','神经网络真人语音','学习进度与最佳成绩记录'] },
+  { id:'m3', sub:true, emoji:'🌿', name:'季度会员', en:'Quarterly', price:99, unit:'/3个月', save:'比按月省 ¥18', popular:true,
+    features:['包含月度会员全部权益','AI 考官估分点评 每月 30 次','新场景 & 新题库抢先体验','优先客服支持'] },
+  { id:'m12', sub:true, emoji:'🌳', name:'年度会员', en:'Yearly', price:299, unit:'/12个月', save:'比按月省 ¥169',
+    features:['包含季度会员全部权益','AI 考官估分点评 不限次数','每月 1 次外教口语点评','会员专属学习计划'] },
+  { id:'ai10', emoji:'🤖', name:'AI 点评加量包', en:'10 次点评', price:19,
+    desc:'雅思 / 托福 AI 考官估分点评 10 次。无需订阅，永久有效。' },
+  { id:'class1', emoji:'👩‍🏫', name:'外教 1 对 1 口语课', en:'45 分钟', price:129,
+    desc:'45 分钟真人外教在线陪练，针对你的雅思 / 托福口语弱项逐项突破。' }
+];
+const shopItem = id => SHOP_ITEMS.find(i => i.id === id);
+
+let cartItems = [];
+try { cartItems = (JSON.parse(localStorage.getItem(LS.cart)) || []).filter(l => shopItem(l.id) && l.qty > 0); }
+catch(e){ cartItems = []; }
+
+function cartSave(){ localStorage.setItem(LS.cart, JSON.stringify(cartItems)); }
+function cartCount(){ return cartItems.reduce((n,l) => n + l.qty, 0); }
+function cartTotal(){ return cartItems.reduce((s,l) => s + shopItem(l.id).price * l.qty, 0); }
+function updateCartBadges(){
+  const n = cartCount();
+  document.querySelectorAll('[data-cart-badge]').forEach(b => {
+    b.textContent = n;
+    b.classList.toggle('hidden', n === 0);
+  });
+}
+function toast(msg){
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2300);
+}
+
+function addToCart(id){
+  const item = shopItem(id);
+  const line = cartItems.find(l => l.id === id);
+  if (item.sub){
+    /* only one subscription plan at a time — adding another replaces it */
+    const other = cartItems.find(l => l.id !== id && shopItem(l.id).sub);
+    if (other) cartItems.splice(cartItems.indexOf(other), 1);
+    if (!line) cartItems.push({ id, qty:1 });
+    toast(other ? `已切换为「${item.name}」` : `已加入购物车：${item.name}`);
+  } else {
+    if (line) line.qty++;
+    else cartItems.push({ id, qty:1 });
+    toast(`已加入购物车：${item.name}`);
+  }
+  cartSave(); updateCartBadges(); renderShop();
+}
+function changeQty(id, d){
+  const line = cartItems.find(l => l.id === id);
+  if (!line) return;
+  line.qty += d;
+  if (line.qty <= 0) cartItems.splice(cartItems.indexOf(line), 1);
+  cartSave(); updateCartBadges(); renderCart(); renderShop();
+}
+
+function renderShop(){
+  const planHost = $('shop-plans'), addonHost = $('shop-addons');
+  planHost.innerHTML = ''; addonHost.innerHTML = '';
+  SHOP_ITEMS.forEach(item => {
+    const inCart = cartItems.some(l => l.id === item.id);
+    const card = document.createElement('div');
+    card.className = 'card plan-card' + (item.popular ? ' exam-card' : '');
+    card.innerHTML = item.sub ? `
+      ${item.popular ? '<div class="plan-pop">🔥 最受欢迎</div>' : ''}
+      <div class="emoji">${item.emoji}</div>
+      <h3>${item.name}</h3>
+      <div class="zh">${item.en}</div>
+      <div class="plan-price">¥${item.price}<span class="unit">${item.unit}</span></div>
+      ${item.save ? `<div class="plan-save">${item.save}</div>` : ''}
+      <ul class="plan-features">${item.features.map(f => `<li>${f}</li>`).join('')}</ul>
+      <button class="btn${inCart ? ' btn-white' : ''}">${inCart ? '✓ 已在购物车' : '加入购物车'}</button>`
+    : `
+      <div class="emoji">${item.emoji}</div>
+      <h3>${item.name}</h3>
+      <div class="zh">${item.en}</div>
+      <div class="plan-price">¥${item.price}</div>
+      <div class="addon-desc">${item.desc}</div>
+      <button class="btn btn-blue">加入购物车</button>`;
+    card.querySelector('button').onclick = e => { e.stopPropagation(); addToCart(item.id); };
+    (item.sub ? planHost : addonHost).appendChild(card);
+  });
+}
+
+function renderCart(){
+  const host = $('cart-items');
+  if (!cartItems.length){
+    host.innerHTML = '<div class="cart-empty">购物车还是空的～<br>去挑一个会员方案吧 🛍️</div>';
+  } else {
+    host.innerHTML = '';
+    cartItems.forEach(line => {
+      const item = shopItem(line.id);
+      const row = document.createElement('div');
+      row.className = 'cart-item';
+      row.innerHTML = `
+        <span class="emoji">${item.emoji}</span>
+        <div class="info">
+          <div class="name">${item.name}</div>
+          <div class="sub-note">${item.sub ? '订阅 · ¥' + item.price + item.unit : '¥' + item.price + ' / 件'}</div>
+        </div>
+        ${item.sub
+          ? '<div class="qty"><span class="n">×1</span></div>'
+          : `<div class="qty">
+               <button class="qty-btn" data-d="-1">−</button>
+               <span class="n">${line.qty}</span>
+               <button class="qty-btn" data-d="1">＋</button>
+             </div>`}
+        <div class="price">¥${item.price * line.qty}</div>
+        <button class="rm-btn" title="移除">✕</button>`;
+      row.querySelectorAll('.qty-btn').forEach(b => b.onclick = () => changeQty(line.id, parseInt(b.dataset.d, 10)));
+      row.querySelector('.rm-btn').onclick = () => changeQty(line.id, -line.qty);
+      host.appendChild(row);
+    });
+  }
+  $('cart-total').textContent = '¥' + cartTotal();
+  $('btn-checkout').disabled = !cartItems.length;
+}
+function openCart(){
+  renderCart();
+  $('cart-mask').classList.remove('hidden');
+}
+
+function openCheckout(){
+  if (!cartItems.length) return;
+  $('cart-mask').classList.add('hidden');
+  $('checkout-summary').innerHTML = cartItems.map(l => {
+    const it = shopItem(l.id);
+    return `<div class="line"><span>${it.emoji} ${it.name}${it.sub ? '（订阅' + it.unit + '）' : ' ×' + l.qty}</span><span>¥${it.price * l.qty}</span></div>`;
+  }).join('') + `<div class="line total"><span>合计</span><span>¥${cartTotal()}</span></div>`;
+  $('checkout-email').value = localStorage.getItem(LS.orderEmail) || '';
+  $('checkout-form').classList.remove('hidden');
+  $('checkout-done').classList.add('hidden');
+  $('checkout-mask').classList.remove('hidden');
+}
+function placeOrder(){
+  const email = $('checkout-email').value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    alert('请填写有效的邮箱地址，用于给你确认订单和开通会员。');
+    return;
+  }
+  localStorage.setItem(LS.orderEmail, email);
+
+  const sub = cartItems.map(l => shopItem(l.id)).find(i => i.sub);
+  const payLink = sub && SHOP_CONFIG.payLinks[sub.id];
+  if (payLink){
+    window.open(payLink, '_blank');
+    $('checkout-done-msg').textContent =
+      '已为你打开在线支付页面，完成支付后订阅即刻生效。遇到问题可邮件联系 ' + SHOP_CONFIG.orderEmail + '。';
+  } else {
+    const body = ['SummerDaze 会员订单', '',
+      ...cartItems.map(l => {
+        const it = shopItem(l.id);
+        return `· ${it.name} ×${l.qty} — ¥${it.price * l.qty}${it.sub ? '（订阅' + it.unit + '）' : ''}`;
+      }),
+      '', `合计：¥${cartTotal()}`, `联系邮箱：${email}`].join('\n');
+    location.href = 'mailto:' + SHOP_CONFIG.orderEmail +
+      '?subject=' + encodeURIComponent('SummerDaze 订阅订单 · ¥' + cartTotal()) +
+      '&body=' + encodeURIComponent(body);
+    $('checkout-done-msg').textContent =
+      '已为你打开邮件应用（收件人 ' + SHOP_CONFIG.orderEmail + '），点击发送即可完成下单；我们确认后会回复付款方式并为你开通。如果邮件没有自动打开，也可以手动把订单发到该邮箱。';
+  }
+  cartItems = [];
+  cartSave(); updateCartBadges(); renderShop();
+  $('checkout-form').classList.add('hidden');
+  $('checkout-done').classList.remove('hidden');
+}
+
+/* =====================================================
    Wire up events
 ===================================================== */
 $('btn-send').onclick = handleSend;
@@ -2348,6 +2661,19 @@ $('btn-quit').onclick = () => {
 $('btn-finish-ai').onclick = () => finishPractice();
 $('btn-again').onclick = () => startPractice(state.scenario);
 $('btn-home').onclick = () => { renderHome(); show('home'); };
+$('btn-shop').onclick = () => { renderShop(); show('shop'); };
+$('shop-back').onclick = e => { e.preventDefault(); renderHome(); show('home'); };
+$('shop-logo').onclick = e => e.preventDefault();
+document.querySelectorAll('[data-open-cart]').forEach(b => b.onclick = openCart);
+$('btn-cart-close').onclick = () => $('cart-mask').classList.add('hidden');
+$('cart-mask').addEventListener('click', e => {
+  if (e.target === $('cart-mask')) $('cart-mask').classList.add('hidden');
+});
+$('btn-checkout').onclick = openCheckout;
+$('btn-checkout-back').onclick = () => { $('checkout-mask').classList.add('hidden'); openCart(); };
+$('btn-place-order').onclick = placeOrder;
+$('btn-checkout-close').onclick = () => $('checkout-mask').classList.add('hidden');
+$('checkout-email').addEventListener('keydown', e => { if (e.key === 'Enter') placeOrder(); });
 $('btn-settings').onclick = openSettings;
 $('btn-settings-close').onclick = () => $('settings-mask').classList.add('hidden');
 $('btn-settings-save').onclick = saveSettings;
@@ -2361,6 +2687,7 @@ window.addEventListener('beforeunload', () => { stopSpeaking(); endCall(); });
 if (!stt.supported) setTypeMode(true);
 
 $('hero-owl').innerHTML = owlSVG();
+updateCartBadges();
 renderHome();
 show('home');
 </script>
